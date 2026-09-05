@@ -1,0 +1,1573 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+
+    <!-- Mantiene el ancho fijo también en móvil -->
+    <meta name="viewport" content="width=1050">
+
+    <meta
+        name="description"
+        content="MeteoTetuán. Datos meteorológicos en tiempo real desde Tetuán, Madrid."
+    >
+
+    <title>MeteoTetu&aacute;n</title>
+<link rel="icon" href="/favicon.ico" type="image/x-icon">
+	    <style>
+
+        /* =========================================================
+           GENERAL
+        ========================================================= */
+
+        body {
+            margin: 0;
+            padding: 0;
+            background: #ffffff;
+            color: #222222;
+            font-family: Arial, Helvetica, sans-serif;
+            font-size: 14px;
+            line-height: 1.6;
+        }
+
+        .web {
+            width: 1000px;
+            margin: 0 auto;
+        }
+
+        img {
+            display: block;
+            max-width: 100%;
+        }
+
+        a {
+            color: #245b8a;
+            text-decoration: none;
+        }
+
+        a:visited {
+            color: #245b8a;
+        }
+
+        a:hover {
+            color: #173f63;
+            text-decoration: underline;
+        }
+
+
+        /* =========================================================
+           LOGO
+        ========================================================= */
+
+        h1 {
+            margin: 28px 0 18px;
+            color: #245b8a;
+            font-size: 36px;
+            font-weight: 800;
+            letter-spacing: -1px;
+            text-align: center;
+        }
+
+
+        /* =========================================================
+           ENCABEZADO
+        ========================================================= */
+
+        .encabezado {
+            position: relative;
+            width: 1000px;
+            overflow: hidden;
+        }
+
+        .encabezado img {
+            width: 1000px;
+            height: 200px;
+            object-fit: cover;
+        }
+
+        /*
+           Difuminado muy ligero en los laterales
+           para integrar la foto con el fondo blanco.
+        */
+
+        .encabezado::before,
+        .encabezado::after {
+            position: absolute;
+            top: 0;
+            bottom: 0;
+            z-index: 2;
+            width: 75px;
+            content: "";
+            pointer-events: none;
+        }
+
+        .encabezado::before {
+            left: 0;
+            background: linear-gradient(
+                to right,
+                rgba(255,255,255,0.95),
+                rgba(255,255,255,0)
+            );
+        }
+
+        .encabezado::after {
+            right: 0;
+            background: linear-gradient(
+                to left,
+                rgba(255,255,255,0.95),
+                rgba(255,255,255,0)
+            );
+        }
+
+
+        /* =========================================================
+           MENÚ
+        ========================================================= */
+
+        .menu {
+            padding: 14px 0;
+            text-align: center;
+        }
+
+        .menu a {
+            margin: 0 6px;
+            font-size: 13px;
+        }
+
+
+        /* =========================================================
+           SECCIONES
+        ========================================================= */
+
+        section {
+            padding: 38px 0;
+        }
+
+        h2 {
+            margin: 0 0 20px;
+            font-size: 20px;
+            font-weight: normal;
+            text-align: center;
+        }
+
+        .intro {
+            width: 760px;
+            margin: 0 auto 25px;
+            color: #555555;
+            text-align: center;
+        }
+
+
+        /* =========================================================
+           ESTADO ONLINE
+        ========================================================= */
+
+        .titulo-estado {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .estado-online {
+            display: inline-flex;
+            align-items: center;
+            color: #555555;
+            font-size: 11px;
+            font-weight: normal;
+        }
+
+        .piloto-online {
+            display: inline-block;
+            width: 8px;
+            height: 8px;
+            margin-right: 5px;
+            background: #20b520;
+            border-radius: 50%;
+            animation: parpadeo 1.4s infinite;
+        }
+
+        @keyframes parpadeo {
+
+            0%,
+            100% {
+                opacity: 1;
+            }
+
+            50% {
+                opacity: 0.2;
+            }
+
+        }
+
+
+        /* =========================================================
+           WEATHERLINK
+        ========================================================= */
+
+        .weatherlink {
+            width: 570px;
+            margin: 0 auto;
+            overflow: auto;
+        }
+
+        .weatherlink iframe {
+            display: block;
+            width: 520px;
+            height: 570px;
+            margin: 0 auto;
+            border: 0;
+        }
+
+
+        /* =========================================================
+           BOTÓN DATOS COMPLETOS
+        ========================================================= */
+
+        .datos-completos {
+            margin-top: 24px;
+            text-align: center;
+        }
+
+        .boton-datos {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 11px 20px;
+            background: #245b8a;
+            border: 1px solid #245b8a;
+            border-radius: 9px;
+            color: #ffffff;
+            font-size: 13px;
+            font-weight: 600;
+            text-decoration: none;
+            box-shadow: 0 3px 10px rgba(36, 91, 138, 0.16);
+            transition: background .15s ease, border-color .15s ease, transform .15s ease, box-shadow .15s ease;
+        }
+
+        .boton-datos:visited {
+            color: #ffffff;
+        }
+
+        .boton-datos:hover {
+            background: #1d4b72;
+            border-color: #1d4b72;
+            color: #ffffff;
+            text-decoration: none;
+            transform: translateY(-1px);
+            box-shadow: 0 5px 14px rgba(36, 91, 138, 0.22);
+        }
+
+        .boton-datos svg {
+            width: 17px;
+            height: 17px;
+            fill: none;
+            stroke: currentColor;
+            stroke-width: 2;
+            stroke-linecap: round;
+            stroke-linejoin: round;
+        }
+
+
+        /* =========================================================
+           WEBCAM
+        ========================================================= */
+
+        .webcam {
+            width: 900px;
+            margin: 0 auto;
+        }
+
+        .webcam img {
+            width: 900px;
+            height: auto;
+        }
+
+
+        /* =========================================================
+           RADAR Y SATÉLITE
+        ========================================================= */
+
+        .observacion {
+            display: flex;
+            justify-content: space-between;
+            width: 900px;
+            margin: 0 auto;
+        }
+
+        .observacion-bloque {
+            width: 430px;
+            text-align: center;
+        }
+
+        .observacion-bloque h3 {
+            margin: 0 0 10px;
+            font-size: 15px;
+            font-weight: normal;
+        }
+
+        .observacion-bloque img {
+            width: 430px;
+            height: 350px;
+            object-fit: contain;
+        }
+
+        .fuente {
+            margin-top: 7px;
+            color: #777777;
+            font-size: 11px;
+        }
+
+
+        /* =========================================================
+           WINDY
+        ========================================================= */
+
+        .windy {
+            width: 900px;
+            margin: 35px auto 0;
+            text-align: center;
+        }
+
+        .windy h3 {
+            margin: 0 0 12px;
+            font-size: 15px;
+            font-weight: normal;
+        }
+
+        .windy iframe {
+            display: block;
+            width: 900px;
+            height: 500px;
+            border: 0;
+        }
+
+
+        /* =========================================================
+           PREVISIÓN AEMET
+        ========================================================= */
+
+        /*
+           El iframe de AEMET genera bastante espacio blanco inferior.
+           Dejamos el iframe completo, pero recortamos visualmente
+           el contenedor.
+        */
+
+        .prevision {
+            width: 900px;
+            height: 720px;
+            margin: 0 auto;
+            overflow: hidden;
+        }
+
+        .prevision iframe {
+            display: block;
+            width: 900px;
+            height: 370px;
+            border: 0;
+        }
+
+        .fuente-prevision {
+            margin-top: 8px;
+            color: #777777;
+            font-size: 11px;
+            text-align: center;
+        }
+
+
+        /* =========================================================
+           ESTACIÓN
+        ========================================================= */
+
+        .texto-estacion {
+            width: 1000px;
+            margin: 0 auto 22px;
+            color: #444444;
+            text-align: center;
+        }
+
+        .equipamiento {
+            width: 800px;
+            margin: 0 auto 28px;
+            text-align: center;
+        }
+
+        .equipamiento span:not(:last-child)::after {
+            content: " · ";
+            color: #888888;
+        }
+
+        .galeria {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 8px;
+            width: 900px;
+            margin: 0 auto;
+        }
+
+        .galeria img {
+            width: 100%;
+            height: 220px;
+            object-fit: cover;
+        }
+
+
+        /* =========================================================
+           ENLACES
+        ========================================================= */
+
+        .enlaces {
+            display: flex;
+            justify-content: space-between;
+            width: 800px;
+            margin: 0 auto;
+        }
+
+        .grupo {
+            width: 240px;
+        }
+
+        .grupo h3 {
+            margin: 0 0 10px;
+            font-size: 15px;
+            font-weight: normal;
+        }
+
+        .grupo ul {
+            margin: 0;
+            padding-left: 18px;
+        }
+
+        .grupo li {
+            margin-bottom: 5px;
+        }
+
+
+        /* =========================================================
+           REDES METEOROLÓGICAS
+        ========================================================= */
+
+        .redes-meteo {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 24px 16px;
+            width: 900px;
+            margin: 0 auto;
+            text-align: center;
+        }
+
+        .redes-meteo a {
+            display: block;
+            margin: 0;
+            color: #444444;
+            font-size: 12px;
+            text-decoration: none;
+        }
+
+        .redes-meteo a:hover {
+            color: #245b8a;
+            text-decoration: none;
+        }
+
+        .redes-meteo img {
+            width: 68px;
+            height: 68px;
+            margin: 0 auto 8px;
+            border-radius: 14px;
+            object-fit: cover;
+            transition: transform .15s ease;
+        }
+
+        .redes-meteo a:hover img {
+            transform: translateY(-2px);
+        }
+
+        .texto-redes {
+            width: 760px;
+            margin: 0 auto 20px;
+            color: #555555;
+            text-align: center;
+        }
+
+
+        /* =========================================================
+           FOOTER
+        ========================================================= */
+
+        footer {
+            padding: 30px 0 45px;
+            color: #777777;
+            font-size: 11px;
+            text-align: center;
+        }
+
+
+        /* =========================================================
+           DATOS ACTUALES - RESUMEN HORIZONTAL
+        ========================================================= */
+
+        .resumen-meteo {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 12px;
+            width: 940px;
+            margin: 0 auto;
+        }
+
+        .dato-meteo {
+            box-sizing: border-box;
+            width: 220px;
+            min-height: 145px;
+            padding: 17px 10px 20px;
+            border: 1px solid;
+            border-radius: 12px;
+            text-align: center;
+        }
+
+        .dato-meteo-icono {
+            display: block;
+            width: 28px;
+            height: 28px;
+            margin: 0 auto 6px;
+        }
+
+        .dato-meteo-icono svg {
+            display: block;
+            width: 28px;
+            height: 28px;
+            fill: none;
+            stroke: currentColor;
+            stroke-width: 1.8;
+            stroke-linecap: round;
+            stroke-linejoin: round;
+        }
+
+        .dato-meteo-nombre {
+            display: block;
+            margin-bottom: 8px;
+            font-size: 14px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.3px;
+        }
+
+        .dato-meteo-valor {
+            display: block;
+            font-size: 37px;
+            font-weight: 700;
+            line-height: 1.2;
+        }
+
+        .dato-temperatura {
+            background: #fff5f2;
+            border-color: #f2d5cc;
+            color: #b9573f;
+        }
+
+        .dato-humedad {
+            background: #f1f8fd;
+            border-color: #cfe3f1;
+            color: #3277a8;
+        }
+
+        .dato-presion {
+            background: #f4f6fa;
+            border-color: #d8dee8;
+            color: #596a82;
+        }
+
+        .dato-viento {
+            background: #f1faf7;
+            border-color: #cfe8df;
+            color: #39806c;
+        }
+
+        .dato-lluvia {
+            background: #f0f9fb;
+            border-color: #cce7ec;
+            color: #278095;
+        }
+
+        .dato-uv {
+            background: #fffbea;
+            border-color: #eee1aa;
+            color: #9b7a12;
+        }
+
+        .dato-solar {
+            background: #fff6e9;
+            border-color: #efd9b8;
+            color: #b46b20;
+        }
+
+        .dato-meteo .dato-meteo-nombre,
+        .dato-meteo .dato-meteo-valor {
+            color: inherit;
+        }
+
+
+        /* =========================================================
+           FACEBOOK
+        ========================================================= */
+
+        .facebook-bloque {
+            width: 560px;
+            margin: 25px auto 10px;
+            padding: 22px 20px 24px;
+            background: #f8fafc;
+            border: 1px solid #d9e2ea;
+            border-radius: 12px;
+            text-align: center;
+        }
+
+        .facebook-bloque h2 {
+            margin: 0 0 16px;
+            color: #333333;
+            font-size: 18px;
+            font-weight: normal;
+        }
+
+        .facebook-contenido {
+            width: 500px;
+            margin: 0 auto;
+        }
+
+        .facebook-contenido iframe {
+            display: block;
+            width: 500px;
+            height: 500px;
+            margin: 0 auto;
+            border: 0;
+        }
+
+    </style>
+
+</head>
+<div id="fb-root"></div>
+<script async defer crossorigin="anonymous" src="https://connect.facebook.net/es_ES/sdk.js#xfbml=1&version=v21.0"></script>
+
+<body>
+
+<div class="web">
+
+
+    <!-- =========================================================
+         LOGO
+    ========================================================== -->
+
+    <h1>MeteoTetu&aacute;n</h1>
+
+
+    <!-- =========================================================
+         ENCABEZADO
+    ========================================================== -->
+
+    <div class="encabezado" id="inicio">
+
+        <img
+            src="/images/encabezado.jpg" style="border-radius: 15px;"
+            alt="MeteoTetuán"
+        >
+
+    </div>
+
+
+    <!-- =========================================================
+         MENÚ
+    ========================================================== -->
+
+    <div class="menu">
+
+        <a href="#actual">Datos actuales</a> |
+
+        <a href="#webcam">Webcam</a> |
+
+        <a href="#observacion">Radar y sat&eacute;lite</a> |
+
+        <a href="#prevision">Previsi&oacute;n</a> |
+
+        <a href="#estacion">La estaci&oacute;n</a> |
+
+        <a href="#redes">Redes</a> |
+
+        <a href="#enlaces">Enlaces</a>
+
+    </div>
+
+
+    <!-- =========================================================
+         DATOS ACTUALES
+    ========================================================== -->
+
+    <section id="actual">
+
+        <h2 class="titulo-estado">
+
+            Datos actuales
+
+            <span class="estado-online">
+
+                <span class="piloto-online"></span>
+
+                Online
+
+            </span>
+
+        </h2>
+
+
+        <p class="intro">
+
+            Estaci&oacute;n de Madrid-Tetu&aacute;n en tiempo real
+        </p>
+
+        <div class="resumen-meteo">
+
+ 
+ <iframe src="https://www.weatherlink.com/embeddablePage/show/69089c037c094f15a466feb66f9ccf92/wide" scrolling="no" frameborder="0" width="520" height="570" style="border-radius: 15px;"></iframe>
+ 
+ 
+ 
+
+        </div>
+
+
+        <div class="datos-completos">
+
+            <a
+                class="boton-datos"
+                href="https://www.weatherlink.com/embeddablePage/show/69089c037c094f15a466feb66f9ccf92/summary"
+                target="_blank"
+            >
+                <svg viewBox="0 0 24 24" aria-hidden="true">
+                    <path d="M4 19V9"></path>
+                    <path d="M10 19V5"></path>
+                    <path d="M16 19v-7"></path>
+                    <path d="M22 19H2"></path>
+                </svg>
+                Ver datos completos
+            </a>
+
+ 
+            <a
+                class="boton-datos"
+                href="https://www.ecowitt.net/home/share?authorize=M1GRDT&device_id=NGc4S0Vsdi9nVThRaWNlSXlGZTZ1QT09"
+                target="_blank"
+            >
+                <svg viewBox="0 0 24 24" aria-hidden="true">
+                    <path d="M4 19V9"></path>
+                    <path d="M10 19V5"></path>
+                    <path d="M16 19v-7"></path>
+                    <path d="M22 19H2"></path>
+                </svg>
+                Sensor de rayos
+            </a>
+ 
+ 
+
+            <a
+                class="boton-datos"
+                href="https://x.com/meteo_tetuan"
+                target="_blank"
+            >
+                <svg viewBox="0 0 24 24" aria-hidden="true">
+                    <path d="M4 19V9"></path>
+                    <path d="M10 19V5"></path>
+                    <path d="M16 19v-7"></path>
+                    <path d="M22 19H2"></path>
+                </svg>
+                Seguimiento en X
+            </a>
+
+        </div>        
+        
+
+    </section>
+
+
+    <!-- =========================================================
+         WEBCAM
+    ========================================================== -->
+
+    <section id="webcam">
+
+        <h2>Webcam en directo</h2>
+
+        <div class="webcam">
+
+            <a
+                href="https://images-webcams.windy.com/06/1714715306/current/full/1714715306.jpg"
+                target="_blank"
+             style="border-radius: 15px;">
+
+                <img
+                    id="imagenWebcam"
+                    src="https://images-webcams.windy.com/06/1714715306/current/full/1714715306.jpg"
+                    alt="Webcam MeteoTetuán"
+                 style="border-radius: 15px;">
+
+            </a>
+
+        </div>
+
+    </section>
+    
+
+
+    <!-- =========================================================
+         RADAR Y SATÉLITE
+    ========================================================== -->
+
+    <section id="observacion">
+
+        <h2>Radar y sat&eacute;lite</h2>
+
+
+        <div class="observacion">
+
+
+            <!-- RADAR -->
+
+            <div class="observacion-bloque">
+
+                <h3>
+                    Radar de precipitaci&oacute;n
+                </h3>
+
+                <a
+                    href="https://www.meteociel.fr/cartes_obs/radar/lastradar_sp.gif"
+                    target="_blank"
+                >
+
+                    <img
+                        id="imagenRadar"
+                        src="https://www.meteociel.fr/cartes_obs/radar/lastradar_sp.gif"
+                        alt="Radar de precipitación"
+                     >
+
+                </a>
+
+                <div class="fuente">
+
+                    Fuente:
+
+                    <a
+                        href="https://www.meteociel.fr/"
+                        target="_blank"
+                    >
+                        Meteociel
+                    </a>
+
+                </div>
+
+            </div>
+
+
+            <!-- SATÉLITE -->
+
+            <div class="observacion-bloque">
+
+                <h3>
+                    Sat&eacute;lite
+                </h3>
+
+                <a
+                    href="https://modeles20.meteociel.fr/satellite/animsatvismtgsp.gif"
+                    target="_blank"
+                >
+
+                    <img
+                        id="imagenSatelite"
+                        src="https://modeles20.meteociel.fr/satellite/animsatvismtgsp.gif"
+                        alt="Imagen de satélite"
+                    >
+
+                </a>
+
+                <div class="fuente">
+
+                    Fuente:
+
+                    <a
+                        href="https://www.meteociel.fr/"
+                        target="_blank"
+                    >
+                        Meteociel
+                    </a>
+
+                </div>
+
+            </div>
+
+
+        </div>
+
+
+        <!-- =====================================================
+             MAPA WINDY
+        ====================================================== -->
+
+        <div class="windy">
+
+            <h3>
+                Mapa meteorol&oacute;gico
+            </h3>
+
+            <iframe
+                src="https://embed.windy.com/embed.html?type=map&location=coordinates&metricRain=default&metricTemp=default&metricWind=default&zoom=8&overlay=wind&product=ecmwf&level=surface&lat=40.51&lon=-3.76"
+                title="Mapa meteorológico Windy"
+                frameborder="0"
+             style="border-radius: 15px;"></iframe>
+
+            <div class="fuente">
+
+                Fuente:
+
+                <a
+                    href="https://www.windy.com/"
+                    target="_blank"
+                >
+                    Windy
+                </a>
+
+            </div>
+
+        </div>
+
+    </section>
+
+
+    <!-- =========================================================
+         PREVISIÓN
+    ========================================================== -->
+
+    <section id="prevision">
+
+        <h2>
+            Previsi&oacute;n
+        </h2>
+
+
+        <div class="prevision">
+<iframe src="https://www.meteoblue.com/en/weather/widget/meteogram/madrid_spain_3117735?geoloc=fixed&temperature_units=CELSIUS&windspeed_units=KILOMETER_PER_HOUR&precipitation_units=MILLIMETER&forecast_days=4&layout=bright&autowidth=auto&user_key=e36b7e90a0d36f13&embed_key=dcdb0e70b34c2183&sig=9f3f5b8483197944055ceeee288e6b555dc181f482d1463bad4a1d2dd60a516c" frameborder="0" scrolling="NO" allowtransparency="true" sandbox="allow-same-origin allow-scripts allow-popups allow-popups-to-escape-sandbox" style="width: 100%;height: 700px;border: 0;overflow: hidden;"></iframe><div><!-- DO NOT REMOVE THIS LINK --><a href="https://www.meteoblue.com/en/weather/week/index" target="_blank" rel="noopener">meteoblue</a></div>        
+        </div>
+
+
+
+    </section>
+
+
+    <!-- =========================================================
+         LA ESTACIÓN
+    ========================================================== -->
+
+    <section id="estacion">
+
+        <h2>
+            La estaci&oacute;n meteorol&oacute;gica
+        </h2>
+
+
+        <p class="texto-estacion">
+
+            MeteoTetu&aacute;n es un observatorio meteorol&oacute;gico situado
+            en el distrito de Tetu&aacute;n, Madrid. La estaci&oacute;n
+            es un modelo <b>Davis Vantage Pro2 Plus autoaspirada</b>, que registra
+            temperatura, humedad, viento, precipitaci&oacute;n, radiaci&oacute;n solar
+            e &iacute;ndice ultravioleta. Adem&aacute;s, el observatorio cuenta con un <b>sensor Airlink</b> instalado, encargado de medir la calidad del aire. Todos los sensores se conectan al datalogger <strong>WeatherLink Live</strong>, que funciona como "hub" de datos y almacena la informaci&oacute;n de los sensores en <strong>WeatherLink.com (versi&oacute;n PRO)</strong> en intervalos de 15 minutos. La estaci&oacute;n se complementa, adem&aacute;s con una <b>webcam modelo Foscam</b> enfocada al sur, un <strong>sensor de rayos Ecowitt</strong> encargado de la detecci&oacute;n de tormentas, y un <b>pluvi&oacute;metro manual CoCoRaHS</b>, utilizado para cotejar
+            las cantidades de precipitaci&oacute;n registradas por la estaci&oacute;n
+            autom&aacute;tica. El observatorio cuenta también con la <strong> Consola WeatherLink</strong> para la visualizaci&oacute;n local de los datos.<br><br><font size="1">Haz click en las fotograf&iacute;as para ampliarlas</font>
+
+        </p>
+
+
+        <div class="galeria">
+
+
+            <a
+                href="/images/davis1.jpg"
+                target="_blank"
+            >
+
+                <img
+                    src="/images/davis1.jpg"
+                    alt="ISS Davis Vantage Pro 2"
+                >
+
+            </a>
+
+
+            <a
+                href="/images/davis2.jpg"
+                target="_blank"
+            >
+
+                <img
+                    src="/images/davis2.jpg"
+                    alt="ISS Davis Vantage Pro2 Plus"
+                >
+
+            </a>
+            
+            <a
+                href="/images/airlink.jpg"
+                target="_blank"
+            >
+
+                <img
+                    src="/images/airlink.jpg"
+                    alt="Sensor de calidad del aire AirLink"
+                >
+
+            </a>
+            
+            
+
+            <a
+                href="/images/weatherlinklive.jpg"
+                target="_blank"
+            >
+
+                <img
+                    src="/images/weatherlinklive.jpg"
+                    alt="Hub y logger de datos WeatherLink Live"
+                >
+
+            </a>
+            
+            <a
+                href="/images/weatherlinkconsole.jpg"
+                target="_blank"
+            >
+
+                <img
+                    src="/images/weatherlinkconsole.jpg"
+                    alt="Visualizaci&oacute;n de datos en la Consola WeatherLink"
+                >
+
+            </a>
+            
+            <a
+                href="/images/weatherlinkcloud.jpg"
+                target="_blank"
+            >
+
+                <img
+                    src="/images/weatherlinkcloud.jpg"
+                    alt="Pantalla de WeatherLink Cloud"
+                >
+
+            </a>
+            
+            <a
+                href="/images/webcam.jpg"
+                target="_blank"
+            >
+
+                <img
+                    src="/images/webcam.jpg"
+                    alt="Webcam modelo Foscam y sensor de rayos Ecowitt"
+                >
+
+            </a>
+                  
+            <a
+                href="/images/cocorash.jpg"
+                target="_blank"
+            >
+
+                <img
+                    src="/images/cocorash.jpg"
+                    alt="Pluvi&oacute;metro manual CoCoRaSh"
+                >
+
+            </a>
+                              
+            <a
+                href="/images/iss.jpg"
+                target="_blank"
+            >
+
+                <img
+                    src="/images/iss.jpg"
+                    alt="Instalaci&oacute;n completa del observatorio"
+                >
+
+            </a>
+                                           
+            
+            
+
+        </div>
+
+    </section>
+
+
+    <!-- =========================================================
+         REDES METEOROLÓGICAS
+    ========================================================== -->
+
+    <section id="redes">
+
+        <h2>
+            MeteoTetu&aacute;n en las principales redes meteorol&oacute;gicas
+        </h2>
+
+
+        <p class="texto-redes">
+
+            Acceso directo a datos y gr&aacute;ficos completos de MeteoTetu&aacute;n
+        </p>
+
+
+        <!--
+            CAMBIA LOS # POR LAS URL DE TUS ESTACIONES
+            EN CADA PLATAFORMA.
+        -->
+
+        <div class="redes-meteo">
+
+            <a href="https://www.meteoclimatic.net/perfil/ESMAD2800000028039B" target="_blank">
+                <img src="/images/mtc.jpg" alt="Meteoclimatic">
+                <span>Meteoclimatic</span>
+            </a>
+
+            <a href="https://www.climameteoinfo.com/webest/id.MAD_232106844758.html" target="_blank">
+                <img src="/images/cmi.png" alt="Climameteoinfo">
+                <span>Climameteoinfo</span>
+            </a>
+
+            <a href="https://www.wunderground.com/dashboard/pws/IMADRI625" target="_blank">
+                <img src="/images/wundergroundlogo.jpg" alt="Weather Underground">
+                <span>Weather Underground</span>
+            </a>
+
+            <a href="https://app.weathercloud.net/d3392539594#current" target="_blank">
+                <img src="/images/wc.png" alt="WeatherCloud">
+                <span>WeatherCloud</span>
+            </a>
+
+            <a href="https://www.awekas.at/es/instrument.php?id=29195" target="_blank">
+                <img src="/images/logoawekas.png" alt="AWEKAS">
+                <span>AWEKAS</span>
+            </a>
+
+            <a href="https://wow.metoffice.gov.uk/observations/details?site_id=bef27815-0c11-ee11-913a-201642ba2505" target="_blank">
+                <img src="/images/metofficelogo.png" alt="WOW Metoffice">
+                <span>WOW Metoffice</span>
+            </a>
+
+            <a href="https://www.pwsweather.com/station/pws/METEOTETUAN" target="_blank">
+                <img src="/images/pwsweatherlogo.png" alt="PWS Weather">
+                <span>PWS Weather</span>
+            </a>
+
+            <a href="https://www.findu.com/cgi-bin/wxpage.cgi?call=GW3643&units=metric" target="_blank">
+                <img src="/images/logocwop.jpg" alt="CWOP">
+                <span>CWOP</span>
+            </a>
+
+            <a href="https://www.meteonetwork.eu/en/weather-station/es0044-madrid-tetuan-meteorological-station" target="_blank">
+                <img src="/images/mtw.png" alt="MeteoNetwork">
+                <span>MeteoNetwork</span>
+            </a>
+
+            <a href="https://www.infoclimat.fr/observations-meteo/temps-reel/madrid-tetuan/STATIC0304.html" target="_blank">
+                <img src="/images/infoclimatlogo.jpeg" alt="Infoclimat">
+                <span>Infoclimat</span>
+            </a>
+
+            <a href="https://www.weatherlink.com/embeddablePage/show/8e0845b383ba42cd86f8f6318d16db8d/fullscreen" target="_blank">
+                <img src="/images/davislogowl.jpg" alt="WeatherLink">
+                <span>WeatherLink</span>
+            </a>
+
+            <a href="https://www.windy.com/station/madis-G3643?40.457,-3.706,16,i:pressure,p:cams" target="_blank">
+                <img src="/images/logowindy.jpeg" alt="Windy">
+                <span>Windy</span>
+            </a>
+
+            <a href="https://seguimeteo.com/mapa/3days.html?station=Madrid%20Tetu%C3%A1n" target="_blank">
+                <img src="/images/smlogo.jpeg" alt="Seguimeteo">
+                <span>Seguimeteo</span>
+            </a>
+
+            <a href="https://aprs.fi/weather/a/GW3643?range=year" target="_blank">
+                <img src="/images/logoaprs.png" alt="Findu-APRS">
+                <span>Findu-APRS</span>
+            </a>
+
+        </div>
+
+    </section>
+
+
+    <!-- =========================================================
+         ENLACES ÚTILES
+    ========================================================== -->
+
+    <section id="enlaces">
+
+        <h2>
+            Enlaces y archivo clim&aacute;tico
+        </h2>
+
+
+        <div class="enlaces">
+
+
+            <!-- OBSERVACIÓN -->
+
+            <div class="grupo">
+
+                <h3>
+                    Observaci&oacute;n
+                </h3>
+
+                <ul>
+
+                    <li>
+
+                        <a
+                            href="https://www.aemet.es/es/eltiempo/observacion"
+                            target="_blank"
+                        >
+                            Observaci&oacute;n AEMET
+                        </a>
+
+                    </li>
+
+
+                    <li>
+
+                        <a
+                            href="https://www.aemet.es/es/eltiempo/observacion/radar"
+                            target="_blank"
+                        >
+                            Radar
+                        </a>
+
+                    </li>
+
+
+                    <li>
+
+                        <a
+                            href="https://www.aemet.es/es/eltiempo/observacion/satelite"
+                            target="_blank"
+                        >
+                            Sat&eacute;lite
+                        </a>
+
+                    </li>
+
+
+                    <li>
+
+                        <a
+                            href="https://www.aemet.es/es/eltiempo/observacion/rayos"
+                            target="_blank"
+                        >
+                            Rayos
+                        </a>
+
+                    </li>
+                    
+                    <li>
+
+                        <a
+                            href="https://www.climameteoinfo.com/maps/mapa.html"
+                            target="_blank"
+                        >
+                            Mapa de estaciones
+                        </a>
+
+                    </li>                    
+                    
+
+                </ul>
+
+            </div>
+
+
+            <!-- PREDICCIÓN -->
+
+            <div class="grupo">
+
+                <h3>
+                    Predicci&oacute;n
+                </h3>
+
+                <ul>
+
+                    <li>
+
+                        <a
+                            href="https://www.aemet.es/es/eltiempo/prediccion/municipios/madrid-id28079"
+                            target="_blank"
+                        >
+                            Predicci&oacute;n de Madrid
+                        </a>
+
+                    </li>
+
+
+                    <li>
+
+                        <a
+                            href="https://www.aemet.es/es/eltiempo/prediccion/avisos"
+                            target="_blank"
+                        >
+                            Avisos meteorol&oacute;gicos
+                        </a>
+
+                    </li>
+
+
+                    <li>
+
+                        <a
+                            href="https://www.windy.com/"
+                            target="_blank"
+                        >
+                            Windy
+                        </a>
+
+                    </li>
+                    
+ <li>
+
+                        <a
+                            href="https://www.aemet.es/es/eltiempo/prediccion/incendios"
+                            target="_blank"
+                        >Riesgo de incendios
+                        </a>
+
+                    </li>                    
+
+                    <li>
+
+                        <a
+                            href="https://www.aemet.es/es/eltiempo/prediccion/radiacionuv"
+                            target="_blank"
+                        >
+                            Previsi&oacute;n &iacute;ndice UV
+                        </a>
+
+                    </li>
+
+                </ul>
+
+            </div>
+
+
+            <!-- OTROS -->
+
+            <div class="grupo">
+
+                <h3>
+                    Archivo clim&aacute;tico de MeteoTetu&aacute;n
+                </h3>
+
+                <ul>
+
+                    <li>
+
+                        <a
+                            href="/archivo/2023wlk.pdf"
+                            target="_blank"
+                        >Datos mensuales 2023
+                        </a>
+
+                    </li>
+
+
+                    <li>
+
+                        <a
+                            href="/archivo/2024wlk.pdf"
+                            target="_blank"
+                        >
+                            Datos mensuales 2024
+                        </a>
+
+                    </li>
+
+
+                    <li>
+
+                        <a
+                            href="/archivo/2025wlk.pdf"
+                            target="_blank"
+                        >
+                            Datos mensuales 2025
+                        </a>
+
+                    </li>
+                    
+
+                    <li>
+
+                        <a
+                            href="/archivo/2026wlk.pdf"
+                            target="_blank"
+                        >
+                            Datos mensuales 2026
+                        </a>
+
+                    </li>  
+                    
+
+                    <li>
+
+                        <a
+                            href="/archivo/precipitaciontetuan.pdf"
+                            target="_blank"
+                        >
+                            Precipitaciones
+                        </a>
+
+                    </li>                    
+                                      
+                    
+
+                </ul>
+
+            </div>
+            
+            
+
+
+
+        </div>
+
+    </section>
+
+                <div class="facebook-bloque">
+
+        <h2>&Uacute;ltimas publicaciones</h2>
+
+        <div class="facebook-contenido">
+            <iframe
+                src="https://www.facebook.com/plugins/page.php?href=https%3A%2F%2Fwww.facebook.com%2Fprofile.php%3Fid%3D61550341978997&amp;tabs=timeline&amp;width=500&amp;height=500&amp;small_header=true&amp;adapt_container_width=false&amp;hide_cover=true&amp;show_facepile=true"
+                width="500"
+                height="500"
+                style="border:none;overflow:hidden"
+                scrolling="no"
+                frameborder="0"
+                allowfullscreen="true"
+                allow="autoplay; clipboard-write; encrypted-media; picture-in-picture; web-share"
+                title="Últimas publicaciones de MeteoTetuán">
+            </iframe>
+        </div>
+
+    </div>
+
+    <hr>
+
+    <!-- =========================================================
+         FOOTER
+    ========================================================== -->
+
+    <footer>
+
+       <p>&#169; 2023-2026 <strong>MeteoTetu&aacute;n</strong> - Estaci&oacute;n meteorol&oacute;gica de Madrid-Tetu&aacute;n <br> 40º 27' N / 3º 42' W / 695 m</p>
+    <p>Observador: <strong>Jorge Pizarro Rivas</strong> (meteotetuan@gmail.com)<br><br> PROYECTO DEDICADO A LA MEMORIA DE EMILIO RIVAS MART&Iacute;N. DEP.</p>
+
+        <br>
+
+        <a href="#inicio">
+            Inicio
+        </a>
+
+        |
+
+        <a href="https://www.weatherlink.com/embeddablePage/show/69089c037c094f15a466feb66f9ccf92/summary">
+            Datos completos
+        </a>
+
+        |
+
+        <a href="#estacion">
+            La estaci&oacute;n
+        </a>
+
+        |
+
+        <a href="#redes">
+            Redes
+        </a>
+
+    </footer>
+
+<center>
+	<font size="1" color="blue">Ver. 31 de agosto de 2026 - Nuevo dise&ntilde;o</font><br>
+		
+		<font size="1" color="grey">Web actualizada autom&aacute;ticamente cada minuto mediante WeatherLink Live y WeatherLink.com.
+		<br><br>
+			<a href="https://www.davisinstruments.com/" target="_blank"><img src="/images/davislogo.jpg" width="200"></a><br>
+				<a href="https://www.weatherlink.com/" target="_blank"><img src="/images/weatherlinklogo.jpg" width="200"></a><br>
+		<a href="https://www.ecowitt.net" target="_blank"><img src="/images/logoecowitt.jpg" width="200"></a><br>
+				
+					
+					<br>
+					
+					<img src="/images/logoweb.jpg" width="400">
+					<br><br>
+</center>
+
+
+<!-- =============================================================
+     ACTUALIZACIÓN DE WEBCAM, RADAR Y SATÉLITE
+============================================================== -->
+
+<script>
+
+    document.addEventListener("DOMContentLoaded", function () {
+
+        function actualizarImagen(id, url) {
+
+            var imagen = document.getElementById(id);
+
+            if (!imagen) {
+                return;
+            }
+
+            var separador =
+                url.indexOf("?") !== -1
+                ? "&"
+                : "?";
+
+            imagen.src =
+                url +
+                separador +
+                "t=" +
+                Date.now();
+
+        }
+
+
+        actualizarImagen(
+            "imagenWebcam",
+            "https://images-webcams.windy.com/06/1714715306/current/full/1714715306.jpg"
+        );
+
+
+        actualizarImagen(
+            "imagenRadar",
+            "https://www.meteociel.fr/cartes_obs/radar/lastradar_sp.gif"
+        );
+
+
+        actualizarImagen(
+            "imagenSatelite",
+            "https://modeles20.meteociel.fr/satellite/animsatvismtgsp.gif"
+        );
+
+    });
+
+</script>
+
+
+</body>
+</html>
