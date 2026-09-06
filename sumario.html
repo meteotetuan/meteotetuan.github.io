@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Web con Tamaño Fijo</title>
+    <style>
+        /* Define un tamaño fijo y rígido para el contenedor principal */
+        body {
+            margin: 0;
+            padding: 0;
+            width: 1920px;   /* Ancho fijo sin importar el dispositivo */
+            height: 1080px;  /* Alto fijo sin importar el dispositivo */
+            overflow: auto;  /* Fuerza la aparición de barras de scroll si la pantalla es pequeña */
+        }
+        
+        /* El iframe ocupa exactamente el tamaño fijo asignado al cuerpo */
+        iframe {
+            width: 100%;
+            height: 100%;
+            border: none;
+            display: block;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Cambia la URL por la web fija que quieras mostrar -->
+    <iframe src="https://meteotetuan.byethost7.com/Current_Vantage_Pro_Plus.html"></iframe>
+
+</body>
+</html>
