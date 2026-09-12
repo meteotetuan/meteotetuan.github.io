@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>MeteoTetu&aacute;n</title>
+    <style>
+        /* Reseteo básico para consistencia */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        /* Fondo blanco absoluto y tipografía base */
+        body {
+            background-color: #ffffff;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            color: #333333;
+            line-height: 1.6;
+        }
+
+        /* Contenedor principal sin responsive (Ancho fijo estricto de 1200px) */
+        .wrapper {
+            width: 1200px;
+            margin: 0 auto;
+            background-color: #ffffff;
+            padding: 40px;
+        }
+
+        /* Encabezado */
+        header {
+            border-bottom: 2px solid #eeeeee;
+            padding-bottom: 20px;
+            margin-bottom: 40px;
+        }
+
+        header h1 {
+            font-size: 32px;
+            color: #111111;
+            text-align: center;
+        }
+
+        /* Contenedor de la galería en formato lista vertical */
+        .gallery-container {
+            display: block; 
+        }
+
+        /* Bloque individual para cada imagen */
+        .image-block {
+            width: 100%;
+            margin-bottom: 40px;
+            text-align: center;
+        }
+
+        /* Estilo estricto para las imágenes */
+        .image-block img {
+            width: 800px; /* Ancho fijo para mantener la resolución y escala exacta del gráfico */
+            height: auto;
+            border: 1px solid #dddddd;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05);
+            display: inline-block;
+        }
+
+        /* Título o etiqueta opcional para cada gráfico */
+        .image-block .caption {
+            font-size: 16px;
+            color: #555555;
+            margin-top: 10px;
+            font-weight: 600;
+        }
+
+        /* Contenedor del botón de acción */
+        .navigation-container {
+            text-align: center;
+            margin-top: 50px;
+            margin-bottom: 30px;
+        }
+
+        /* Botón con dimensiones fijas y diseño limpio */
+        .btn-home {
+            display: inline-block;
+            width: 250px;
+            height: 50px;
+            line-height: 48px; /* Centrado vertical del texto */
+            background-color: #111111;
+            color: #ffffff;
+            text-decoration: none;
+            font-size: 16px;
+            font-weight: bold;
+            text-align: center;
+            border: 1px solid #111111;
+            border-radius: 4px;
+            transition: background-color 0.2s ease;
+        }
+
+        .btn-home:hover {
+            background-color: #333333;
+            border-color: #333333;
+        }
+
+        /* Pie de página */
+        footer {
+            border-top: 1px solid #eeeeee;
+            padding-top: 20px;
+            margin-top: 40px;
+            font-size: 14px;
+            color: #777777;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="wrapper">
+        
+        <header>
+            <h1>Galería de Gráficos Meteorológicos</h1>
+        </header>
+
+        <main class="gallery-container">
+            
+            <!-- Imagen 1 -->
+            <div class="image-block">
+                <img src="https://byethost7.com/customgraph77.jpg" alt="Gráfico Meteorológico 1">
+                <div class="caption">Gráfico temperatura 1</div>
+            </div>
+
+            <!-- Imagen 2 -->
+            <div class="image-block">
+                <img src="https://byethost7.com/customgraph78.jpg" alt="Gráfico Meteorológico 2">
+                <div class="caption">Gráfico humedad 2</div>
+            </div>
+
+            <!-- Imagen 3 -->
+            <div class="image-block">
+                <img src="https://byethost7.com/customgraph78.jpg" alt="Gráfico Meteorológico 3">
+                <div class="caption">Gráfico presion atmosferica 3</div>
+            </div>
+
+            <!-- Imagen 4 -->
+            <div class="image-block">
+                <img src="https://byethost7.com/customgraph78.jpg" alt="Gráfico Meteorológico 4">
+                <div class="caption">Gráfico viento 4</div>
+            </div>
+
+            <!-- Imagen 5 -->
+            <div class="image-block">
+                <img src="https://byethost7.com/customgraph78.jpg" alt="Gráfico Meteorológico 5">
+                <div class="caption">Gráfico lluvia 5</div>
+            </div>
+<!-- Imagen 5 -->
+            <div class="image-block">
+                <img src="https://byethost7.com/customgraph78.jpg" alt="Gráfico Meteorológico 5">
+                <div class="caption">Gráfico solar 5</div>
+            </div>
+
+            <!-- Contenedor del Botón de Regreso -->
+            <div class="navigation-container">
+                <a href="index.html" class="btn-home">Volver a la página de inicio</a>
+            </div>
+
+        </main>
+
+        <footer>
+            <p>&copy; 2026 MeteoTetu&aacute;n. </p>
+        </footer>
+
+    </div>
+
+</body>
+</html>
