@@ -807,8 +807,22 @@
 
     </section>
     
+<!-- Bloque del Gráfico de WeatherCat (Copiar desde aquí) -->
+<div style="text-align: center; margin: 20px 0;">
+    <img id="weather-graph" src="https://dropbox.com" alt="Gráfico WeatherCat en Tiempo Real" style="max-width: 100%; height: auto; border: 1px solid #ccc; border-radius: 4px;">
+</div>
 
+<script>
+    // Este script hace que GitHub Pages recargue el gráfico de Dropbox cada 5 minutos
+    setInterval(function() {
+        var img = document.getElementById('weather-graph');
+        var urlOriginal = "https://dropbox.com";
+        img.src = urlOriginal + "&t=" + new Date().getTime();
+    }, 300000); 
+</script>
+<!-- Fin del Bloque (Copiar hasta aquí) -->
 
+	
     <!-- =========================================================
          RADAR Y SATÉLITE
     ========================================================== -->
