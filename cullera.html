@@ -63,20 +63,21 @@
     </div>
 
     <script>
-        const url = "https://api.weatherlink.com/v1/NoaaExt.json?user=001D0AE0D724&pass=semiuncial4&apiToken=BB6FD1E154A74270A0A613E9C2CFAAEE";
+        // URL con el Proxy CORS delante y el archivo .json detrás
+        const url = "https://herokuapp.com";
 
         function obtenerDatosWeather() {
             fetch(url)
                 .then(response => {
-                    if (!response.ok) throw new Error("No se pudo conectar con Davis");
-                    return response.json();
+                    if (!response.ok) throw new Error("No se pudo conectar con el servidor proxy/Davis");
+                    return response.json(); // Procesa el contenido nativamente como JSON
                 })
                 .then(data => {
                     // 1. Nombres y Ubicación
                     document.getElementById("nombre-estacion").innerText = data.davis_current_observation?.station_name || data.station_id;
                     document.getElementById("ubicacion").innerText = data.location || "España";
 
-                    // 2. Variables Meteorológicas básicas
+                    // 2. Temperatura, Humedad y Presión desde el JSON
                     document.getElementById("temp").innerText = data.temp_c ? `${data.temp_c} °C` : "-- °C";
                     document.getElementById("humedad").innerText = data.relative_humidity ? `${data.relative_humidity} %` : "-- %";
                     document.getElementById("presion").innerText = data.pressure_mb ? `${data.pressure_mb} mb` : "-- mb";
@@ -98,7 +99,7 @@
                         document.getElementById("lluvia").innerText = "0.0 mm";
                     }
 
-                    // 5. Hora de actualización del Servidor Davis
+                    // 5. Última hora de actualización registrada por Davis
                     document.getElementById("actualizado").innerText = data.observation_time || `Actualizado: ${new Date().toLocaleTimeString()}`;
                     document.getElementById("nombre-estacion").classList.remove("error");
                 })
@@ -106,14 +107,14 @@
                     console.error("Error al obtener los datos:", error);
                     document.getElementById("nombre-estacion").innerText = "Error de Conexión";
                     document.getElementById("nombre-estacion").classList.add("error");
-                    document.getElementById("ubicacion").innerText = "Verifica si hay un bloqueo CORS en tu navegador.";
+                    document.getElementById("ubicacion").innerText = "Si es la primera vez, recuerda activar el servidor de pruebas de cors-anywhere.";
                 });
         }
 
-        // Carga los datos al abrir la web
+        // Carga inicial al abrir la web
         obtenerDatosWeather();
 
-        // Se actualiza en segundo plano automáticamente cada 5 minutos (300000 ms)
+        // Auto-actualización en tiempo real cada 5 minutos
         setInterval(obtenerDatosWeather, 300000);
     </script>
 </body>
