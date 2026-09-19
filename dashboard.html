@@ -3,18 +3,18 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Dashboard Fijo MeteoTetuán</title>
+  <title>Dashboard Premium MeteoTetuán</title>
   <style>
-    /* DISEÑO VISUAL DE TARJETAS GRANDES Y FIJAS */
+    /* DISEÑO VISUAL FUTURISTA CON DEGRADADOS */
     body {
       font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-      background-color: #f4f7f9;
+      background-color: #f0f4f8;
       margin: 0;
       padding: 15px;
-      color: #2c3e50;
+      color: #fff;
     }
     
-    /* Contenedor principal con la estructura fija solicitada */
+    /* Contenedor con estructura simétrica 4 y 4 */
     .dashboard-grid {
       max-width: 1100px;
       margin: 0 auto;
@@ -23,83 +23,84 @@
       gap: 15px;
     }
 
-    /* FILA SUPERIOR: 5 Tarjetas Grandes Fijas */
-    .fila-arriba {
-      display: grid;
-      grid-template-columns: repeat(5, 1fr);
-      gap: 15px;
-    }
-
-    /* FILA INFERIOR: 4 Tarjetas Grandes Fijas */
-    .fila-abajo {
+    .fila-arriba, .fila-abajo {
       display: grid;
       grid-template-columns: repeat(4, 1fr);
       gap: 15px;
     }
 
-    /* Estilo de Tarjeta Grande */
+    /* Estilo de Tarjeta Moderna con Degradado */
     .tarjeta {
-      background: white;
-      border-radius: 16px;
+      border-radius: 20px;
       padding: 25px 15px;
       text-align: center;
-      box-shadow: 0 4px 15px rgba(0,0,0,0.04);
-      border: 1px solid #e9ecef;
+      box-shadow: 0 8px 20px rgba(0,0,0,0.08);
       display: flex;
       flex-direction: column;
       justify-content: center;
-      min-height: 100px;
+      position: relative;
+      overflow: hidden;
+      border: 1px solid rgba(255,255,255,0.1);
+    }
+    
+    /* Iconos visuales superiores */
+    .icono {
+      font-size: 1.8rem;
+      margin-bottom: 8px;
     }
     
     .tarjeta h3 {
-      margin: 0 0 12px 0;
+      margin: 0 0 8px 0;
       font-size: 0.85rem;
-      color: #7f8c8d;
+      color: rgba(255, 255, 255, 0.85);
       text-transform: uppercase;
-      letter-spacing: 0.8px;
+      letter-spacing: 1px;
+      font-weight: 600;
     }
     
     .valor {
-      font-size: 2.2rem; /* Tamaño de letra más grande */
-      font-weight: 700;
-      color: #1e272e;
+      font-size: 2.3rem;
+      font-weight: 800;
       margin: 0;
+      text-shadow: 0 2px 4px rgba(0,0,0,0.1);
     }
     
     .unidad {
       font-size: 1.1rem;
       font-weight: 500;
-      color: #7f8c8d;
+      color: rgba(255, 255, 255, 0.9);
       margin-left: 3px;
     }
 
-    /* Líneas de color temáticas */
-    .temp { border-top: 6px solid #ff6b6b; }
-    .dew { border-top: 6px solid #38ada9; }
-    .hum { border-top: 6px solid #4dadf7; }
-    .viento { border-top: 6px solid #51cf66; }
-    .presion { border-top: 6px solid #cc5de8; }
-    .lluvia { border-top: 6px solid #ff9f43; }
-    .tasa-lluvia { border-top: 6px solid #ee5253; }
-    .uv { border-top: 6px solid #feca57; }
-    .solar { border-top: 6px solid #ffbe76; }
+    /* ESTILOS DE DEGRADADOS MODERNOS */
+    .temp { background: linear-gradient(135deg, #ff6b6b, #ff8e53); }
+    .hum { background: linear-gradient(135deg, #4dadf7, #339af0); }
+    .viento { background: linear-gradient(135deg, #51cf66, #2b8a3e); }
+    .dir { background: linear-gradient(135deg, #fab005, #f59f00); }
+    .presion { background: linear-gradient(135deg, #cc5de8, #9c36b5); }
+    .lluvia { background: linear-gradient(135deg, #20c997, #0ca678); }
+    .uv { background: linear-gradient(135deg, #ff8787, #e03131); }
+    .solar { background: linear-gradient(135deg, #fcc419, #e67e22); }
 
+    /* Barra inferior de estado */
     .actualizado {
       text-align: center;
       font-size: 0.85rem;
-      color: #2c3e50;
+      color: #495057;
       font-weight: bold;
       background: #e3fafc;
-      padding: 8px 20px;
-      border-radius: 8px;
+      padding: 10px 25px;
+      border-radius: 30px;
       display: inline-block;
-      margin: 20px auto 0 auto;
+      margin: 25px auto 0 auto;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.03);
+      border: 1px solid #c5f6fa;
     }
     .center-wrapper {
       text-align: center;
     }
 
-    /* Adaptación para pantallas de móviles (se vuelven columnas automáticamente para que no se aplaste) */
+    /* Adaptación perfecta para pantallas de móviles */
     @media (max-width: 768px) {
       .fila-arriba, .fila-abajo {
         grid-template-columns: 1fr 1fr;
@@ -111,29 +112,28 @@
 
   <div class="dashboard-grid">
     
-    <!-- FILA SUPERIOR (5 TARJETAS) -->
+    <!-- FILA SUPERIOR (4 TARJETAS) -->
     <div class="fila-arriba">
       <div class="tarjeta temp">
+        <div class="icono">🌡️</div>
         <h3>Temperatura</h3>
         <p class="valor" id="txt-temp">--<span class="unidad">°C</span></p>
       </div>
-
-      <div class="tarjeta dew">
-        <h3>Punto Rocío</h3>
-        <p class="valor" id="txt-dew">--<span class="unidad">°C</span></p>
-      </div>
       
       <div class="tarjeta hum">
+        <div class="icono">💧</div>
         <h3>Humedad</h3>
         <p class="valor" id="txt-hum">--<span class="unidad">%</span></p>
       </div>
       
       <div class="tarjeta viento">
+        <div class="icono">💨</div>
         <h3>Viento</h3>
         <p class="valor" id="txt-viento">--<span class="unidad">km/h</span></p>
       </div>
 
-      <div class="tarjeta viento">
+      <div class="tarjeta dir">
+        <div class="icono">🧩</div>
         <h3>Dirección</h3>
         <p class="valor" id="txt-dir">--</p>
       </div>
@@ -142,21 +142,25 @@
     <!-- FILA INFERIOR (4 TARJETAS) -->
     <div class="fila-abajo">
       <div class="tarjeta presion">
+        <div class="icono">🧭</div>
         <h3>Presión</h3>
         <p class="valor" id="txt-presion">--<span class="unidad">hPa</span></p>
       </div>
 
       <div class="tarjeta lluvia">
+        <div class="icono">🌧️</div>
         <h3>Lluvia Hoy</h3>
         <p class="valor" id="txt-lluvia">--<span class="unidad">mm</span></p>
       </div>
 
       <div class="tarjeta uv">
+        <div class="icono">☀️</div>
         <h3>Índice UV</h3>
         <p class="valor" id="txt-uv">--<span class="unidad">UVI</span></p>
       </div>
 
       <div class="tarjeta solar">
+        <div class="icono">⚡</div>
         <h3>Rad. Solar</h3>
         <p class="valor" id="txt-solar">--<span class="unidad">W/m²</span></p>
       </div>
@@ -165,10 +169,10 @@
   </div>
 
   <div class="center-wrapper">
-    <div class="actualizado" id="txt-tiempo">Sincronizando MeteoTetuán...</div>
+    <div class="actualizado" id="txt-tiempo">Conectando con los sensores de Tetuán...</div>
   </div>
 
-<!-- MOTOR DE PROCESAMIENTO JAVASCRIPT SIMPLIFICADO -->
+<!-- MOTOR DE PROCESAMIENTO JAVASCRIPT REVISADO -->
   <script>
     function fahrenheitACelsius(f) { return f !== null ? ((f - 32) * 5 / 9).toFixed(1) : '--'; }
     function millasAKilometros(mph) { return mph !== null ? (mph * 1.60934).toFixed(1) : '--'; }
@@ -189,7 +193,7 @@
         })
         .then(datos => {
           
-          // Asignar hora oficial real del JSON
+          // Asignar hora oficial real extraída del JSON de Davis Instruments
           if (datos.generated_at) {
             const fechaReal = new Date(datos.generated_at * 1000); 
             const opcionesHora = { hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: false };
@@ -212,44 +216,39 @@
               document.getElementById('txt-temp').innerHTML = fahrenheitACelsius(m.temp) + '<span class="unidad">°C</span>';
             }
             
-            // 2. Punto de Rocío
-            if (m.dew_point !== undefined && m.dew_point !== null) {
-              document.getElementById('txt-dew').innerHTML = fahrenheitACelsius(m.dew_point) + '<span class="unidad">°C</span>';
-            }
-            
-            // 3. Humedad Exterior
+            // 2. Humedad Exterior
             if (m.hum !== undefined && m.hum !== null) {
               document.getElementById('txt-hum').innerHTML = Math.round(m.hum) + '<span class="unidad">%</span>';
             }
             
-            // 4. Viento Actual Instantáneo
+            // 3. Viento Actual Instantáneo
             if (m.wind_speed_last !== undefined && m.wind_speed_last !== null) {
               document.getElementById('txt-viento').innerHTML = millasAKilometros(m.wind_speed_last) + '<span class="unidad">km/h</span>';
             }
             
-            // 5. Dirección del Viento
+            // 4. Dirección del Viento
             if (m.wind_dir_last !== undefined && m.wind_dir_last !== null) {
               document.getElementById('txt-dir').innerText = m.wind_dir_last + '° (' + gradosADireccion(m.wind_dir_last) + ')';
             }
             
-            // 6. Presión Atmosférica
+            // 5. Presión Atmosférica
             if (m.bar_sea_level !== undefined && m.bar_sea_level !== null) {
               document.getElementById('txt-presion').innerHTML = pulgadasAMilibares(m.bar_sea_level) + '<span class="unidad">hPa</span>';
             }
             
-            // 7. Lluvia del Día
+            // 6. Lluvia del Día (Métrica nativa o convertida)
             if (m.rainfall_daily_mm !== undefined && m.rainfall_daily_mm !== null) {
               document.getElementById('txt-lluvia').innerHTML = m.rainfall_daily_mm.toFixed(1) + '<span class="unidad">mm</span>';
             } else if (m.rainfall_daily_in !== undefined && m.rainfall_daily_in !== null) {
               document.getElementById('txt-lluvia').innerHTML = (m.rainfall_daily_in * 25.4).toFixed(1) + '<span class="unidad">mm</span>';
             }
             
-            // 8. Índice UV
+            // 7. Índice UV
             if (m.uv_index !== undefined && m.uv_index !== null) {
               document.getElementById('txt-uv').innerHTML = m.uv_index.toFixed(1) + '<span class="unidad">UVI</span>';
             }
             
-            // 9. Radiación Solar
+            // 8. Radiación Solar
             if (m.solar_rad !== undefined && m.solar_rad !== null) {
               document.getElementById('txt-solar').innerHTML = Math.round(m.solar_rad) + '<span class="unidad">W/m²</span>';
             }
@@ -266,4 +265,3 @@
   </script>
 </body>
 </html>
-  
