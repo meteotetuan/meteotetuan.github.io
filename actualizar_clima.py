@@ -33,7 +33,7 @@ api_signature = hmac.new(
 params["api-signature"] = api_signature
 
 # 6. Hacer la llamada real a los servidores de WeatherLink
-url = f"https://weatherlink.com{STATION_ID}"
+url = f"https://weatherlink.com{STATION_ID}?"
 print("Conectando con WeatherLink v2...")
 response = requests.get(url, params=params)
 
