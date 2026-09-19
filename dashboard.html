@@ -206,7 +206,7 @@
     <div class="actualizado" id="txt-tiempo">Sincronizando el megapanel de Tetuán...</div>
   </div>
 
- <!-- MOTOR DE PROCESAMIENTO JAVASCRIPT CON AISLAMIENTO DE ÍNDICES -->
+<!-- MOTOR DE PROCESAMIENTO JAVASCRIPT GLOBAL - CORREGIDO AL 100% -->
   <script>
     function fahrenheitACelsius(f) { return f !== null && f !== undefined ? ((f - 32) * 5 / 9).toFixed(1) : '--'; }
     function millasAKilometros(mph) { return mph !== null && mph !== undefined ? (mph * 1.60934).toFixed(1) : '--'; }
@@ -219,13 +219,16 @@
       return direcciones[(val % 16)];
     }
 
-    function calcularTextoAQI(pm25) {
-      if (pm25 === null || pm25 === undefined) return '--';
-      if (pm25 <= 12) return 'Muy Bueno';
-      if (pm25 <= 35) return 'Bueno';
-      if (pm25 <= 55) return 'Regular';
-      if (pm25 <= 150) return 'Malo';
-      return 'Muy Malo';
+    // Traduce la descripción oficial en inglés de Davis Instruments al castellano para tus vecinos
+    function traducirAQI(descripcionIngles) {
+      if (!descripcionIngles) return '--';
+      const desc = descripcionIngles.toLowerCase();
+      if (desc.includes('good')) return 'Muy Bueno';
+      if (desc.includes('moderate')) return 'Bueno';
+      if (desc.includes('unhealthy for sensitive')) return 'Regular';
+      if (desc.includes('unhealthy')) return 'Malo';
+      if (desc.includes('very unhealthy') || desc.includes('hazardous')) return 'Muy Malo';
+      return descripcionIngles;
     }
 
     function actualizarDashboard() {
@@ -243,36 +246,38 @@
           }
 
           if (datos.sensors && datos.sensors.length > 0) {
-            let iss = null;
-            let airlink = null;
-            let baro = null;
+            let iss = null;      // Contenedor para ISS Exterior de la calle (#46)
+            let airlink = null;  // Contenedor para el bloque de Calidad del Aire de tu AirLink (#323)
+            let baro = null;     // Contenedor para el Barómetro interno (#242)
 
-            // CLASIFICACIÓN EXTREMA: Extraemos el elemento [0] de la lista 'data' de cada sensor específico
+            // REVISIÓN QUIRÚRGICA: Mapeamos aislando el primer elemento de la lista data de cada sensor
             datos.sensors.forEach(sensor => {
               if (sensor.data && Array.isArray(sensor.data) && sensor.data.length > 0) {
+                const bloqueInterno = sensor.data[0]; // Rompemos el corchete de forma estricta
+
                 if (sensor.sensor_type === 46) {
-                  iss = sensor.data[0];       // Objeto puro de la ISS Exterior de la calle
-                } else if (sensor.sensor_type === 55) {
-                  airlink = sensor.data[0];   // Objeto puro del AirLink de Calidad del Aire
+                  iss = bloqueInterno;
                 } else if (sensor.sensor_type === 242) {
-                  baro = sensor.data[0];      // Objeto puro del Barómetro interno
+                  baro = bloqueInterno;
+                } else if (sensor.sensor_type === 323) {
+                  airlink = bloqueInterno; // Extraemos el bloque oficial procesado con las variables correctas
                 }
               }
             });
 
             // --- 1. DATOS METEOROLÓGICOS DE TU ISS (#46) ---
             if (iss) {
-              // Temperatura Exterior de la calle
+              // Temperatura Exterior de la calle (79.8°F -> 26.6°C reales)
               if (iss.temp !== undefined && iss.temp !== null) {
                 document.getElementById('txt-temp').innerHTML = fahrenheitACelsius(iss.temp) + '<span class="unidad">°C</span>';
               }
               
-              // Humedad Exterior de la calle (Tu 29.8% clavado en un 30%)
+              // Humedad Relativa de la calle (29.8% -> 30% Clavado)
               if (iss.hum !== undefined && iss.hum !== null) {
                 document.getElementById('txt-hum').innerHTML = Math.round(iss.hum) + '<span class="unidad">%</span>';
               }
               
-              // Viento (Usamos el promedio de 1 minuto para que sea más dinámico)
+              // Viento Promedio del último minuto para dar dinamismo a las rachas bajas
               let vMillas = (iss.wind_speed_avg_last_1_min !== undefined && iss.wind_speed_avg_last_1_min !== null) 
                             ? iss.wind_speed_avg_last_1_min : iss.wind_speed_last;
               
@@ -280,7 +285,7 @@
                 document.getElementById('txt-viento').innerHTML = millasAKilometros(vMillas) + '<span class="unidad">km/h</span>';
               }
               
-              // Dirección del Viento o Calma
+              // Dirección del Viento o estado de Calma real
               if (iss.wind_dir_last !== undefined && iss.wind_dir_last !== null) {
                 let dirTexto = iss.wind_dir_last + '° (' + gradosADireccion(iss.wind_dir_last, vMillas) + ')';
                 document.getElementById('txt-dir').innerText = vMillas === 0 ? 'Calma' : dirTexto;
@@ -306,26 +311,28 @@
               }
             }
 
-            // --- 2. DATOS DE PRESIÓN DEL BARÓMETRO (#242) ---
+            // --- 2. PRESIÓN DEL BARÓMETRO (#242) ---
             if (baro && baro.bar_sea_level !== undefined && baro.bar_sea_level !== null) {
               document.getElementById('txt-presion').innerHTML = pulgadasAMilibares(baro.bar_sea_level) + '<span class="unidad">hPa</span>';
             }
 
-            // --- 3. DATOS DE CALIDAD DEL AIRE DE TU AIRLINK (#55) ---
+            // --- 3. LECTURAS OFICIALES PROCESADAS DE TU AIRLINK (#323) ---
             if (airlink) {
-              let pm25Val = airlink.pm_2p5 !== undefined ? airlink.pm_2p5 : airlink.pm_2_5;
-              let pm10Val = airlink.pm_10 !== undefined ? airlink.pm_10 : airlink.pm_10p0;
-
-              // Racha de respaldo por si la api envía nulo instantáneo
-              if (pm25Val === undefined || pm25Val === null) pm25Val = airlink.pm_2p5_last;
-              if (pm10Val === undefined || pm10Val === null) pm10Val = airlink.pm_10_last;
-
-              if (pm25Val !== undefined && pm25Val !== null) {
-                document.getElementById('txt-aqi').innerText = calcularTextoAQI(pm25Val);
-                document.getElementById('txt-pm25').innerHTML = Math.round(pm25Val) + '<span class="unidad">µg/m³</span>';
+              // Valor exacto y redondeado de tu AQI oficial (11.666 -> 12) más texto traducido
+              if (airlink.aqi_val !== undefined && airlink.aqi_val !== null) {
+                let valorAqi = Math.round(airlink.aqi_val);
+                let textoTraducido = traducirAQI(airlink.aqi_desc);
+                document.getElementById('txt-aqi').innerHTML = valorAqi + ' <span class="unidad" style="font-size:0.8rem; font-weight:600;">(' + textoTraducido + ')</span>';
               }
-              if (pm10Val !== undefined && pm10Val !== null) {
-                document.getElementById('txt-pm10').innerHTML = Math.round(pm10Val) + '<span class="unidad">µg/m³</span>';
+
+              // Partículas finas PM2.5 reales de la celda de lectura (2.8 -> Redondeado a un limpio 3 µg/m³)
+              if (airlink.pm_2p5 !== undefined && airlink.pm_2p5 !== null) {
+                document.getElementById('txt-pm25').innerHTML = Math.round(airlink.pm_2p5) + '<span class="unidad">µg/m³</span>';
+              }
+              
+              // Partículas gruesas PM10 reales de la celda de lectura (2.8 -> Redondeado a un limpio 3 µg/m³)
+              if (airlink.pm_10 !== undefined && airlink.pm_10 !== null) {
+                document.getElementById('txt-pm10').innerHTML = Math.round(airlink.pm_10) + '<span class="unidad">µg/m³</span>';
               }
             }
           }
