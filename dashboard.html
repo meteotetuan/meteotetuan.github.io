@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Dashboard MeteoTetuán</title>
+  <title>Dashboard Máximo MeteoTetuán</title>
   <style>
     /* DISEÑO VISUAL MATTE ELEGANTE DE TRES FILAS */
     body {
@@ -129,13 +129,13 @@
     <div class="fila-1">
       <div class="tarjeta temp">
         <div class="icono">🌡️</div>
-        <h3>Temperatura actual</h3>
+        <h3>Temperatura</h3>
         <p class="valor" id="txt-temp">--<span class="unidad">°C</span></p>
       </div>
       
       <div class="tarjeta hum">
         <div class="icono">💧</div>
-        <h3>Humedad relativa</h3>
+        <h3>Humedad</h3>
         <p class="valor" id="txt-hum">--<span class="unidad">%</span></p>
       </div>
       
@@ -146,7 +146,7 @@
       </div>
 
       <div class="tarjeta dir">
-        <div class="icono">🧭</div>
+        <div class="icono">Compass🧭</div>
         <h3>Dirección</h3>
         <p class="valor" id="txt-dir">--</p>
       </div>
@@ -156,13 +156,13 @@
     <div class="fila-2">
       <div class="tarjeta presion">
         <div class="icono">📉</div>
-        <h3>Presión atmosférica</h3>
+        <h3>Presión</h3>
         <p class="valor" id="txt-presion">--<span class="unidad">hPa</span></p>
       </div>
 
       <div class="tarjeta lluvia">
         <div class="icono">🌧️</div>
-        <h3>Lluvia hoy</h3>
+        <h3>Lluvia Hoy</h3>
         <p class="valor" id="txt-lluvia">--<span class="unidad">mm</span></p>
       </div>
 
@@ -174,39 +174,39 @@
 
       <div class="tarjeta solar">
         <div class="icono">☀️</div>
-        <h3>Radiación Solar</h3>
+        <h3>Rad. Solar</h3>
         <p class="valor" id="txt-solar">--<span class="unidad">W/m²</span></p>
       </div>
     </div>
 
- <!-- FILA 3: CALIDAD DEL AIRE (AIRLINK) - DISEÑO DEFINITIVO -->
+    <!-- FILA 3: CALIDAD DEL AIRE (AIRLINK) -->
     <div class="fila-3">
       <div class="tarjeta aqi">
         <div class="icono">😷</div>
-        <h3>Calidad del aire</h3>
+        <h3>Calidad Aire</h3>
         <p class="valor" id="txt-aqi">--</p>
       </div>
 
       <div class="tarjeta pm25">
-        <div class="icono">🌫️</div> <!-- ¡Niebla para las partículas finas PM2.5! -->
+        <div class="icono">🌫️</div>
         <h3>Partículas PM2.5</h3>
         <p class="valor" id="txt-pm25">--<span class="unidad">µg/m³</span></p>
       </div>
 
       <div class="tarjeta pm10">
-        <div class="icono">🌫️</div> <!-- ¡Niebla para las partículas gruesas PM10! -->
+        <div class="icono">🌫️</div>
         <h3>Partículas PM10</h3>
         <p class="valor" id="txt-pm10">--<span class="unidad">µg/m³</span></p>
       </div>
     </div>
-    
+
   </div>
 
   <div class="center-wrapper">
     <div class="actualizado" id="txt-tiempo">Sincronizando el megapanel de Tetuán...</div>
   </div>
 
-<!-- MOTOR DE PROCESAMIENTO JAVASCRIPT GLOBAL - PERFECCIONADO -->
+  <!-- MOTOR DE PROCESAMIENTO JAVASCRIPT CORREGIDO Y ROBUSTO -->
   <script>
     function fahrenheitACelsius(f) { return f !== null && f !== undefined ? ((f - 32) * 5 / 9).toFixed(1) : '--'; }
     function millasAKilometros(mph) { return mph !== null && mph !== undefined ? (mph * 1.60934).toFixed(1) : '--'; }
@@ -219,13 +219,16 @@
       return direcciones[(val % 16)];
     }
 
-    function calcularTextoAQI(pm25) {
-      if (pm25 === null || pm25 === undefined) return '--';
-      if (pm25 <= 12) return 'Muy Bueno';
-      if (pm25 <= 35) return 'Bueno';
-      if (pm25 <= 55) return 'Regular';
-      if (pm25 <= 150) return 'Malo';
-      return 'Muy Malo';
+    // Traduce la descripción oficial de Davis Instruments al castellano
+    function traducirAQI(descripcionIngles) {
+      if (!descripcionIngles) return '--';
+      const desc = descripcionIngles.toLowerCase();
+      if (desc.includes('good')) return 'Muy Bueno';
+      if (desc.includes('moderate')) return 'Bueno';
+      if (desc.includes('unhealthy for sensitive')) return 'Regular';
+      if (desc.includes('unhealthy')) return 'Malo';
+      if (desc.includes('very unhealthy') || desc.includes('hazardous')) return 'Muy Malo';
+      return descripcionIngles;
     }
 
     function actualizarDashboard() {
@@ -243,40 +246,38 @@
           }
 
           if (datos.sensors && datos.sensors.length > 0) {
-            let iss = null;      
-            let airlink = null;  
-            let baro = null;     
+            let iss = null;      // Objeto de datos ISS Exterior (#46)
+            let airlink = null;  // Objeto de datos AirLink Procesado (#323)
+            let baro = null;     // Objeto de datos Barómetro (#242)
 
-            // CLASIFICACIÓN QUIRÚRGICA: Entramos directamente a la posición [0] del array 'data'
+            // ASIGNACIÓN QUIRÚRGICA: Entramos directamente a la posición 0 de la lista 'data'
             datos.sensors.forEach(sensor => {
               if (sensor.data && Array.isArray(sensor.data) && sensor.data.length > 0) {
-                const bloqueInterno = sensor.data[0]; // <--- ¡AQUÍ ESTÁ LA CORRECCIÓN CLAVE!
+                const bloqueInterno = sensor.data[0]; // <--- ¡AQUÍ ENTRA AL OBJETO DIRECTO SIN CORCHETES!
 
                 if (sensor.sensor_type === 46) {
                   iss = bloqueInterno;
                 } else if (sensor.sensor_type === 242) {
                   baro = bloqueInterno;
-                }
-                
-                if (bloqueInterno.aqi_val !== undefined) {
-                  airlink = bloqueInterno;
+                } else if (sensor.sensor_type === 323) {
+                  airlink = bloqueInterno; // Bloque procesado oficial de calidad de aire
                 }
               }
             });
 
             // --- 1. DATOS METEOROLÓGICOS DE TU ISS (#46) ---
             if (iss) {
-              // Temperatura Exterior de la calle
+              // Temperatura Exterior de la calle (79.8°F -> 26.6°C)
               if (iss.temp !== undefined && iss.temp !== null) {
                 document.getElementById('txt-temp').innerHTML = fahrenheitACelsius(iss.temp) + '<span class="unidad">°C</span>';
               }
               
-              // Humedad Exterior de la calle
+              // Humedad Exterior de la calle (29.8% -> 30% Clavado)
               if (iss.hum !== undefined && iss.hum !== null) {
                 document.getElementById('txt-hum').innerHTML = Math.round(iss.hum) + '<span class="unidad">%</span>';
               }
               
-              // Viento (Usamos el promedio de 1 min que es más realista y dinámico)
+              // Viento (Usamos el promedio de 1 minuto para dar dinamismo a las rachas bajas)
               let vMillas = (iss.wind_speed_avg_last_1_min !== undefined && iss.wind_speed_avg_last_1_min !== null) 
                             ? iss.wind_speed_avg_last_1_min : iss.wind_speed_last;
               
@@ -318,16 +319,19 @@
 
             // --- 3. LECTURAS OFICIALES DE TU AIRLINK (#323) ---
             if (airlink) {
+              // Valor exacto y redondeado de tu AQI oficial (11.666 -> 12) más texto traducido
               if (airlink.aqi_val !== undefined && airlink.aqi_val !== null) {
                 let valorAqi = Math.round(airlink.aqi_val);
                 let textoTraducido = traducirAQI(airlink.aqi_desc);
                 document.getElementById('txt-aqi').innerHTML = valorAqi + ' <span class="unidad" style="font-size:0.8rem; font-weight:600;">(' + textoTraducido + ')</span>';
               }
 
+              // Partículas finas PM2.5 reales (2.8 -> Redondeado a un limpio 3 µg/m³)
               if (airlink.pm_2p5 !== undefined && airlink.pm_2p5 !== null) {
                 document.getElementById('txt-pm25').innerHTML = Math.round(airlink.pm_2p5) + '<span class="unidad">µg/m³</span>';
               }
               
+              // Partículas gruesas PM10 reales (2.8 -> Redondeado a un limpio 3 µg/m³)
               if (airlink.pm_10 !== undefined && airlink.pm_10 !== null) {
                 document.getElementById('txt-pm10').innerHTML = Math.round(airlink.pm_10) + '<span class="unidad">µg/m³</span>';
               }
