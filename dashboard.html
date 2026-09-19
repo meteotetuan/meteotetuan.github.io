@@ -206,7 +206,7 @@
     <div class="actualizado" id="txt-tiempo">Sincronizando el megapanel de Tetuán...</div>
   </div>
 
- <!-- MOTOR DE PROCESAMIENTO JAVASCRIPT GLOBAL - CORREGIDO AL 100% -->
+ <!-- MOTOR DE PROCESAMIENTO JAVASCRIPT CON AISLAMIENTO DE ÍNDICES -->
   <script>
     function fahrenheitACelsius(f) { return f !== null && f !== undefined ? ((f - 32) * 5 / 9).toFixed(1) : '--'; }
     function millasAKilometros(mph) { return mph !== null && mph !== undefined ? (mph * 1.60934).toFixed(1) : '--'; }
@@ -247,73 +247,76 @@
             let airlink = null;
             let baro = null;
 
-            // Extraemos de forma estricta el objeto de la posición 0 de la lista 'data' de cada sensor
+            // CLASIFICACIÓN EXTREMA: Extraemos el elemento [0] de la lista 'data' de cada sensor específico
             datos.sensors.forEach(sensor => {
               if (sensor.data && Array.isArray(sensor.data) && sensor.data.length > 0) {
                 if (sensor.sensor_type === 46) {
-                  iss = sensor.data[0];       // Objeto de datos real de la ISS exterior (Posición 0)
+                  iss = sensor.data[0];       // Objeto puro de la ISS Exterior de la calle
                 } else if (sensor.sensor_type === 55) {
-                  airlink = sensor.data[0];   // Objeto de datos real del AirLink (Posición 0)
+                  airlink = sensor.data[0];   // Objeto puro del AirLink de Calidad del Aire
                 } else if (sensor.sensor_type === 242) {
-                  baro = sensor.data[0];      // Objeto de datos real del Barómetro (Posición 0)
+                  baro = sensor.data[0];      // Objeto puro del Barómetro interno
                 }
               }
             });
 
-            // 1. TEMPERATURA EXTERIOR (ISS calle)
-            if (iss && iss.temp !== undefined && iss.temp !== null) {
-              document.getElementById('txt-temp').innerHTML = fahrenheitACelsius(iss.temp) + '<span class="unidad">°C</span>';
-            }
-            
-            // 2. HUMEDAD RELATIVA EXTERIOR (ISS calle)
-            if (iss && iss.hum !== undefined && iss.hum !== null) {
-              document.getElementById('txt-hum').innerHTML = Math.round(iss.hum) + '<span class="unidad">%</span>';
-            }
-            
-            // 3. VIENTO (Usamos el promedio de 1 minuto para evitar que se quede clavado en cero constantemente)
-            let vMillas = 0;
+            // --- 1. DATOS METEOROLÓGICOS DE TU ISS (#46) ---
             if (iss) {
-              vMillas = (iss.wind_speed_avg_last_1_min !== undefined && iss.wind_speed_avg_last_1_min !== null) 
-                        ? iss.wind_speed_avg_last_1_min : iss.wind_speed_last;
+              // Temperatura Exterior de la calle
+              if (iss.temp !== undefined && iss.temp !== null) {
+                document.getElementById('txt-temp').innerHTML = fahrenheitACelsius(iss.temp) + '<span class="unidad">°C</span>';
+              }
               
-              document.getElementById('txt-viento').innerHTML = millasAKilometros(vMillas) + '<span class="unidad">km/h</span>';
+              // Humedad Exterior de la calle (Tu 29.8% clavado en un 30%)
+              if (iss.hum !== undefined && iss.hum !== null) {
+                document.getElementById('txt-hum').innerHTML = Math.round(iss.hum) + '<span class="unidad">%</span>';
+              }
+              
+              // Viento (Usamos el promedio de 1 minuto para que sea más dinámico)
+              let vMillas = (iss.wind_speed_avg_last_1_min !== undefined && iss.wind_speed_avg_last_1_min !== null) 
+                            ? iss.wind_speed_avg_last_1_min : iss.wind_speed_last;
+              
+              if (vMillas !== undefined && vMillas !== null) {
+                document.getElementById('txt-viento').innerHTML = millasAKilometros(vMillas) + '<span class="unidad">km/h</span>';
+              }
+              
+              // Dirección del Viento o Calma
+              if (iss.wind_dir_last !== undefined && iss.wind_dir_last !== null) {
+                let dirTexto = iss.wind_dir_last + '° (' + gradosADireccion(iss.wind_dir_last, vMillas) + ')';
+                document.getElementById('txt-dir').innerText = vMillas === 0 ? 'Calma' : dirTexto;
+              }
+              
+              // Lluvia del Día
+              if (iss.rainfall_daily_mm !== undefined && iss.rainfall_daily_mm !== null) {
+                document.getElementById('txt-lluvia').innerHTML = iss.rainfall_daily_mm.toFixed(1) + '<span class="unidad">mm</span>';
+              } else if (iss.rainfall_daily_in !== undefined && iss.rainfall_daily_in !== null) {
+                document.getElementById('txt-lluvia').innerHTML = (iss.rainfall_daily_in * 25.4).toFixed(1) + '<span class="unidad">mm</span>';
+              }
+
+              // Índice UV
+              if (iss.uv_index !== undefined) {
+                let uv = iss.uv_index !== null ? iss.uv_index.toFixed(1) : '0.0';
+                document.getElementById('txt-uv').innerHTML = uv + '<span class="unidad">UVI</span>';
+              }
+              
+              // Radiación Solar
+              if (iss.solar_rad !== undefined) {
+                let solar = iss.solar_rad !== null ? Math.round(iss.solar_rad) : '0';
+                document.getElementById('txt-solar').innerHTML = solar + '<span class="unidad">W/m²</span>';
+              }
             }
-            
-            // 4. DIRECCIÓN DEL VIENTO (ISS calle)
-            if (iss && iss.wind_dir_last !== undefined && iss.wind_dir_last !== null) {
-              let dirTexto = iss.wind_dir_last + '° (' + gradosADireccion(iss.wind_dir_last, vMillas) + ')';
-              document.getElementById('txt-dir').innerText = vMillas === 0 ? 'Calma' : dirTexto;
-            }
-            
-            // 5. PRESIÓN ATMOSFÉRICA (Barómetro)
+
+            // --- 2. DATOS DE PRESIÓN DEL BARÓMETRO (#242) ---
             if (baro && baro.bar_sea_level !== undefined && baro.bar_sea_level !== null) {
               document.getElementById('txt-presion').innerHTML = pulgadasAMilibares(baro.bar_sea_level) + '<span class="unidad">hPa</span>';
             }
-            
-            // 6. LLUVIA DIARIA (ISS calle)
-            if (iss && iss.rainfall_daily_mm !== undefined && iss.rainfall_daily_mm !== null) {
-              document.getElementById('txt-lluvia').innerHTML = iss.rainfall_daily_mm.toFixed(1) + '<span class="unidad">mm</span>';
-            } else if (iss && iss.rainfall_daily_in !== undefined && iss.rainfall_daily_in !== null) {
-              document.getElementById('txt-lluvia').innerHTML = (iss.rainfall_daily_in * 25.4).toFixed(1) + '<span class="unidad">mm</span>';
-            }
 
-            // 7. ÍNDICE UV (ISS Plus calle)
-            if (iss && iss.uv_index !== undefined) {
-              let uv = iss.uv_index !== null ? iss.uv_index.toFixed(1) : '0.0';
-              document.getElementById('txt-uv').innerHTML = uv + '<span class="unidad">UVI</span>';
-            }
-            
-            // 8. RADIACIÓN SOLAR (ISS Plus calle)
-            if (iss && iss.solar_rad !== undefined) {
-              let solar = iss.solar_rad !== null ? Math.round(iss.solar_rad) : '0';
-              document.getElementById('txt-solar').innerHTML = solar + '<span class="unidad">W/m²</span>';
-            }
-
-            // 9, 10 y 11. CALIDAD DEL AIRE REAL (AirLink #55)
+            // --- 3. DATOS DE CALIDAD DEL AIRE DE TU AIRLINK (#55) ---
             if (airlink) {
               let pm25Val = airlink.pm_2p5 !== undefined ? airlink.pm_2p5 : airlink.pm_2_5;
               let pm10Val = airlink.pm_10 !== undefined ? airlink.pm_10 : airlink.pm_10p0;
 
+              // Racha de respaldo por si la api envía nulo instantáneo
               if (pm25Val === undefined || pm25Val === null) pm25Val = airlink.pm_2p5_last;
               if (pm10Val === undefined || pm10Val === null) pm10Val = airlink.pm_10_last;
 
