@@ -206,14 +206,14 @@
     <div class="actualizado" id="txt-tiempo">Sincronizando el megapanel de Tetuán...</div>
   </div>
 
-<!-- MOTOR DE PROCESAMIENTO JAVASCRIPT CORREGIDO AL 100% -->
+ <!-- MOTOR DE PROCESAMIENTO JAVASCRIPT GLOBAL - CORREGIDO AL 100% -->
   <script>
     function fahrenheitACelsius(f) { return f !== null && f !== undefined ? ((f - 32) * 5 / 9).toFixed(1) : '--'; }
     function millasAKilometros(mph) { return mph !== null && mph !== undefined ? (mph * 1.60934).toFixed(1) : '--'; }
     function pulgadasAMilibares(inhg) { return inhg !== null && inhg !== undefined ? (inhg * 33.8639).toFixed(1) : '--'; }
     
-    function gradosADireccion(grados) {
-      if (grados === null || grados === undefined) return '--';
+    function gradosADireccion(grados, velocidad) {
+      if (grados === null || grados === undefined || velocidad === 0) return 'Calma';
       const direcciones = ['N', 'NNE', 'NE', 'ENE', 'E', 'ESE', 'SE', 'SSE', 'S', 'SSW', 'SW', 'WSW', 'W', 'WNW', 'NW', 'NNW'];
       const val = Math.floor((grados / 22.5) + 0.5);
       return direcciones[(val % 16)];
@@ -251,11 +251,11 @@
             datos.sensors.forEach(sensor => {
               if (sensor.data && Array.isArray(sensor.data) && sensor.data.length > 0) {
                 if (sensor.sensor_type === 46) {
-                  iss = sensor.data[0];       // Objeto de datos real de la ISS exterior
+                  iss = sensor.data[0];       // Objeto de datos real de la ISS exterior (Posición 0)
                 } else if (sensor.sensor_type === 55) {
-                  airlink = sensor.data[0];   // Objeto de datos real del AirLink
+                  airlink = sensor.data[0];   // Objeto de datos real del AirLink (Posición 0)
                 } else if (sensor.sensor_type === 242) {
-                  baro = sensor.data[0];      // Objeto de datos real del Barómetro
+                  baro = sensor.data[0];      // Objeto de datos real del Barómetro (Posición 0)
                 }
               }
             });
@@ -270,14 +270,19 @@
               document.getElementById('txt-hum').innerHTML = Math.round(iss.hum) + '<span class="unidad">%</span>';
             }
             
-            // 3. VIENTO ACTUAL (ISS calle)
-            if (iss && iss.wind_speed_last !== undefined && iss.wind_speed_last !== null) {
-              document.getElementById('txt-viento').innerHTML = millasAKilometros(iss.wind_speed_last) + '<span class="unidad">km/h</span>';
+            // 3. VIENTO (Usamos el promedio de 1 minuto para evitar que se quede clavado en cero constantemente)
+            let vMillas = 0;
+            if (iss) {
+              vMillas = (iss.wind_speed_avg_last_1_min !== undefined && iss.wind_speed_avg_last_1_min !== null) 
+                        ? iss.wind_speed_avg_last_1_min : iss.wind_speed_last;
+              
+              document.getElementById('txt-viento').innerHTML = millasAKilometros(vMillas) + '<span class="unidad">km/h</span>';
             }
             
             // 4. DIRECCIÓN DEL VIENTO (ISS calle)
             if (iss && iss.wind_dir_last !== undefined && iss.wind_dir_last !== null) {
-              document.getElementById('txt-dir').innerText = iss.wind_dir_last + '° (' + gradosADireccion(iss.wind_dir_last) + ')';
+              let dirTexto = iss.wind_dir_last + '° (' + gradosADireccion(iss.wind_dir_last, vMillas) + ')';
+              document.getElementById('txt-dir').innerText = vMillas === 0 ? 'Calma' : dirTexto;
             }
             
             // 5. PRESIÓN ATMOSFÉRICA (Barómetro)
@@ -304,28 +309,20 @@
               document.getElementById('txt-solar').innerHTML = solar + '<span class="unidad">W/m²</span>';
             }
 
-            // 9, 10 y 11. CALIDAD DEL AIRE REAL (AirLink #55 - Eliminados fallbacks ficticios)
+            // 9, 10 y 11. CALIDAD DEL AIRE REAL (AirLink #55)
             if (airlink) {
-              // Davis guarda el valor instantáneo actual en pm_2p5 y pm_10
               let pm25Val = airlink.pm_2p5 !== undefined ? airlink.pm_2p5 : airlink.pm_2_5;
               let pm10Val = airlink.pm_10 !== undefined ? airlink.pm_10 : airlink.pm_10p0;
 
-              // Si vienen vacías las principales, extraemos la última racha reportada del AirLink (_last o _nowcast)
               if (pm25Val === undefined || pm25Val === null) pm25Val = airlink.pm_2p5_last;
               if (pm10Val === undefined || pm10Val === null) pm10Val = airlink.pm_10_last;
 
               if (pm25Val !== undefined && pm25Val !== null) {
                 document.getElementById('txt-aqi').innerText = calcularTextoAQI(pm25Val);
                 document.getElementById('txt-pm25').innerHTML = Math.round(pm25Val) + '<span class="unidad">µg/m³</span>';
-              } else {
-                document.getElementById('txt-aqi').innerText = '--';
-                document.getElementById('txt-pm25').innerHTML = '--<span class="unidad">µg/m³</span>';
               }
-              
               if (pm10Val !== undefined && pm10Val !== null) {
                 document.getElementById('txt-pm10').innerHTML = Math.round(pm10Val) + '<span class="unidad">µg/m³</span>';
-              } else {
-                document.getElementById('txt-pm10').innerHTML = '--<span class="unidad">µg/m³</span>';
               }
             }
           }
