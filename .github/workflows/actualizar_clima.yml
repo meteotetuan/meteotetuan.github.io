@@ -1,0 +1,37 @@
+name: Actualizar Clima Automático
+
+on:
+  schedule:
+    # Esto le dice a GitHub que despierte cada 15 minutos
+    - cron: '*/15 * * * *'
+  workflow_dispatch: # Esto nos permite probar el botón a mano cuando queramos
+
+jobs:
+  actualizar:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Descargar el código del repositorio
+      uses: actions/checkout@v4
+
+    - name: Configurar Python
+      uses: actions/setup-python@v5
+      with:
+        python-version: '3.x'
+
+    - name: Instalar librerías necesarias
+      run: pip install requests
+
+    - name: Ejecutar el script del clima
+      env:
+        WEATHERLINK_API_KEY: ${{ secrets.WEATHERLINK_API_KEY }}
+        WEATHERLINK_API_SECRET: ${{ secrets.WEATHERLINK_API_SECRET }}
+        WEATHERLINK_STATION_ID: ${{ secrets.WEATHERLINK_STATION_ID }}
+      run: python actualizar_clima.py
+
+    - name: Guardar los cambios en el repositorio
+      run: |
+        git config --global user.name "GitHub Actions"
+        git config --global user.email "actions@github.com"
+        git add clima.json
+        git commit -m "Actualización automática de datos del clima [skip ci]" || echo "No hay cambios nuevos"
+        git push
