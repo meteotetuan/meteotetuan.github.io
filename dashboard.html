@@ -3,9 +3,9 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Dashboard Avanzado MeteoTetuán</title>
+  <title>Dashboard Completo MeteoTetuán</title>
   <style>
-    /* DISEÑO VISUAL GLOBAL */
+    /* DISEÑO VISUAL MEJORADO */
     body {
       font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
       background-color: #f4f7f9;
@@ -18,7 +18,7 @@
       grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
       gap: 12px;
       max-width: 1000px;
-      margin: 0 auto 20px auto;
+      margin: 0 auto;
     }
     .tarjeta {
       background: white;
@@ -27,6 +27,10 @@
       text-align: center;
       box-shadow: 0 4px 12px rgba(0,0,0,0.04);
       border: 1px solid #e9ecef;
+      transition: transform 0.2s;
+    }
+    .tarjeta:hover {
+      transform: translateY(-2px);
     }
     .tarjeta h3 {
       margin: 0 0 8px 0;
@@ -47,66 +51,27 @@
       color: #7f8c8d;
       margin-left: 2px;
     }
-    .temp { border-top: 5px solid #ff6b6b; }
+    /* Código de colores por categoría */
+    .exterior { border-top: 5px solid #ff6b6b; }
+    .interior { border-top: 5px solid #ffb8b8; }
     .dew { border-top: 5px solid #38ada9; }
     .hum { border-top: 5px solid #4dadf7; }
     .viento { border-top: 5px solid #51cf66; }
     .presion { border-top: 5px solid #cc5de8; }
     .lluvia { border-top: 5px solid #ff9f43; }
-    .tasa-lluvia { border-top: 5px solid #ee5253; }
     .uv { border-top: 5px solid #feca57; }
-    .solar { border-top: 5px solid #ff9f43; }
+    .solar { border-top: 5px solid #ffbe76; }
 
-    /* ESTILOS PARA LA TABLA DE EXTREMOS */
-    .tabla-contenedor {
-      max-width: 1000px;
-      margin: 0 auto;
-      background: white;
-      border-radius: 14px;
-      padding: 15px;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.04);
-      border: 1px solid #e9ecef;
-    }
-    .tabla-contenedor h2 {
-      margin: 0 0 15px 0;
-      font-size: 1.1rem;
-      color: #2c3e50;
-      text-transform: uppercase;
-      letter-spacing: 0.5px;
-      text-align: center;
-    }
-    table {
-      width: 100%;
-      border-collapse: collapse;
-      text-align: left;
-      font-size: 0.95rem;
-    }
-    th, td {
-      padding: 10px 12px;
-      border-bottom: 1px solid #eee;
-    }
-    th {
-      background-color: #f8f9fa;
-      color: #7f8c8d;
-      font-weight: 600;
-      text-transform: uppercase;
-      font-size: 0.8rem;
-    }
-    tr:last-child td { border-bottom: none; }
-    .max { color: #ee5253; font-weight: bold; }
-    .min { color: #0a3d62; font-weight: bold; }
-    
     .actualizado {
       text-align: center;
       font-size: 0.85rem;
       color: #2c3e50;
-      margin-top: 15px;
       font-weight: bold;
       background: #e3fafc;
-      padding: 8px;
+      padding: 8px 15px;
       border-radius: 8px;
       display: inline-block;
-      margin: 15px auto 0 auto;
+      margin: 20px auto 0 auto;
     }
     .center-wrapper {
       text-align: center;
@@ -115,10 +80,10 @@
 </head>
 <body>
 
-  <!-- PANEL DE DATOS EN TIEMPO REAL -->
+  <!-- 12 TARJETAS EN TIEMPO REAL CON DATOS VERIFICADOS -->
   <div class="dashboard">
-    <div class="tarjeta temp">
-      <h3>Temperatura</h3>
+    <div class="tarjeta exterior">
+      <h3>Temp. Exterior</h3>
       <p class="valor" id="txt-temp">--<span class="unidad">°C</span></p>
     </div>
 
@@ -128,13 +93,23 @@
     </div>
     
     <div class="tarjeta hum">
-      <h3>Humedad</h3>
+      <h3>Humedad Ext.</h3>
       <p class="valor" id="txt-hum">--<span class="unidad">%</span></p>
     </div>
     
     <div class="tarjeta viento">
       <h3>Viento Actual</h3>
       <p class="valor" id="txt-viento">--<span class="unidad">km/h</span></p>
+    </div>
+
+    <div class="tarjeta viento">
+      <h3>Viento Med (10m)</h3>
+      <p class="valor" id="txt-viento-avg">--<span class="unidad">km/h</span></p>
+    </div>
+
+    <div class="tarjeta viento">
+      <h3>Racha Máx (10m)</h3>
+      <p class="valor" id="txt-racha">--<span class="unidad">km/h</span></p>
     </div>
 
     <div class="tarjeta viento">
@@ -152,11 +127,6 @@
       <p class="valor" id="txt-lluvia">--<span class="unidad">mm</span></p>
     </div>
 
-    <div class="tarjeta tasa-lluvia">
-      <h3>Intensidad</h3>
-      <p class="valor" id="txt-tasa">--<span class="unidad">mm/h</span></p>
-    </div>
-
     <div class="tarjeta uv">
       <h3>Índice UV</h3>
       <p class="valor" id="txt-uv">--<span class="unidad">UVI</span></p>
@@ -166,56 +136,26 @@
       <h3>Rad. Solar</h3>
       <p class="valor" id="txt-solar">--<span class="unidad">W/m²</span></p>
     </div>
-  </div>
 
-  <!-- TABLA DE MÁXIMAS Y MÍNIMAS DIARIAS -->
-  <div class="tabla-contenedor">
-    <h2>Extremos de Hoy (Desde Medianoche)</h2>
-    <table>
-      <thead>
-        <tr>
-          <th>Variable</th>
-          <th>Valor Máximo</th>
-          <th>Valor Mínimo</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr>
-          <td>Temperatura</td>
-          <td class="max" id="max-temp">--</td>
-          <td class="min" id="min-temp">--</td>
-        </tr>
-        <tr>
-          <td>Racha de Viento Máxima</td>
-          <td class="max" id="max-viento">--</td>
-          <td>--</td>
-        </tr>
-        <tr>
-          <td>Humedad Relativa</td>
-          <td class="max" id="max-hum">--</td>
-          <td class="min" id="min-hum">--</td>
-        </tr>
-        <tr>
-          <td>Presión Atmosférica</td>
-          <td class="max" id="max-presion">--</td>
-          <td class="min" id="min-presion">--</td>
-        </tr>
-      </tbody>
-    </table>
+    <div class="tarjeta interior">
+      <h3>Temp. Interior</h3>
+      <p class="valor" id="txt-temp-in">--<span class="unidad">°C</span></p>
+    </div>
   </div>
 
   <div class="center-wrapper">
-    <div class="actualizado" id="txt-tiempo">Sincronizando con WeatherLink...</div>
+    <div class="actualizado" id="txt-tiempo">Leyendo sensores de MeteoTetuán...</div>
   </div>
 
-<!-- LÓGICA DE PROCESAMIENTO JAVASCRIPT -->
+  <!-- MOTOR DE PROCESAMIENTO JAVASCRIPT REVISADO -->
   <script>
-    function fahrenheitACelsius(f) { return ((f - 32) * 5 / 9).toFixed(1); }
-    function millasAKilometros(mph) { return (mph * 1.60934).toFixed(1); }
-    function pulgadasAMilibares(inhg) { return (inhg * 33.8639).toFixed(1); }
-    function pulgadasAMilimetros(inch) { return (inch * 25.4).toFixed(1); }
+    function fahrenheitACelsius(f) { return f !== null ? ((f - 32) * 5 / 9).toFixed(1) : '--'; }
+    function millasAKilometros(mph) { return mph !== null ? (mph * 1.60934).toFixed(1) : '--'; }
+    function pulgadasAMilibares(inhg) { return inhg !== null ? (inhg * 33.8639).toFixed(1) : '--'; }
+    function pulgadasAMilimetros(inch) { return inch !== null ? (inch * 25.4).toFixed(1) : '0.0'; }
     
     function gradosADireccion(grados) {
+      if (grados === null || grados === undefined) return '--';
       const direcciones = ['N', 'NNE', 'NE', 'ENE', 'E', 'ESE', 'SE', 'SSE', 'S', 'SSW', 'SW', 'WSW', 'W', 'WNW', 'NW', 'NNW'];
       const val = Math.floor((grados / 22.5) + 0.5);
       return direcciones[(val % 16)];
@@ -229,80 +169,99 @@
         })
         .then(datos => {
           
+          // 1. ASIGNAR LA HORA REAL DE LA EMISIÓN
           if (datos.generated_at) {
             const fechaReal = new Date(datos.generated_at * 1000); 
             const opcionesHora = { hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: false };
-            document.getElementById('txt-tiempo').innerText = 'Últimos datos reales de la estación: ' + fechaReal.toLocaleTimeString('es-ES', opcionesHora);
-            document.getElementById('txt-tiempo').style.background = '#e3fafc';
+            document.getElementById('txt-tiempo').innerText = 'Última lectura real de la estación: ' + fechaReal.toLocaleTimeString('es-ES', opcionesHora);
           }
 
           if (datos.sensors && datos.sensors.length > 0) {
+            // Creamos un contenedor único para fusionar los datos de todos tus sensores
             let m = {};
             
             datos.sensors.forEach(sensor => {
-              // Si 'data' es una lista/matriz extraemos el primer elemento que contiene los registros
               if (sensor.data && Array.isArray(sensor.data) && sensor.data.length > 0) {
+                // Absorber las variables de la lista de datos (Estructuras de Davis v2)
                 Object.assign(m, sensor.data[0]);
               } else if (sensor.data && typeof sensor.data === 'object') {
                 Object.assign(m, sensor.data);
               }
             });
 
-            // --- DATOS EN TIEMPO REAL ---
+            // 2. INYECTAR VARIABLES EN TIEMPO REAL DESDE TU JSON
+
+            // Temperatura Exterior (Sensor ISS #46)
             if (m.temp !== undefined && m.temp !== null) {
-              let t = m.temp > 45 ? fahrenheitACelsius(m.temp) : m.temp.toFixed(1);
-              document.getElementById('txt-temp').innerHTML = t + '<span class="unidad">°C</span>';
+              document.getElementById('txt-temp').innerHTML = fahrenheitACelsius(m.temp) + '<span class="unidad">°C</span>';
             }
+            
+            // Punto de Rocío (Sensor ISS #46)
             if (m.dew_point !== undefined && m.dew_point !== null) {
               document.getElementById('txt-dew').innerHTML = fahrenheitACelsius(m.dew_point) + '<span class="unidad">°C</span>';
             }
+            
+            // Humedad Exterior (Sensor ISS #46)
             if (m.hum !== undefined && m.hum !== null) {
               document.getElementById('txt-hum').innerHTML = Math.round(m.hum) + '<span class="unidad">%</span>';
             }
+            
+            // Viento Actual Instantáneo
             if (m.wind_speed_last !== undefined && m.wind_speed_last !== null) {
               document.getElementById('txt-viento').innerHTML = millasAKilometros(m.wind_speed_last) + '<span class="unidad">km/h</span>';
             }
+
+            // Viento Promedio 10 Minutos
+            if (m.wind_speed_avg_last_10_min !== undefined && m.wind_speed_avg_last_10_min !== null) {
+              document.getElementById('txt-viento-avg').innerHTML = millasAKilometros(m.wind_speed_avg_last_10_min) + '<span class="unidad">km/h</span>';
+            }
+
+            // Racha de Viento Máxima en los últimos 10 Minutos
+            if (m.wind_speed_hi_last_10_min !== undefined && m.wind_speed_hi_last_10_min !== null) {
+              document.getElementById('txt-racha').innerHTML = millasAKilometros(m.wind_speed_hi_last_10_min) + '<span class="unidad">km/h</span>';
+            }
+            
+            // Dirección del Viento
             if (m.wind_dir_last !== undefined && m.wind_dir_last !== null) {
               document.getElementById('txt-dir').innerText = m.wind_dir_last + '° (' + gradosADireccion(m.wind_dir_last) + ')';
             }
-            let pPulgadas = m.bar_sea_level !== undefined ? m.bar_sea_level : m.bar_absolute;
-            if (pPulgadas !== undefined && pPulgadas !== null) {
-              document.getElementById('txt-presion').innerHTML = pulgadasAMilibares(pPulgadas) + '<span class="unidad">hPa</span>';
+            
+            // Presión Atmosférica al nivel del mar (Sensor Barómetro #242)
+            if (m.bar_sea_level !== undefined && m.bar_sea_level !== null) {
+              document.getElementById('txt-presion').innerHTML = pulgadasAMilibares(m.bar_sea_level) + '<span class="unidad">hPa</span>';
             }
-            let llPulgadas = m.rain_day_in !== undefined ? m.rain_day_in : m.rain_day_clicks;
-            if (llPulgadas !== undefined && llPulgadas !== null) {
-              let mm = m.rain_day_in !== undefined ? pulgadasAMilimetros(llPulgadas) : (llPulgadas * 0.2).toFixed(1);
-              document.getElementById('txt-lluvia').innerHTML = mm + '<span class="unidad">mm</span>';
+            
+            // Lluvia del Día (Convertida directamente de la clave rainfall_daily_mm)
+            if (m.rainfall_daily_mm !== undefined && m.rainfall_daily_mm !== null) {
+              document.getElementById('txt-lluvia').innerHTML = m.rainfall_daily_mm.toFixed(1) + '<span class="unidad">mm</span>';
+            } else if (m.rainfall_daily_in !== undefined && m.rainfall_daily_in !== null) {
+              document.getElementById('txt-lluvia').innerHTML = pulgadasAMilimetros(m.rainfall_daily_in) + '<span class="unidad">mm</span>';
             }
-            let tasaPulgadas = m.rain_rate_in_per_hr !== undefined ? m.rain_rate_in_per_hr : m.rain_rate_clicks_per_hr;
-            if (tasaPulgadas !== undefined && tasaPulgadas !== null) {
-              let mmh = m.rain_rate_in_per_hr !== undefined ? pulgadasAMilimetros(tasaPulgadas) : (tasaPulgadas * 0.2).toFixed(1);
-              document.getElementById('txt-tasa').innerHTML = mmh + '<span class="unidad">mm/h</span>';
-            }
+            
+            // Índice UV (Sensor ISS Plus #46)
             if (m.uv_index !== undefined && m.uv_index !== null) {
               document.getElementById('txt-uv').innerHTML = m.uv_index.toFixed(1) + '<span class="unidad">UVI</span>';
             }
+            
+            // Radiación Solar (Sensor ISS Plus #46)
             if (m.solar_rad !== undefined && m.solar_rad !== null) {
               document.getElementById('txt-solar').innerHTML = Math.round(m.solar_rad) + '<span class="unidad">W/m²</span>';
             }
 
-            // --- EXTREMOS DIARIOS ACTUALIZADOS (MÁXIMAS Y MÍNIMAS) ---
-            if (m.temp_day_high !== undefined && m.temp_day_high !== null) document.getElementById('max-temp').innerText = fahrenheitACelsius(m.temp_day_high) + ' °C';
-            if (m.temp_day_low !== undefined && m.temp_day_low !== null) document.getElementById('min-temp').innerText = fahrenheitACelsius(m.temp_day_low) + ' °C';
-            if (m.wind_speed_day_high !== undefined && m.wind_speed_day_high !== null) document.getElementById('max-viento').innerText = millasAKilometros(m.wind_speed_day_high) + ' km/h';
-            if (m.hum_day_high !== undefined && m.hum_day_high !== null) document.getElementById('max-hum').innerText = Math.round(m.hum_day_high) + ' %';
-            if (m.hum_day_low !== undefined && m.hum_day_low !== null) document.getElementById('min-hum').innerText = Math.round(m.hum_day_low) + ' %';
-            if (m.bar_day_high !== undefined && m.bar_day_high !== null) document.getElementById('max-presion').innerText = pulgadasAMilibares(m.bar_day_high) + ' hPa';
-            if (m.bar_day_low !== undefined && m.bar_day_low !== null) document.getElementById('min-presion').innerText = pulgadasAMilibares(m.bar_day_low) + ' hPa';
+            // Temperatura de la consola / Interior (Sensor Interno #243)
+            if (m.temp_in !== undefined && m.temp_in !== null) {
+              document.getElementById('txt-temp-in').innerHTML = fahrenheitACelsius(m.temp_in) + '<span class="unidad">°C</span>';
+            }
           }
         })
         .catch(error => {
-          console.error('Error:', error);
-          document.getElementById('txt-tiempo').innerText = 'Atención: Hubo un problema al procesar los extremos.';
+          console.error('Error procesando el JSON:', error);
+          document.getElementById('txt-tiempo').innerText = 'Atención: Error al decodificar la matriz de sensores.';
         });
     }
 
     document.addEventListener('DOMContentLoaded', actualizarDashboard);
+    // Auto-actualización pasiva en pantalla cada 60 segundos
     setInterval(actualizarDashboard, 60000);
   </script>
 </body>
