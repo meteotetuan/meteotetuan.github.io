@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Dashboard Elegante MeteoTetuán</title>
+  <title>Dashboard Calidad del Aire MeteoTetuán</title>
   <style>
     /* DISEÑO VISUAL MATTE Y ELEGANTE (ESTILO NÓRDICO) */
     body {
@@ -14,7 +14,6 @@
       color: #fff;
     }
     
-    /* Contenedor simétrico 4 y 4 */
     .dashboard-grid {
       max-width: 1100px;
       margin: 0 auto;
@@ -29,7 +28,6 @@
       gap: 15px;
     }
 
-    /* Tarjeta Moderna Apagada */
     .tarjeta {
       border-radius: 16px;
       padding: 22px 15px;
@@ -70,18 +68,17 @@
       margin-left: 2px;
     }
 
-    /* COLORES MATE, APAGADOS Y CORPORATIVOS */
+    /* PALETA DE COLORES APAGADOS (METEO + AIRLINK) */
     .temp { background-color: #4a69bd; }       /* Azul Jeans */
     .hum { background-color: #60a3bc; }        /* Azul Pastel Apagado */
-    .viento { background-color: #78e08f; }     /* Verde Menta Suave (Texto oscuro para leer bien) */
-    .viento .unidad, .viento h3, .viento .valor { color: #0c2461; }
-    .dir { background-color: #3c6382; }        /* Azul Pizarra */
-    .presion { background-color: #6a89cc; }    /* Azul Lavanda */
-    .lluvia { background-color: #38ada9; }     /* Turquesa Opaco */
-   .uv { background-color: #d4af37; }         /* Amarillo Arena / Oro Mate */
-    .solar { background-color: #fa983a; }      /* Naranja Ocre Cálido */
+    .viento { background-color: #3c6382; }     /* Azul Pizarra */
+    .dir { background-color: #6a89cc; }        /* Azul Lavanda */
+    
+    .pm25 { background-color: #4b6584; }       /* Gris Azulado (Partículas) */
+    .pm10 { background-color: #778ca3; }       /* Gris Claro Mineral */
+    .presion { background-color: #38ada9; }    /* Turquesa Opaco */
+    .lluvia { background-color: #20b2aa; }     /* Verde Claro Marino */
 
-    /* Barra inferior de estado discreta */
     .actualizado {
       text-align: center;
       font-size: 0.85rem;
@@ -109,7 +106,7 @@
 
   <div class="dashboard-grid">
     
-    <!-- FILA SUPERIOR -->
+    <!-- FILA SUPERIOR: METEOROLOGÍA ISS -->
     <div class="fila-arriba">
       <div class="tarjeta temp">
         <div class="icono">🌡️</div>
@@ -130,16 +127,28 @@
       </div>
 
       <div class="tarjeta dir">
-        <div class="icono">🧭</div> <!-- Icono de brújula corregido para dirección -->
+        <div class="icono">🧭</div>
         <h3>Dirección</h3>
         <p class="valor" id="txt-dir">--</p>
       </div>
     </div>
 
-    <!-- FILA INFERIOR -->
+    <!-- FILA INFERIOR: SALUD AMBIENTAL (AIRLINK) + PRESIÓN Y LLUVIA -->
     <div class="fila-abajo">
+      <div class="tarjeta pm25">
+        <div class="icono">😷</div>
+        <h3>Partículas PM2.5</h3>
+        <p class="valor" id="txt-pm25">--<span class="unidad">µg/m³</span></p>
+      </div>
+
+      <div class="tarjeta pm10">
+        <div class="icono">🪟</div>
+        <h3>Partículas PM10</h3>
+        <p class="valor" id="txt-pm10">--<span class="unidad">µg/m³</span></p>
+      </div>
+
       <div class="tarjeta presion">
-        <div class="icono">📉</div> <!-- Gráfica bajando para presión -->
+        <div class="icono">📉</div>
         <h3>Presión</h3>
         <p class="valor" id="txt-presion">--<span class="unidad">hPa</span></p>
       </div>
@@ -149,27 +158,15 @@
         <h3>Lluvia Hoy</h3>
         <p class="valor" id="txt-lluvia">--<span class="unidad">mm</span></p>
       </div>
-
-      <div class="tarjeta uv">
-        <div class="icono">☀️</div> <!-- Símbolo del sol real para el Índice UV -->
-        <h3>Índice UV</h3>
-        <p class="valor" id="txt-uv">--<span class="unidad">UVI</span></p>
-      </div>
-      
-      <div class="tarjeta solar">
-        <div class="icono">☀️</div> <!-- Icono de Sol real corregido para radiación solar -->
-        <h3>Rad. Solar</h3>
-        <p class="valor" id="txt-solar">--<span class="unidad">W/m²</span></p>
-      </div>
     </div>
 
   </div>
 
   <div class="center-wrapper">
-    <div class="actualizado" id="txt-tiempo">Sincronizando MeteoTetuán...</div>
+    <div class="actualizado" id="txt-tiempo">Sincronizando MeteoTetuán con AirLink...</div>
   </div>
 
-<!-- MOTOR DE PROCESAMIENTO JAVASCRIPT REVISADO -->
+<!-- MOTOR DE PROCESAMIENTO JAVASCRIPT CON SOPORTE AIRLINK -->
   <script>
     function fahrenheitACelsius(f) { return f !== null ? ((f - 32) * 5 / 9).toFixed(1) : '--'; }
     function millasAKilometros(mph) { return mph !== null ? (mph * 1.60934).toFixed(1) : '--'; }
@@ -194,66 +191,71 @@
           if (datos.generated_at) {
             const fechaReal = new Date(datos.generated_at * 1000); 
             const opcionesHora = { hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: false };
-            document.getElementById('txt-tiempo').innerText = 'Última lectura real de la estación: ' + fechaReal.toLocaleTimeString('es-ES', opcionesHora);
+            document.getElementById('txt-tiempo').innerText = 'MeteoTetuán + AirLink • Última lectura real: ' + fechaReal.toLocaleTimeString('es-ES', opcionesHora);
           }
 
           if (datos.sensors && datos.sensors.length > 0) {
             let m = {};
             
+            // Recorremos todos los sensores (ISS, AirLink, Barómetro) y fusionamos sus datos en un objeto común
             datos.sensors.forEach(sensor => {
               if (sensor.data && Array.isArray(sensor.data) && sensor.data.length > 0) {
+                // Al ser Davis v2, mapeamos el primer bloque de datos meteorológicos de la lista
                 Object.assign(m, sensor.data[0]);
               } else if (sensor.data && typeof sensor.data === 'object') {
                 Object.assign(m, sensor.data);
               }
             });
 
-            // 1. Temperatura Exterior
+            // 1. Temperatura Exterior (Sensor ISS #46)
             if (m.temp !== undefined && m.temp !== null) {
               document.getElementById('txt-temp').innerHTML = fahrenheitACelsius(m.temp) + '<span class="unidad">°C</span>';
             }
             
-            // 2. Humedad Exterior
+            // 2. Humedad Exterior (Sensor ISS #46)
             if (m.hum !== undefined && m.hum !== null) {
               document.getElementById('txt-hum').innerHTML = Math.round(m.hum) + '<span class="unidad">%</span>';
             }
             
-            // 3. Viento Actual Instantáneo
+            // 3. Viento Actual Instantáneo (Sensor ISS #46)
             if (m.wind_speed_last !== undefined && m.wind_speed_last !== null) {
               document.getElementById('txt-viento').innerHTML = millasAKilometros(m.wind_speed_last) + '<span class="unidad">km/h</span>';
             }
             
-            // 4. Dirección del Viento
+            // 4. Dirección del Viento (Sensor ISS #46)
             if (m.wind_dir_last !== undefined && m.wind_dir_last !== null) {
               document.getElementById('txt-dir').innerText = m.wind_dir_last + '° (' + gradosADireccion(m.wind_dir_last) + ')';
             }
             
-            // 5. Presión Atmosférica
+            // 5. Partículas finas PM2.5 (Sensor AirLink #55)
+            // Davis almacena la media actual en 'pm_2p5' o el valor directo de la celda
+            let pm25Val = m.pm_2p5 !== undefined ? m.pm_2p5 : m.pm_2_5;
+            if (pm25Val !== undefined && pm25Val !== null) {
+              document.getElementById('txt-pm25').innerHTML = Math.round(pm25Val) + '<span class="unidad">µg/m³</span>';
+            }
+            
+            // 6. Partículas gruesas PM10 (Sensor AirLink #55)
+            let pm10Val = m.pm_10 !== undefined ? m.pm_10 : m.pm_10p0;
+            if (pm10Val !== undefined && pm10Val !== null) {
+              document.getElementById('txt-pm10').innerHTML = Math.round(pm10Val) + '<span class="unidad">µg/m³</span>';
+            }
+            
+            // 7. Presión Atmosférica (Sensor Barómetro #242)
             if (m.bar_sea_level !== undefined && m.bar_sea_level !== null) {
               document.getElementById('txt-presion').innerHTML = pulgadasAMilibares(m.bar_sea_level) + '<span class="unidad">hPa</span>';
             }
             
-            // 6. Lluvia del Día
+            // 8. Lluvia del Día (Sensor ISS #46)
             if (m.rainfall_daily_mm !== undefined && m.rainfall_daily_mm !== null) {
               document.getElementById('txt-lluvia').innerHTML = m.rainfall_daily_mm.toFixed(1) + '<span class="unidad">mm</span>';
             } else if (m.rainfall_daily_in !== undefined && m.rainfall_daily_in !== null) {
               document.getElementById('txt-lluvia').innerHTML = (m.rainfall_daily_in * 25.4).toFixed(1) + '<span class="unidad">mm</span>';
             }
-            
-            // 7. Índice UV
-            if (m.uv_index !== undefined && m.uv_index !== null) {
-              document.getElementById('txt-uv').innerHTML = m.uv_index.toFixed(1) + '<span class="unidad">UVI</span>';
-            }
-            
-            // 8. Radiación Solar
-            if (m.solar_rad !== undefined && m.solar_rad !== null) {
-              document.getElementById('txt-solar').innerHTML = Math.round(m.solar_rad) + '<span class="unidad">W/m²</span>';
-            }
           }
         })
         .catch(error => {
           console.error('Error procesando el JSON:', error);
-          document.getElementById('txt-tiempo').innerText = 'Error al actualizar el panel de control.';
+          document.getElementById('txt-tiempo').innerText = 'Error al actualizar las lecturas de los sensores.';
         });
     }
 
