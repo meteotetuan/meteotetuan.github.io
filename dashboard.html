@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dashboard Meteorológico</title>
+  <style>
+    /* DISEÑO VISUAL (CSS) */
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      background-color: #f0f2f5;
+      margin: 0;
+      padding: 15px;
+      color: #333;
+    }
+    .dashboard {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+      gap: 15px;
+      max-width: 800px;
+      margin: 0 auto;
+    }
+    .tarjeta {
+      background: white;
+      border-radius: 12px;
+      padding: 20px;
+      text-align: center;
+      box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+      border: 1px solid #eef0f3;
+    }
+    .tarjeta h3 {
+      margin: 0 0 10px 0;
+      font-size: 0.9rem;
+      color: #666;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+    .valor {
+      font-size: 1.8rem;
+      font-weight: bold;
+      color: #1a1a1a;
+      margin: 0;
+    }
+    .unidad {
+      font-size: 1rem;
+      font-weight: normal;
+      color: #666;
+      margin-left: 2px;
+    }
+    .actualizado {
+      text-align: center;
+      font-size: 0.8rem;
+      color: #888;
+      margin-top: 15px;
+    }
+    /* Colores decorativos superiores para las tarjetas */
+    .temp { border-top: 4px solid #ff6b6b; }
+    .hum { border-top: 4px solid #4dadf7; }
+    .viento { border-top: 4px solid #51cf66; }
+    .presion { border-top: 4px solid #cc5de8; }
+  </style>
+</head>
+<body>
+
+  <!-- ESTRUCTURA VISUAL (HTML) -->
+  <div class="dashboard">
+    <div class="tarjeta temp">
+      <h3>Temperatura</h3>
+      <p class="valor" id="txt-temp">--<span class="unidad">°C</span></p>
+    </div>
+    
+    <div class="tarjeta hum">
+      <h3>Humedad</h3>
+      <p class="valor" id="txt-hum">--<span class="unidad">%</span></p>
+    </div>
+    
+    <div class="tarjeta viento">
+      <h3>Viento</h3>
+      <p class="valor" id="txt-viento">--<span class="unidad">km/h</span></p>
+    </div>
+
+    <div class="tarjeta presion">
+      <h3>Presión</h3>
+      <p class="valor" id="txt-presion">--<span class="unidad">hPa</span></p>
+    </div>
+  </div>
+
+  <div class="actualizado" id="txt-tiempo">Cargando datos...</div>
+
+  <!-- MOTOR DE DATOS (JAVASCRIPT) -->
+  <script>
+    function fahrenheitACelsius(f) {
+      return ((f - 32) * 5 / 9).toFixed(1);
+    }
+
+    function millasAKilometros(mph) {
+      return (mph * 1.60934).toFixed(1);
+    }
+
+    function pulgadasAMilibares(inhg) {
+      return (inhg * 33.8639).toFixed(1);
+    }
+
+    function actualizarDashboard() {
+      // El Date.now() obliga al navegador a descargar datos nuevos y saltarse la caché
+      fetch('./clima.json?v=' + Date.now())
+        .then(response => {
+          if (!response.ok) throw new Error('No se encuentra clima.json');
+          return response.json();
+        })
+        .then(datos => {
+          console.log("Datos recibidos de WeatherLink:", datos);
+          
+          // Guardamos la hora de la descarga
+          const ahora = new Date();
+          document.getElementById('txt-tiempo').innerText = 'Actualizado: ' + ahora.toLocaleTimeString();
+
+          // La API v2 agrupa los datos en una lista dentro de "sensors"
+          if (datos.sensors && datos.sensors.length > 0) {
+            
+            // Buscamos el bloque que tiene las constantes del clima actual (normalmente el tipo 1, 2 o el primero que tenga datos)
+            // Para asegurarnos, buscaremos el que tenga el registro 'data' con información meteorológica.
+            let bloqueDatos = null;
+            for (let sensor of datos.sensors) {
+              if (sensor.data && sensor.data.length > 0) {
+                bloqueDatos = sensor.data[0]; // Tomamos el reporte más reciente de ese sensor
+                break;
+              }
+            }
+
+            if (bloqueDatos) {
+              // 1. TEMPERATURA (Davis suele enviar Fahrenheit, si ya viene en Celsius se mostrará directo)
+              if (bloqueDatos.temp !== undefined) {
+                let t = bloqueDatos.temp > 55 ? fahrenheitACelsius(bloqueDatos.temp) : bloqueDatos.temp.toFixed(1);
+                document.getElementById('txt-temp').innerHTML = t + '<span class="unidad">°C</span>';
+              }
+
+              // 2. HUMEDAD
+              if (bloqueDatos.hum !== undefined) {
+                document.getElementById('txt-hum').innerHTML = Math.round(bloqueDatos.hum) + '<span class="unidad">%</span>';
+              }
+
+              // 3. VIENTO (Davis suele enviar Millas por hora)
+              if (bloqueDatos.wind_speed_last !== undefined) {
+                let v = millasAKilometros(bloqueDatos.wind_speed_last);
+                document.getElementById('txt-viento').innerHTML = v + '<span class="unidad">km/h</span>';
+              }
+
+              // 4. PRESIÓN ATMOSFÉRICA (Davis suele enviar pulgadas de mercurio "inHg")
+              if (bloqueDatos.bar_sea_level !== undefined) {
+                let p = pulgadasAMilibares(bloqueDatos.bar_sea_level);
+                document.getElementById('txt-presion').innerHTML = p + '<span class="unidad">hPa</span>';
+              } else if (bloqueDatos.bar_absolute !== undefined) {
+                let p = pulgadasAMilibares(bloqueDatos.bar_absolute);
+                document.getElementById('txt-presion').innerHTML = p + '<span class="unidad">hPa</span>';
+              }
+            } else {
+              document.getElementById('txt-tiempo').innerText = 'Error: Formato de sensores desconocido.';
+            }
+          }
+        })
+        .catch(error => {
+          console.error('Error:', error);
+          document.getElementById('txt-tiempo').innerText = 'Error al conectar con clima.json';
+        });
+    }
+
+    // Arrancar la carga nada más abrir la web
+    document.addEventListener('DOMContentLoaded', actualizarDashboard);
+  </script>
+</body>
+</html>
