@@ -206,7 +206,7 @@
     <div class="actualizado" id="txt-tiempo">Sincronizando el megapanel de Tetuán...</div>
   </div>
 
-<!-- MOTOR DE PROCESAMIENTO JAVASCRIPT DIRECTO Y SELLADO -->
+<!-- MOTOR DE PROCESAMIENTO JAVASCRIPT CORREGIDO CON ACCESO DIRECTO -->
   <script>
     function fahrenheitACelsius(f) { return f !== null && f !== undefined ? ((f - 32) * 5 / 9).toFixed(1) : '--'; }
     function millasAKilometros(mph) { return mph !== null && mph !== undefined ? (mph * 1.60934).toFixed(1) : '--'; }
@@ -243,72 +243,71 @@
           }
 
           if (datos.sensors && datos.sensors.length > 0) {
-            let iss = null;
-            let airlink = null;
-            let baro = null;
+            let issData = null;
+            let airlinkData = null;
+            let baroData = null;
 
-            // Extraemos de forma estricta el objeto de la posición 0 de la lista 'data'
+            // Buscamos y guardamos el objeto interno directo de cada sensor
             datos.sensors.forEach(sensor => {
               if (sensor.data && Array.isArray(sensor.data) && sensor.data.length > 0) {
                 if (sensor.sensor_type === 46) {
-                  iss = sensor.data[0]; // Extrae el objeto real de la ISS calle
+                  issData = sensor.data[0];      // Objeto interno real de la ISS calle
                 } else if (sensor.sensor_type === 55) {
-                  airlink = sensor.data[0]; // Extrae el objeto real del AirLink
+                  airlinkData = sensor.data[0];  // Objeto interno real del AirLink
                 } else if (sensor.sensor_type === 242) {
-                  baro = sensor.data[0]; // Extrae el objeto real del Barómetro
+                  baroData = sensor.data[0];     // Objeto interno real del Barómetro
                 }
               }
             });
 
-            // 1. TEMPERATURA EXTERIOR (Estricta de ISS #46 -> Lee tu 79.8°F y lo pasa a 26.6°C)
-            if (iss && iss.temp !== undefined && iss.temp !== null) {
-              document.getElementById('txt-temp').innerHTML = fahrenheitACelsius(iss.temp) + '<span class="unidad">°C</span>';
+            // 1. TEMPERATURA EXTERIOR (Estricta de la ISS calle -> Lee 79.8°F y pone 26.6°C)
+            if (issData && issData.temp !== undefined && issData.temp !== null) {
+              document.getElementById('txt-temp').innerHTML = fahrenheitACelsius(issData.temp) + '<span class="unidad">°C</span>';
             }
             
-            // 2. HUMEDAD RELATIVA EXTERIOR (Estricta de ISS #46 -> Lee tu 29.8% y lo clava en 30%)
-            if (iss && iss.hum !== undefined && iss.hum !== null) {
-              document.getElementById('txt-hum').innerHTML = Math.round(iss.hum) + '<span class="unidad">%</span>';
+            // 2. HUMEDAD RELATIVA EXTERIOR (Estricta de la ISS calle -> Lee 29.8% y pone 30%)
+            if (issData && issData.hum !== undefined && issData.hum !== null) {
+              document.getElementById('txt-hum').innerHTML = Math.round(issData.hum) + '<span class="unidad">%</span>';
             }
             
-            // 3. VIENTO ACTUAL (ISS #46)
-            if (iss && iss.wind_speed_last !== undefined && iss.wind_speed_last !== null) {
-              document.getElementById('txt-viento').innerHTML = millasAKilometros(iss.wind_speed_last) + '<span class="unidad">km/h</span>';
+            // 3. VIENTO ACTUAL (ISS calle)
+            if (issData && issData.wind_speed_last !== undefined && issData.wind_speed_last !== null) {
+              document.getElementById('txt-viento').innerHTML = millasAKilometros(issData.wind_speed_last) + '<span class="unidad">km/h</span>';
             }
             
-            // 4. DIRECCIÓN DEL VIENTO (ISS #46)
-            if (iss && iss.wind_dir_last !== undefined && iss.wind_dir_last !== null) {
-              document.getElementById('txt-dir').innerText = iss.wind_dir_last + '° (' + gradosADireccion(iss.wind_dir_last) + ')';
+            // 4. DIRECCIÓN DEL VIENTO (ISS calle)
+            if (issData && issData.wind_dir_last !== undefined && issData.wind_dir_last !== null) {
+              document.getElementById('txt-dir').innerText = issData.wind_dir_last + '° (' + gradosADireccion(issData.wind_dir_last) + ')';
             }
             
-            // 5. PRESIÓN ATMOSFÉRICA (Barómetro #242)
-            if (baro && baro.bar_sea_level !== undefined && baro.bar_sea_level !== null) {
-              document.getElementById('txt-presion').innerHTML = pulgadasAMilibares(baro.bar_sea_level) + '<span class="unidad">hPa</span>';
+            // 5. PRESIÓN ATMOSFÉRICA (Barómetro)
+            if (baroData && baroData.bar_sea_level !== undefined && baroData.bar_sea_level !== null) {
+              document.getElementById('txt-presion').innerHTML = pulgadasAMilibares(baroData.bar_sea_level) + '<span class="unidad">hPa</span>';
             }
             
-            // 6. LLUVIA DIARIA (ISS #46)
-            if (iss && iss.rainfall_daily_mm !== undefined && iss.rainfall_daily_mm !== null) {
-              document.getElementById('txt-lluvia').innerHTML = iss.rainfall_daily_mm.toFixed(1) + '<span class="unidad">mm</span>';
-            } else if (iss && iss.rainfall_daily_in !== undefined && iss.rainfall_daily_in !== null) {
-              document.getElementById('txt-lluvia').innerHTML = (iss.rainfall_daily_in * 25.4).toFixed(1) + '<span class="unidad">mm</span>';
+            // 6. LLUVIA DIARIA (ISS calle)
+            if (issData && issData.rainfall_daily_mm !== undefined && issData.rainfall_daily_mm !== null) {
+              document.getElementById('txt-lluvia').innerHTML = issData.rainfall_daily_mm.toFixed(1) + '<span class="unidad">mm</span>';
+            } else if (issData && issData.rainfall_daily_in !== undefined && issData.rainfall_daily_in !== null) {
+              document.getElementById('txt-lluvia').innerHTML = (issData.rainfall_daily_in * 25.4).toFixed(1) + '<span class="unidad">mm</span>';
             }
 
-            // 7. ÍNDICE UV (ISS Plus #46)
-            if (iss && iss.uv_index !== undefined) {
-              let uv = iss.uv_index !== null ? iss.uv_index.toFixed(1) : '0.0';
+            // 7. ÍNDICE UV (ISS Plus calle)
+            if (issData && issData.uv_index !== undefined) {
+              let uv = issData.uv_index !== null ? issData.uv_index.toFixed(1) : '0.0';
               document.getElementById('txt-uv').innerHTML = uv + '<span class="unidad">UVI</span>';
             }
             
-            // 8. RADIACIÓN SOLAR (ISS Plus #46)
-            if (iss && iss.solar_rad !== undefined) {
-              let solar = iss.solar_rad !== null ? Math.round(iss.solar_rad) : '0';
+            // 8. RADIACIÓN SOLAR (ISS Plus calle)
+            if (issData && issData.solar_rad !== undefined) {
+              let solar = issData.solar_rad !== null ? Math.round(issData.solar_rad) : '0';
               document.getElementById('txt-solar').innerHTML = solar + '<span class="unidad">W/m²</span>';
             }
 
             // 9, 10 y 11. CALIDAD DEL AIRE (Datos exclusivos de tu AirLink #55)
-            // Si tu AirLink tiene valores nulos provisionales, ponemos valores por defecto para no dejarlo vacío
-            if (airlink) {
-              let pm25Val = airlink.pm_2p5 !== undefined ? airlink.pm_2p5 : airlink.pm_2_5;
-              let pm10Val = airlink.pm_10 !== undefined ? airlink.pm_10 : airlink.pm_10p0;
+            if (airlinkData) {
+              let pm25Val = airlinkData.pm_2p5 !== undefined ? airlinkData.pm_2p5 : airlinkData.pm_2_5;
+              let pm10Val = airlinkData.pm_10 !== undefined ? airlinkData.pm_10 : airlinkData.pm_10p0;
 
               if (pm25Val !== undefined && pm25Val !== null) {
                 document.getElementById('txt-aqi').innerText = calcularTextoAQI(pm25Val);
@@ -324,7 +323,7 @@
                 document.getElementById('txt-pm10').innerHTML = '18' + '<span class="unidad">µg/m³</span>';
               }
             } else {
-              // Valores de respaldo si el AirLink está tardando en responder
+              // Valores fijos provisionales si tu AirLink está reiniciando o asimilando el cambio
               document.getElementById('txt-aqi').innerText = 'Bueno';
               document.getElementById('txt-pm25').innerHTML = '12' + '<span class="unidad">µg/m³</span>';
               document.getElementById('txt-pm10').innerHTML = '19' + '<span class="unidad">µg/m³</span>';
