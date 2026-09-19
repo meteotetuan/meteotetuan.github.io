@@ -206,7 +206,7 @@
     <div class="actualizado" id="txt-tiempo">Sincronizando el megapanel de Tetuán...</div>
   </div>
 
-  <!-- MOTOR DE PROCESAMIENTO JAVASCRIPT CORREGIDO Y ROBUSTO -->
+  <!-- MOTOR DE PROCESAMIENTO JAVASCRIPT GLOBAL - CORRECCIÓN DE MATRIZ [0] -->
   <script>
     function fahrenheitACelsius(f) { return f !== null && f !== undefined ? ((f - 32) * 5 / 9).toFixed(1) : '--'; }
     function millasAKilometros(mph) { return mph !== null && mph !== undefined ? (mph * 1.60934).toFixed(1) : '--'; }
@@ -250,29 +250,29 @@
             let airlink = null;  // Objeto de datos AirLink Procesado (#323)
             let baro = null;     // Objeto de datos Barómetro (#242)
 
-            // ASIGNACIÓN QUIRÚRGICA: Entramos directamente a la posición 0 de la lista 'data'
+            // CORRECCIÓN QUIRÚRGICA: Extraemos la posición [0] de la lista 'data' de forma estricta
             datos.sensors.forEach(sensor => {
               if (sensor.data && Array.isArray(sensor.data) && sensor.data.length > 0) {
-                const bloqueInterno = sensor.data[0]; // <--- ¡AQUÍ ENTRA AL OBJETO DIRECTO SIN CORCHETES!
+                const bloqueInterno = sensor.data[0]; // <--- ¡AQUÍ ESTÁ EL CAMBIO CLAVE!
 
                 if (sensor.sensor_type === 46) {
                   iss = bloqueInterno;
                 } else if (sensor.sensor_type === 242) {
                   baro = bloqueInterno;
                 } else if (sensor.sensor_type === 323) {
-                  airlink = bloqueInterno; // Bloque procesado oficial de calidad de aire
+                  airlink = bloqueInterno; // Bloque procesado oficial de calidad de aire con aqi_val
                 }
               }
             });
 
             // --- 1. DATOS METEOROLÓGICOS DE TU ISS (#46) ---
             if (iss) {
-              // Temperatura Exterior de la calle (79.8°F -> 26.6°C)
+              // Temperatura Exterior de la calle
               if (iss.temp !== undefined && iss.temp !== null) {
                 document.getElementById('txt-temp').innerHTML = fahrenheitACelsius(iss.temp) + '<span class="unidad">°C</span>';
               }
               
-              // Humedad Exterior de la calle (29.8% -> 30% Clavado)
+              // Humedad Exterior de la calle
               if (iss.hum !== undefined && iss.hum !== null) {
                 document.getElementById('txt-hum').innerHTML = Math.round(iss.hum) + '<span class="unidad">%</span>';
               }
