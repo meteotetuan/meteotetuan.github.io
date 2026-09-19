@@ -242,7 +242,7 @@
           if (datos.generated_at) {
             const fechaReal = new Date(datos.generated_at * 1000); 
             const opcionesHora = { hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: false };
-            document.getElementById('txt-tiempo').innerText = 'Lectura unificada en directo • Act: ' + fechaReal.toLocaleTimeString('es-ES', opcionesHora);
+            document.getElementById('txt-tiempo').innerText = 'Última actualización: ' + fechaReal.toLocaleTimeString('es-ES', opcionesHora);
           }
 
           if (datos.sensors && datos.sensors.length > 0) {
