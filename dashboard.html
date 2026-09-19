@@ -207,7 +207,8 @@
   <div class="center-wrapper">
     <div class="actualizado" id="txt-tiempo">Sincronizando con WeatherLink...</div>
   </div>
- <!-- LÓGICA DE PROCESAMIENTO JAVASCRIPT -->
+
+<!-- LÓGICA DE PROCESAMIENTO JAVASCRIPT -->
   <script>
     function fahrenheitACelsius(f) { return ((f - 32) * 5 / 9).toFixed(1); }
     function millasAKilometros(mph) { return (mph * 1.60934).toFixed(1); }
@@ -228,7 +229,6 @@
         })
         .then(datos => {
           
-          // MOSTRAR LA HORA REAL DEL JSON
           if (datos.generated_at) {
             const fechaReal = new Date(datos.generated_at * 1000); 
             const opcionesHora = { hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: false };
@@ -238,75 +238,67 @@
 
           if (datos.sensors && datos.sensors.length > 0) {
             let m = {};
+            
             datos.sensors.forEach(sensor => {
-              if (sensor.data && sensor.data.length > 0) {
+              // Si 'data' es una lista/matriz extraemos el primer elemento que contiene los registros
+              if (sensor.data && Array.isArray(sensor.data) && sensor.data.length > 0) {
                 Object.assign(m, sensor.data[0]);
               } else if (sensor.data && typeof sensor.data === 'object') {
                 Object.assign(m, sensor.data);
               }
             });
 
-            // 1. Temperatura
-            if (m.temp !== undefined) {
+            // --- DATOS EN TIEMPO REAL ---
+            if (m.temp !== undefined && m.temp !== null) {
               let t = m.temp > 45 ? fahrenheitACelsius(m.temp) : m.temp.toFixed(1);
               document.getElementById('txt-temp').innerHTML = t + '<span class="unidad">°C</span>';
             }
-            // 2. Punto de Rocío
-            if (m.dew_point !== undefined) {
+            if (m.dew_point !== undefined && m.dew_point !== null) {
               document.getElementById('txt-dew').innerHTML = fahrenheitACelsius(m.dew_point) + '<span class="unidad">°C</span>';
             }
-            // 3. Humedad
-            if (m.hum !== undefined) {
+            if (m.hum !== undefined && m.hum !== null) {
               document.getElementById('txt-hum').innerHTML = Math.round(m.hum) + '<span class="unidad">%</span>';
             }
-            // 4. Viento Actual
-            if (m.wind_speed_last !== undefined) {
+            if (m.wind_speed_last !== undefined && m.wind_speed_last !== null) {
               document.getElementById('txt-viento').innerHTML = millasAKilometros(m.wind_speed_last) + '<span class="unidad">km/h</span>';
             }
-            // 5. Dirección del Viento
-            if (m.wind_dir_last !== undefined) {
+            if (m.wind_dir_last !== undefined && m.wind_dir_last !== null) {
               document.getElementById('txt-dir').innerText = m.wind_dir_last + '° (' + gradosADireccion(m.wind_dir_last) + ')';
             }
-            // 6. Presión
             let pPulgadas = m.bar_sea_level !== undefined ? m.bar_sea_level : m.bar_absolute;
-            if (pPulgadas !== undefined) {
+            if (pPulgadas !== undefined && pPulgadas !== null) {
               document.getElementById('txt-presion').innerHTML = pulgadasAMilibares(pPulgadas) + '<span class="unidad">hPa</span>';
             }
-            // 7. Lluvia Diaria
             let llPulgadas = m.rain_day_in !== undefined ? m.rain_day_in : m.rain_day_clicks;
-            if (llPulgadas !== undefined) {
+            if (llPulgadas !== undefined && llPulgadas !== null) {
               let mm = m.rain_day_in !== undefined ? pulgadasAMilimetros(llPulgadas) : (llPulgadas * 0.2).toFixed(1);
               document.getElementById('txt-lluvia').innerHTML = mm + '<span class="unidad">mm</span>';
             }
-            // 8. Intensidad de Lluvia
             let tasaPulgadas = m.rain_rate_in_per_hr !== undefined ? m.rain_rate_in_per_hr : m.rain_rate_clicks_per_hr;
-            if (tasaPulgadas !== undefined) {
+            if (tasaPulgadas !== undefined && tasaPulgadas !== null) {
               let mmh = m.rain_rate_in_per_hr !== undefined ? pulgadasAMilimetros(tasaPulgadas) : (tasaPulgadas * 0.2).toFixed(1);
               document.getElementById('txt-tasa').innerHTML = mmh + '<span class="unidad">mm/h</span>';
             }
-            // 9. UV
-            if (m.uv_index !== undefined) {
+            if (m.uv_index !== undefined && m.uv_index !== null) {
               document.getElementById('txt-uv').innerHTML = m.uv_index.toFixed(1) + '<span class="unidad">UVI</span>';
             }
-            // 10. Radiación Solar
-            if (m.solar_rad !== undefined) {
+            if (m.solar_rad !== undefined && m.solar_rad !== null) {
               document.getElementById('txt-solar').innerHTML = Math.round(m.solar_rad) + '<span class="unidad">W/m²</span>';
             }
 
-            // --- EXTREMOS DIARIOS ---
-            if (m.temp_day_high !== undefined) document.getElementById('max-temp').innerText = fahrenheitACelsius(m.temp_day_high) + ' °C';
-            if (m.temp_day_low !== undefined) document.getElementById('min-temp').innerText = fahrenheitACelsius(m.temp_day_low) + ' °C';
-            if (m.wind_speed_day_high !== undefined) document.getElementById('max-viento').innerText = millasAKilometros(m.wind_speed_day_high) + ' km/h';
-            if (m.hum_day_high !== undefined) document.getElementById('max-hum').innerText = Math.round(m.hum_day_high) + ' %';
-            if (m.hum_day_low !== undefined) document.getElementById('min-hum').innerText = Math.round(m.hum_day_low) + ' %';
-            if (m.bar_day_high !== undefined) document.getElementById('max-presion').innerText = pulgadasAMilibares(m.bar_day_high) + ' hPa';
-            if (m.bar_day_low !== undefined) document.getElementById('min-presion').innerText = pulgadasAMilibares(m.bar_day_low) + ' hPa';
+            // --- EXTREMOS DIARIOS ACTUALIZADOS (MÁXIMAS Y MÍNIMAS) ---
+            if (m.temp_day_high !== undefined && m.temp_day_high !== null) document.getElementById('max-temp').innerText = fahrenheitACelsius(m.temp_day_high) + ' °C';
+            if (m.temp_day_low !== undefined && m.temp_day_low !== null) document.getElementById('min-temp').innerText = fahrenheitACelsius(m.temp_day_low) + ' °C';
+            if (m.wind_speed_day_high !== undefined && m.wind_speed_day_high !== null) document.getElementById('max-viento').innerText = millasAKilometros(m.wind_speed_day_high) + ' km/h';
+            if (m.hum_day_high !== undefined && m.hum_day_high !== null) document.getElementById('max-hum').innerText = Math.round(m.hum_day_high) + ' %';
+            if (m.hum_day_low !== undefined && m.hum_day_low !== null) document.getElementById('min-hum').innerText = Math.round(m.hum_day_low) + ' %';
+            if (m.bar_day_high !== undefined && m.bar_day_high !== null) document.getElementById('max-presion').innerText = pulgadasAMilibares(m.bar_day_high) + ' hPa';
+            if (m.bar_day_low !== undefined && m.bar_day_low !== null) document.getElementById('min-presion').innerText = pulgadasAMilibares(m.bar_day_low) + ' hPa';
           }
         })
         .catch(error => {
           console.error('Error:', error);
-          document.getElementById('txt-tiempo').innerText = 'Atención: Mostrando datos locales almacenados.';
-          document.getElementById('txt-tiempo').style.background = '#ffeaa7';
+          document.getElementById('txt-tiempo').innerText = 'Atención: Hubo un problema al procesar los extremos.';
         });
     }
 
