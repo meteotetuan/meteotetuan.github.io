@@ -3,18 +3,18 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Dashboard Premium MeteoTetuán</title>
+  <title>Dashboard Elegante MeteoTetuán</title>
   <style>
-    /* DISEÑO VISUAL FUTURISTA CON DEGRADADOS */
+    /* DISEÑO VISUAL MATTE Y ELEGANTE (ESTILO NÓRDICO) */
     body {
       font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-      background-color: #f0f4f8;
+      background-color: #f5f6f8;
       margin: 0;
       padding: 15px;
       color: #fff;
     }
     
-    /* Contenedor con estructura simétrica 4 y 4 */
+    /* Contenedor simétrico 4 y 4 */
     .dashboard-grid {
       max-width: 1100px;
       margin: 0 auto;
@@ -29,78 +29,75 @@
       gap: 15px;
     }
 
-    /* Estilo de Tarjeta Moderna con Degradado */
+    /* Tarjeta Moderna Apagada */
     .tarjeta {
-      border-radius: 20px;
-      padding: 25px 15px;
+      border-radius: 16px;
+      padding: 22px 15px;
       text-align: center;
-      box-shadow: 0 8px 20px rgba(0,0,0,0.08);
+      box-shadow: 0 4px 12px rgba(0,0,0,0.05);
       display: flex;
       flex-direction: column;
       justify-content: center;
       position: relative;
-      overflow: hidden;
-      border: 1px solid rgba(255,255,255,0.1);
+      border: 1px solid rgba(255,255,255,0.05);
     }
     
-    /* Iconos visuales superiores */
     .icono {
-      font-size: 1.8rem;
-      margin-bottom: 8px;
+      font-size: 1.6rem;
+      margin-bottom: 6px;
+      opacity: 0.9;
     }
     
     .tarjeta h3 {
-      margin: 0 0 8px 0;
-      font-size: 0.85rem;
-      color: rgba(255, 255, 255, 0.85);
+      margin: 0 0 6px 0;
+      font-size: 0.8rem;
+      color: rgba(255, 255, 255, 0.75);
       text-transform: uppercase;
-      letter-spacing: 1px;
+      letter-spacing: 0.8px;
       font-weight: 600;
     }
     
     .valor {
-      font-size: 2.3rem;
-      font-weight: 800;
+      font-size: 2.1rem;
+      font-weight: 700;
       margin: 0;
-      text-shadow: 0 2px 4px rgba(0,0,0,0.1);
     }
     
     .unidad {
-      font-size: 1.1rem;
+      font-size: 1rem;
       font-weight: 500;
-      color: rgba(255, 255, 255, 0.9);
-      margin-left: 3px;
+      color: rgba(255, 255, 255, 0.85);
+      margin-left: 2px;
     }
 
-    /* ESTILOS DE DEGRADADOS MODERNOS */
-    .temp { background: linear-gradient(135deg, #ff6b6b, #ff8e53); }
-    .hum { background: linear-gradient(135deg, #4dadf7, #339af0); }
-    .viento { background: linear-gradient(135deg, #51cf66, #2b8a3e); }
-    .dir { background: linear-gradient(135deg, #fab005, #f59f00); }
-    .presion { background: linear-gradient(135deg, #cc5de8, #9c36b5); }
-    .lluvia { background: linear-gradient(135deg, #20c997, #0ca678); }
-    .uv { background: linear-gradient(135deg, #ff8787, #e03131); }
-    .solar { background: linear-gradient(135deg, #fcc419, #e67e22); }
+    /* COLORES MATE, APAGADOS Y CORPORATIVOS */
+    .temp { background-color: #4a69bd; }       /* Azul Jeans */
+    .hum { background-color: #60a3bc; }        /* Azul Pastel Apagado */
+    .viento { background-color: #78e08f; }     /* Verde Menta Suave (Texto oscuro para leer bien) */
+    .viento .unidad, .viento h3, .viento .valor { color: #0c2461; }
+    .dir { background-color: #3c6382; }        /* Azul Pizarra */
+    .presion { background-color: #6a89cc; }    /* Azul Lavanda */
+    .lluvia { background-color: #38ada9; }     /* Turquesa Opaco */
+    .uv { background-color: #e55039; }         /* Terracota / Rojo Suave */
+    .solar { background-color: #fa983a; }      /* Naranja Ocre Cálido */
 
-    /* Barra inferior de estado */
+    /* Barra inferior de estado discreta */
     .actualizado {
       text-align: center;
       font-size: 0.85rem;
-      color: #495057;
-      font-weight: bold;
-      background: #e3fafc;
-      padding: 10px 25px;
-      border-radius: 30px;
+      color: #4a5568;
+      font-weight: 600;
+      background: #edf2f7;
+      padding: 8px 20px;
+      border-radius: 20px;
       display: inline-block;
       margin: 25px auto 0 auto;
-      box-shadow: 0 4px 10px rgba(0,0,0,0.03);
-      border: 1px solid #c5f6fa;
+      border: 1px solid #e2e8f0;
     }
     .center-wrapper {
       text-align: center;
     }
 
-    /* Adaptación perfecta para pantallas de móviles */
     @media (max-width: 768px) {
       .fila-arriba, .fila-abajo {
         grid-template-columns: 1fr 1fr;
@@ -112,7 +109,7 @@
 
   <div class="dashboard-grid">
     
-    <!-- FILA SUPERIOR (4 TARJETAS) -->
+    <!-- FILA SUPERIOR -->
     <div class="fila-arriba">
       <div class="tarjeta temp">
         <div class="icono">🌡️</div>
@@ -133,16 +130,16 @@
       </div>
 
       <div class="tarjeta dir">
-        <div class="icono">🧩</div>
+        <div class="icono">🧭</div> <!-- Icono de brújula corregido para dirección -->
         <h3>Dirección</h3>
         <p class="valor" id="txt-dir">--</p>
       </div>
     </div>
 
-    <!-- FILA INFERIOR (4 TARJETAS) -->
+    <!-- FILA INFERIOR -->
     <div class="fila-abajo">
       <div class="tarjeta presion">
-        <div class="icono">🧭</div>
+        <div class="icono">📉</div> <!-- Gráfica bajando para presión -->
         <h3>Presión</h3>
         <p class="valor" id="txt-presion">--<span class="unidad">hPa</span></p>
       </div>
@@ -154,13 +151,13 @@
       </div>
 
       <div class="tarjeta uv">
-        <div class="icono">☀️</div>
+        <div class="icono">🛡️</div> <!-- Escudo de protección para el índice UV -->
         <h3>Índice UV</h3>
         <p class="valor" id="txt-uv">--<span class="unidad">UVI</span></p>
       </div>
 
       <div class="tarjeta solar">
-        <div class="icono">⚡</div>
+        <div class="icono">☀️</div> <!-- Icono de Sol real corregido para radiación solar -->
         <h3>Rad. Solar</h3>
         <p class="valor" id="txt-solar">--<span class="unidad">W/m²</span></p>
       </div>
@@ -169,7 +166,7 @@
   </div>
 
   <div class="center-wrapper">
-    <div class="actualizado" id="txt-tiempo">Conectando con los sensores de Tetuán...</div>
+    <div class="actualizado" id="txt-tiempo">Sincronizando MeteoTetuán...</div>
   </div>
 
 <!-- MOTOR DE PROCESAMIENTO JAVASCRIPT REVISADO -->
@@ -236,7 +233,7 @@
               document.getElementById('txt-presion').innerHTML = pulgadasAMilibares(m.bar_sea_level) + '<span class="unidad">hPa</span>';
             }
             
-            // 6. Lluvia del Día (Métrica nativa o convertida)
+            // 6. Lluvia del Día
             if (m.rainfall_daily_mm !== undefined && m.rainfall_daily_mm !== null) {
               document.getElementById('txt-lluvia').innerHTML = m.rainfall_daily_mm.toFixed(1) + '<span class="unidad">mm</span>';
             } else if (m.rainfall_daily_in !== undefined && m.rainfall_daily_in !== null) {
@@ -265,3 +262,5 @@
   </script>
 </body>
 </html>
+
+  
