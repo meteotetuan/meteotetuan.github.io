@@ -103,8 +103,8 @@
 
     function actualizarDashboard() {
       // El Date.now() obliga al navegador a descargar datos nuevos y saltarse la caché
-      fetch('./clima.json?v=' + Date.now())
-        .then(response => {
+     fetch('https://github.io' + Date.now())
+       .then(response => {
           if (!response.ok) throw new Error('No se encuentra clima.json');
           return response.json();
         })
