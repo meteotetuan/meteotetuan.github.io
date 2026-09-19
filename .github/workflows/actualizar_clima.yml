@@ -3,7 +3,7 @@ name: Actualizar Clima Automático
 on:
   schedule:
     # Esto le dice a GitHub que despierte cada 15 minutos
-    - cron: '*/15 * * * *'
+    - cron: '*/5 * * * *'
   workflow_dispatch: # Esto nos permite probar el botón a mano cuando queramos
 
 jobs:
