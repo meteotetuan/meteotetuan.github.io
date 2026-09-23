@@ -68,7 +68,7 @@
                     "rain_rate_last_in": 0,
                     "rain_rate_hi_last_15_min_mm": 0,
                     "rain_rate_hi_last_15_min_in": 0,
-                    "ts": 1790190341
+                    "ts": 1790191241
                 }
             ],
             "sensor_type": 55,
@@ -141,7 +141,7 @@
                     "rain_rate_last_in": 0,
                     "rain_rate_hi_last_15_min_mm": 0,
                     "rain_rate_hi_last_15_min_in": 0,
-                    "ts": 1790190341
+                    "ts": 1790191241
                 }
             ],
             "sensor_type": 46,
@@ -151,12 +151,12 @@
             "lsid": 935970,
             "data": [
                 {
-                    "bar_absolute": 27.743,
+                    "bar_absolute": 27.749,
                     "tz_offset": 7200,
-                    "bar_sea_level": 30.149,
+                    "bar_sea_level": 30.156,
                     "bar_offset": -0.001,
-                    "bar_trend": 0.021,
-                    "ts": 1790190341
+                    "bar_trend": 0.028,
+                    "ts": 1790191241
                 }
             ],
             "sensor_type": 242,
@@ -166,12 +166,12 @@
             "lsid": 935971,
             "data": [
                 {
-                    "temp_in": 80.3,
+                    "temp_in": 80.6,
                     "tz_offset": 7200,
-                    "heat_index_in": 79,
-                    "dew_point_in": 51.7,
-                    "ts": 1790190341,
-                    "hum_in": 37
+                    "heat_index_in": 79.3,
+                    "dew_point_in": 51.9,
+                    "ts": 1790191241,
+                    "hum_in": 36.9
                 }
             ],
             "sensor_type": 243,
@@ -181,7 +181,7 @@
             "lsid": 935969,
             "data": [
                 {
-                    "battery_voltage": 5273,
+                    "battery_voltage": 5275,
                     "wifi_rssi": null,
                     "network_error": null,
                     "ip_v4_gateway": "192.168.1.1",
@@ -190,23 +190,23 @@
                     "firmware_version": 1636079858,
                     "tz_offset": 7200,
                     "local_api_queries": 19122,
-                    "rx_bytes": 202226755,
+                    "rx_bytes": 202252059,
                     "health_version": 1,
                     "radio_version": 654705920,
                     "ip_address_type": 1,
-                    "link_uptime": 65135,
+                    "link_uptime": 66035,
                     "input_voltage": 4578,
-                    "tx_bytes": 367394985,
+                    "tx_bytes": 367405655,
                     "ip_v4_netmask": "255.255.255.0",
                     "rapid_records_sent": 272199,
-                    "uptime": 11703754,
-                    "touchpad_wakeups": 39,
+                    "uptime": 11704654,
+                    "touchpad_wakeups": 62,
                     "ip_v4_address": "192.168.1.48",
                     "bootloader_version": 1550707628,
                     "espressif_version": 1534381024,
                     "dns_type_used": null,
                     "network_type": 2,
-                    "ts": 1790190000
+                    "ts": 1790190900
                 }
             ],
             "sensor_type": 504,
@@ -216,36 +216,36 @@
             "lsid": 642969,
             "data": [
                 {
-                    "hum": 28.3,
-                    "pm_10_3_hour": 4.9132934,
-                    "pm_10_24_hour": 2.997816,
-                    "pm_2p5_1_hour": 9.806296,
-                    "aqi_nowcast_val": 25.55839,
+                    "hum": 28.9,
+                    "pm_10_3_hour": 5.988015,
+                    "pm_10_24_hour": 3.1066,
+                    "pm_2p5_1_hour": 12.583293,
+                    "aqi_nowcast_val": 31.926657,
                     "aqi_type": "United States EPA AQI",
-                    "heat_index": 80.5,
-                    "pm_2p5_nowcast": 6.1340137,
-                    "pm_2p5_24_hour": 2.7672393,
+                    "heat_index": 80.1,
+                    "pm_2p5_nowcast": 7.662398,
+                    "pm_2p5_24_hour": 2.866094,
                     "tz_offset": 7200,
-                    "pm_1": 11.695652,
+                    "pm_1": 12.289855,
                     "pct_pm_data_nowcast": 100,
                     "pct_pm_data_24_hour": 100,
                     "wet_bulb": 54.7,
-                    "aqi_val": 60.17702,
+                    "aqi_val": 60.634197,
                     "aqi_desc": "Moderate",
-                    "temp": 82.8,
-                    "pm_2p5_3_hour": 4.5797205,
+                    "temp": 82.3,
+                    "pm_2p5_3_hour": 5.5584054,
                     "pct_pm_data_3_hour": 100,
-                    "last_report_time": 1790190300,
+                    "last_report_time": 1790191200,
                     "aqi_nowcast_desc": "Good",
-                    "aqi_1_hour_val": 40.859566,
-                    "pm_10_nowcast": 6.5960574,
-                    "aqi_1_hour_desc": "Good",
-                    "pm_10_1_hour": 10.575342,
-                    "dew_point": 46.6,
-                    "pm_10": 18.956522,
+                    "aqi_1_hour_val": 52.016365,
+                    "pm_10_nowcast": 8.24437,
+                    "aqi_1_hour_desc": "Moderate",
+                    "pm_10_1_hour": 13.53948,
+                    "dew_point": 46.7,
+                    "pm_10": 18.710144,
                     "pct_pm_data_1_hour": 100,
-                    "ts": 1790190300,
-                    "pm_2p5": 16.463768
+                    "ts": 1790191200,
+                    "pm_2p5": 16.68116
                 }
             ],
             "sensor_type": 323,
@@ -255,35 +255,35 @@
             "lsid": 642968,
             "data": [
                 {
-                    "wifi_rssi": -59,
+                    "wifi_rssi": -60,
                     "network_error": null,
                     "ip_v4_gateway": "192.168.1.1",
                     "internal_free_mem_chunk_size": 48264,
                     "record_backlog_count": 0,
                     "firmware_version": 1603306935,
-                    "rx_packets": 14690,
+                    "rx_packets": 15917,
                     "internal_used_mem": 141264,
                     "application_sha": "a3000a02f9aa9b4280fc6c1cb89565820d9c6c490bca992d852c21ab6085f428",
                     "packet_errors": 44,
                     "internal_free_mem": 71392,
                     "tz_offset": 7200,
-                    "dropped_packets": 14322,
+                    "dropped_packets": 14926,
                     "local_api_queries": 6249,
-                    "link_uptime": 65050,
-                    "total_used_mem": 775716,
+                    "link_uptime": 65950,
+                    "total_used_mem": 775732,
                     "health_version": 2,
                     "ip_address_type": 1,
-                    "record_write_count": 26006,
+                    "record_write_count": 26008,
                     "application_version": "v1.0.4",
-                    "tx_packets": 17850,
+                    "tx_packets": 17903,
                     "ip_v4_netmask": "255.255.255.0",
-                    "uptime": 11703726,
+                    "uptime": 11704626,
                     "internal_free_mem_watermark": 49476,
                     "ip_v4_address": "192.168.1.46",
                     "bootloader_version": 527991452,
-                    "total_free_mem": 1164664,
+                    "total_free_mem": 1164644,
                     "dns_type_used": null,
-                    "ts": 1790190000,
+                    "ts": 1790190900,
                     "record_stored_count": 2048
                 }
             ],
@@ -291,6 +291,6 @@
             "data_structure_type": 18
         }
     ],
-    "generated_at": 1790190441,
+    "generated_at": 1790191457,
     "station_id": 232774
 }
