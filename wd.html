@@ -23,7 +23,7 @@
         header h1 {
             margin: 0;
             font-size: 2.5em;
-            color: #011F47;
+            color: #12405E;
             font-weight: bold;
             letter-spacing: -0.5px;
         }
@@ -88,9 +88,14 @@
     <!-- Enlace de vuelta a la página de inicio -->
     <footer>
         <a href="https://meteotetuan.github.io" class="btn-volver">← Volver a la página de inicio</a>
-<br><br><center>
+<br><center>
+    <table width="900" border="0">
+    <tr>
+    <td>
         <font size="2">Esta página se actualiza automáticamente cada 15 minutos mediante el <b>programa Weather Display para Mac</b> y el <b>WeatherLink Live</b>, que, mediante API LOCAL, envía en tiempo real los datos al programa, que los procesa y los sube a internet </font></center>
-        
+    </td>
+    </tr>
+    </table>
     </footer>
 
 <script>
@@ -104,7 +109,6 @@
 { url: "https://meteotetuan.byethost7.com/curr24hourgraph.gif", titulo: "Gráfico de las últimas 24 horas" },        
         { url: "https://meteotetuan.byethost7.com/curr48hourgraph.gif", titulo: "Gráfico de las últimas 48 horas" },
         { url: "https://meteotetuan.byethost7.com/curr72hourgraph.gif", titulo: "Gráfico de las últimas 72 horas" },
-    { url: "https://meteotetuan.byethost7.com/alltimerecordsmonth.gif", titulo: "Records mensuales" },
     ];
 
     const tiempoRefresco = 60000; // Sincronización en vivo cada 1 minuto
