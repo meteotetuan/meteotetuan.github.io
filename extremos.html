@@ -5,39 +5,38 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Módulo de Extremos - MeteoTetuán</title>
   <style>
-    /* DISEÑO VISUAL MATTE ELEGANTE ADAPTADO PARA EXTREMOS */
+    /* DISEÑO COMPACTO PREMIUM MATTE PARA EXTREMOS */
     body {
       font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
       background-color: #f5f6f8;
       margin: 0;
-      padding: 5px 15px 15px 15px;
+      padding: 5px 10px 10px 10px;
       color: #fff;
     }
     
-    /* Contenedor adaptativo */
     .dashboard-grid {
-      max-width: 1100px;
+      max-width: 1000px;
       margin: 0 auto;
       display: flex;
       flex-direction: column;
-      gap: 15px;
+      gap: 10px; /* Espaciado más reducido */
     }
 
-    /* Pestañas de control integradas en la estética */
+    /* Pestañas compactas */
     .selector-periodo {
       display: flex;
       justify-content: center;
-      gap: 10px;
-      margin-bottom: 5px;
+      gap: 8px;
+      margin-bottom: 8px;
     }
     .btn-pestana {
       background-color: #edf2f7;
       color: #4a5568;
       border: 1px solid #e2e8f0;
-      padding: 10px 30px;
-      font-size: 0.9rem;
+      padding: 6px 20px; /* Más estrechos */
+      font-size: 0.8rem;
       font-weight: 700;
-      border-radius: 20px;
+      border-radius: 15px;
       cursor: pointer;
       transition: all 0.2s ease;
     }
@@ -45,26 +44,26 @@
       background-color: #4a69bd;
       color: #fff;
       border-color: #4a69bd;
-      box-shadow: 0 4px 10px rgba(74,105,189,0.25);
+      box-shadow: 0 2px 6px rgba(74,105,189,0.2);
     }
     .btn-pestana:hover:not(.activo) {
       background-color: #e2e8f0;
     }
 
-    /* Distribución simétrica de 9 tarjetas (3 + 3 + 3) */
+    /* Rejilla optimizada en 3 columnas fijas */
     .fila-1, .fila-2, .fila-3 {
       display: grid;
       grid-template-columns: repeat(3, 1fr);
-      gap: 15px;
+      gap: 10px;
       width: 100%;
     }
 
-    /* Estilo Premium de Tarjeta idéntico a tu plantilla */
+    /* Tarjetas de altura reducida */
     .tarjeta {
-      border-radius: 16px;
-      padding: 22px 15px;
+      border-radius: 12px;
+      padding: 12px 10px; /* Reducido a casi la mitad */
       text-align: center;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+      box-shadow: 0 2px 6px rgba(0,0,0,0.03);
       display: flex;
       flex-direction: column;
       justify-content: center;
@@ -73,109 +72,102 @@
     }
     
     .icono {
-      font-size: 1.6rem;
-      margin-bottom: 6px;
+      font-size: 1.2rem; /* Más discreto */
+      margin-bottom: 2px;
       opacity: 0.9;
     }
     
     .tarjeta h3 {
-      margin: 0 0 6px 0;
-      font-size: 0.8rem;
+      margin: 0 0 4px 0;
+      font-size: 0.7rem; /* Texto más sutil */
       color: rgba(255, 255, 255, 0.75);
       text-transform: uppercase;
-      letter-spacing: 0.8px;
+      letter-spacing: 0.5px;
       font-weight: 600;
     }
     
     .valor {
-      font-size: 2.1rem;
+      font-size: 1.4rem; /* Considerablemente más bajo para ahorrar espacio vertical */
       font-weight: 700;
       margin: 0;
     }
     
     .unidad {
-      font-size: 1rem;
+      font-size: 0.8rem;
       font-weight: 500;
       color: rgba(255, 255, 255, 0.85);
-      margin-left: 2px;
+      margin-left: 1px;
     }
 
-    /* PALETA DE COLORES APAGADOS ORIGINALES */
-    .temp-max { background-color: #4a69bd; }   /* Azul Jeans */
-    .temp-min { background-color: #60a3bc; }   /* Azul Pastel */
-    .viento { background-color: #3c6382; }     /* Azul Pizarra */
-    
-    .hum-max { background-color: #6a89cc; }    /* Azul Lavanda */
-    .hum-min { background-color: #4b6584; }    /* Gris Azulado Oscuro */
-    .uv { background-color: #d4af37; }         /* Amarillo Oro Mate */
-    
-    .presion-max { background-color: #38ada9; }/* Turquesa Opaco */
-    .presion-min { background-color: #57606f; }/* Gris Tormenta */
-    .lluvia { background-color: #20b2aa; }     /* Verde Claro Marino */
+    /* COLORES MATE ORIGINALES */
+    .temp-max { background-color: #4a69bd; }
+    .temp-min { background-color: #60a3bc; }
+    .viento { background-color: #3c6382; }
+    .hum-max { background-color: #6a89cc; }
+    .hum-min { background-color: #4b6584; }
+    .uv { background-color: #d4af37; }
+    .presion-max { background-color: #38ada9; }
+    .presion-min { background-color: #57606f; }
+    .lluvia { background-color: #20b2aa; }
 
-    /* Barra inferior de sincronización */
+    /* Barra inferior */
     .actualizado {
       text-align: center;
-      font-size: 0.85rem;
+      font-size: 0.75rem;
       color: #4a5568;
       font-weight: 600;
       background: #edf2f7;
-      padding: 8px 25px;
-      border-radius: 20px;
+      padding: 5px 18px;
+      border-radius: 15px;
       display: inline-block;
-      margin: 20px auto 0 auto;
+      margin: 12px auto 0 auto;
       border: 1px solid #e2e8f0;
     }
-    .center-wrapper {
-      text-align: center;
+    .center-wrapper { text-align: center; }
+
+    @media (max-width: 768px) {
+      .fila-1, .fila-2, .fila-3 { grid-template-columns: 1fr 1fr; }
     }
   </style>
 </head>
 <body>
 
-  <!-- Selector superior mimetizado con tu entorno web -->
   <div class="selector-periodo">
-    <button onclick="switchPeriod('dia')" id="btn-dia" class="btn-pestana activo">📅 Extremos Diarios</button>
-    <button onclick="switchPeriod('mes')" id="btn-mes" class="btn-pestana">🗓️ Extremos Mensuales</button>
-    <button onclick="switchPeriod('any')" id="btn-any" class="btn-pestana">🎆 Extremos Anuales</button>
+    <button onclick="switchPeriod('dia')" id="btn-dia" class="btn-pestana activo">📅 Diarios</button>
+    <button onclick="switchPeriod('mes')" id="btn-mes" class="btn-pestana">🗓️ Mensuales</button>
+    <button onclick="switchPeriod('any')" id="btn-any" class="btn-pestana">🎆 Anuales</button>
   </div>
 
   <div class="dashboard-grid">
-    
-    <!-- FILA 1: EXTREMOS TÉRMICOS Y DE VIENTO -->
     <div class="fila-1">
       <div class="tarjeta temp-max">
         <div class="icono">🔥</div>
         <h3>Temperatura Máxima</h3>
         <p class="valor" id="ext-tmax">--<span class="unidad">°C</span></p>
       </div>
-      
       <div class="tarjeta temp-min">
         <div class="icono">❄️</div>
         <h3>Temperatura Mínima</h3>
         <p class="valor" id="ext-tmin">--<span class="unidad">°C</span></p>
       </div>
-      
       <div class="tarjeta viento">
         <div class="icono">🌪️</div>
         <h3>Racha Máxima Viento</h3>
         <p class="valor" id="ext-vmax">--<span class="unidad">km/h</span></p>
       </div>
     </div>
- <!-- FILA 2: HIGROMETRÍA Y RADIACIÓN -->
+
     <div class="fila-2">
       <div class="tarjeta hum-max">
         <div class="icono">💧</div>
         <h3>Humedad Máxima</h3>
         <p class="valor" id="ext-hmax">--<span class="unidad">%</span></p>
       </div>
-
       <div class="tarjeta hum-min">
         <div class="icono">🏜️</div>
         <h3>Humedad Mínima</h3>
         <p class="valor" id="ext-hmin">--<span class="unidad">%</span></p>
       </div>
-
       <div class="tarjeta uv">
         <div class="icono">☀️</div>
         <h3>Índice UV Máximo</h3>
@@ -183,38 +175,31 @@
       </div>
     </div>
 
-    <!-- FILA 3: BAROMETRÍA Y PLUVIOMETRÍA -->
     <div class="fila-3">
       <div class="tarjeta presion-max">
         <div class="icono">📈</div>
         <h3>Presión Máxima</h3>
         <p class="valor" id="ext-pmax">--<span class="unidad">hPa</span></p>
       </div>
-
       <div class="tarjeta presion-min">
         <div class="icono">📉</div>
         <h3>Presión Mínima</h3>
         <p class="valor" id="ext-pmin">--<span class="unidad">hPa</span></p>
       </div>
-
       <div class="tarjeta lluvia">
         <div class="icono">🌧️</div>
         <h3>Precipitación Total</h3>
         <p class="valor" id="ext-ppt">--<span class="unidad">mm</span></p>
       </div>
     </div>
-
   </div>
 
-  <!-- Barra de Sincronización Local idéntica a tu otra plantilla -->
   <div class="center-wrapper">
     <div class="actualizado" id="txt-tiempo">Sincronizando los extremos de Tetuán...</div>
   </div>
 
- <script>
-    // Conexión limpia con tu archivo local generado automáticamente en segundo plano
+  <script>
     const LOCAL_JSON_URL = 'datos-estacion.json';
-    
     let weatherData = null;
     let currentPeriod = 'dia'; 
 
@@ -226,12 +211,11 @@
         weatherData = await response.json();
         renderData();
 
-        // Extraer la hora de la actualización del JSON de la estación
+        // Extracción y formateo correcto de la fecha y hora sin bugs de split
         if (weatherData.dades_act && weatherData.dades_act.DATA_HORA) {
-          const fechaHoraOriginal = weatherData.dades_act.DATA_HORA; // Formato: "2026-09-27 22:00:00"
-          
-          // Separar la fecha de la hora para dejarlo más estético
+          const fechaHoraOriginal = weatherData.dades_act.DATA_HORA; 
           const partes = fechaHoraOriginal.split(' ');
+          
           const fechaComponentes = partes[0].split('-');
           const horaComponentes = partes[1].split(':');
           
@@ -240,12 +224,11 @@
 
           document.getElementById('txt-tiempo').textContent = `Extremos actualizados: ${fechaFormateada} a las ${horaFormateada}`;
         } else {
-          document.getElementById('txt-tiempo').textContent = 'Extremos sincronizados correctamente desde base local';
+          document.getElementById('txt-tiempo').textContent = 'Extremos sincronizados correctamente';
         }
-
       } catch (error) {
-        console.error("Error al leer el archivo autogenerado:", error);
-        document.getElementById('txt-tiempo').textContent = 'Error: Esperando actualización del robot de GitHub...';
+        console.error(error);
+        document.getElementById('txt-tiempo').textContent = 'Error: Esperando actualización del robot...';
       }
     }
 
@@ -255,18 +238,10 @@
       let block = {};
       let suffix = '';
 
-      if (currentPeriod === 'dia') {
-        block = weatherData.dades_dia || {};
-        suffix = '_d';
-      } else if (currentPeriod === 'mes') {
-        block = weatherData.dades_mes || {};
-        suffix = '_m';
-      } else if (currentPeriod === 'any') {
-        block = weatherData.dades_any || {};
-        suffix = '_a';
-      }
+      if (currentPeriod === 'dia') { block = weatherData.dades_dia || {}; suffix = '_d'; }
+      else if (currentPeriod === 'mes') { block = weatherData.dades_mes || {}; suffix = '_m'; }
+      else if (currentPeriod === 'any') { block = weatherData.dades_any || {}; suffix = '_a'; }
 
-      // Mapeo preciso inyectando los valores respetando tus etiquetas <span class="unidad">
       document.getElementById('ext-tmax').innerHTML = block['TMax' + suffix] ? block['TMax' + suffix] + '<span class="unidad">°C</span>' : '--<span class="unidad">°C</span>';
       document.getElementById('ext-tmin').innerHTML = block['TMin' + suffix] ? block['TMin' + suffix] + '<span class="unidad">°C</span>' : '--<span class="unidad">°C</span>';
       document.getElementById('ext-vmax').innerHTML = block['VMax' + suffix] ? block['VMax' + suffix] + '<span class="unidad">km/h</span>' : '--<span class="unidad">km/h</span>';
@@ -280,21 +255,12 @@
 
     function switchPeriod(period) {
       currentPeriod = period;
-      
-      // Alternar clases activas de los botones de pestañas
-      ['dia', 'mes', 'any'].forEach(p => {
-        const btn = document.getElementById('btn-' + p);
-        btn.classList.remove('activo');
-      });
-
-      const activeBtn = document.getElementById('btn-' + period);
-      activeBtn.classList.add('activo');
-
+      ['dia', 'mes', 'any'].forEach(p => { document.getElementById('btn-' + p).classList.remove('activo'); });
+      document.getElementById('btn-' + period).classList.add('activo');
       renderData();
     }
 
     loadData();
   </script>
-  
 </body>
-</html>      
+</html>
