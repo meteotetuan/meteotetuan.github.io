@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MeteoTetuán - Panel de Control</title>
+    <style>
+        /* Fondo completamente blanco y tipografía limpia */
+        body {
+            background-color: #ffffff;
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+            text-align: center;
+        }
+        /* Contenedor estático (no responsive) para mantener el tamaño real de tus gráficos */
+        .panel-estatico {
+            width: 1000px; /* Puedes ampliar este ancho si tus gráficos son más grandes */
+            margin: 0 auto;
+            text-align: center; /* Centra las imágenes dentro del bloque fijo */
+        }
+        /* Espaciado para separar una imagen de otra */
+        .bloque-imagen {
+            margin-bottom: 30px;
+            display: inline-block;
+        }
+        /* Desactivamos el comportamiento responsive para conservar el tamaño original */
+        .bloque-imagen img {
+            display: block;
+            max-width: none; 
+            height: auto;
+        }
+        /* Reloj de actualización discreto */
+        .reloj-status {
+            font-size: 14px;
+            color: #444444;
+            margin-bottom: 25px;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="reloj-status" id="reloj">Cargando panel meteorológico...</div>
+
+    <!-- Contenedor donde se inyectan las 7 imágenes dinámicamente -->
+    <div class="panel-estatico" id="contenedorMeteo">
+        <!-- El script se encarga de rellenar esto sin usar la caché vieja -->
+    </div>
+
+<script>
+    // Listado con las 7 URLs exactas que me has facilitado
+    const listaImagenes = [
+        "https://meteotetuan.byethost7.com/pantalla.jpg",
+        "https://meteotetuan.byethost7.com/dailyhighlowbaroetc.gif",
+        "https://meteotetuan.byethost7.com/curr24hourgraph.gif",
+        "https://meteotetuan.byethost7.com/curr48hourgraph.gif",
+        "https://meteotetuan.byethost7.com/curr72hourgraph.gif",
+        "https://meteotetuan.byethost7.com/raindetail.jpg",
+        "https://meteotetuan.byethost7.com/sunicon.jpg"
+    ];
+
+    const tiempoRefresco = 60000; // 60 segundos (1 minuto)
+
+    function refrescarPanelCompleto() {
+        const contenedor = document.getElementById('contenedorMeteo');
+        const reloj = document.getElementById('reloj');
+        
+        // Generamos la marca de tiempo para obligar a ByetHost a dar el archivo nuevo
+        const cacheBuster = new Date().getTime();
+        
+        // Vaciamos el contenedor anterior para limpiar la memoria del navegador
+        contenedor.innerHTML = "";
+        
+        // Creamos cada elemento de imagen desde cero
+        listaImagenes.forEach(url => {
+            const divBloque = document.createElement('div');
+            divBloque.className = "bloque-imagen";
+            
+            const imgNode = document.createElement('img');
+            // Unimos la URL con el truco del tiempo variable (?v=12345678)
+            imgNode.src = url + "?v=" + cacheBuster;
+            imgNode.alt = "Datos MeteoTetuán";
+            
+            divBloque.appendChild(imgNode);
+            contenedor.appendChild(divBloque);
+        });
+        
+        // Mostramos la hora exacta en la que se ha forzado la descarga
+        const ahora = new Date();
+        reloj.innerText = "🔄 Panel actualizado: " + ahora.toLocaleTimeString();
+    }
+
+    // Primera ejecución al cargar la web por primera vez
+    refrescarPanelCompleto();
+
+    // Bucle automático para renovar las 7 imágenes simultáneamente cada minuto
+    setInterval(refrescarPanelCompleto, tiempoRefresco);
+</script>
+
+</body>
+</html>
