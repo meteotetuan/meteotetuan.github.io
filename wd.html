@@ -80,7 +80,9 @@
     <header>
         <h1>MeteoTetuán</h1>
     </header>
-
+<br>
+<img src="images/encabezado.jpg" width="900">
+    <br>
     <!-- Contenedor donde aparecerán los títulos y las imágenes -->
     <div class="panel-estatico" id="contenedorMeteo"></div>
 
@@ -92,13 +94,10 @@
 <script>
     // Configuración de las imágenes con sus respectivos nombres de título personalizados
     const datosImagenes = [
-        { url: "https://meteotetuan.byethost7.com/pantalla.jpg", titulo: "Pantalla Actual Weather Display" },
-        { url: "https://meteotetuan.byethost7.com/dailyhighlowbaroetc.gif", titulo: "Valores Extremos Diarios (Barómetro y Otros)" },
-        { url: "https://meteotetuan.byethost7.com/curr24hourgraph.gif", titulo: "Gráfico de las Últimas 24 Horas" },
-        { url: "https://meteotetuan.byethost7.comcurr48hourgraph.gif", titulo: "Gráfico de las Últimas 48 Horas" },
-        { url: "https://meteotetuan.byethost7.com/curr24hourgraph.gif", titulo: "Gráfico de las Últimas 72 Horas" },
-        { url: "https://meteotetuan.byethost7.com/raindetail.gif", titulo: "Detalle de Precipitación" },
-        { url: "https://meteotetuan.byethost7.com/sunicon.jpg", titulo: "Radiación e Índice UV" }
+        { url: "https://meteotetuan.byethost7.com/pantalla.jpg", titulo: "Estación en tiempo real" },
+        { url: "https://meteotetuan.byethost7.com/dailyhighlowbaroetc.gif", titulo: "Valores extremos diarios" },
+        { url: "https://meteotetuan.byethost7.comcurr48hourgraph.gif", titulo: "Gráfico de las últimas 48 Horas" },
+        { url: "https://meteotetuan.byethost7.com/curr24hourgraph.gif", titulo: "Gráfico de las últimas 72 Horas" },
     ];
 
     const tiempoRefresco = 60000; // Sincronización en vivo cada 1 minuto
