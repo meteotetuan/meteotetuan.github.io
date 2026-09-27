@@ -1,0 +1,103 @@
+<meta name="robots" content="noindex, nofollow">
+
+<script src="./js/CookiesAlert.js"></script>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "https://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd"><html xmlns="https://www.w3.org/1999/xhtml">
+<head>
+<html>
+
+<title>ClimaMeteoInfo</title>
+
+
+
+
+
+
+
+
+<meta http-equiv="refresh" content="0;url= https://www.climameteoinfo.com/cmi.html" />
+
+<!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=UA-158587335-1"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'UA-158587335-1');
+</script>
+
+
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "https://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="https://www.w3.org/1999/xhtml" xml:lang="es" lang="ca">
+
+
+<head>
+  <title>ClimaMeteoInfo</title>
+    <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "Organization",
+    "url": "https://www.climameteoinfo.com",
+    "logo": "https://www.climameteoinfo.com/logos/clima_negre.png"
+  }
+  </script>
+
+  <script src="https://www.climameteoinfo.com/js/jquery-3.3.1.js"></script>
+  <script src="https://www.climameteoinfo.com/js/jquery.dataTables.min.js"></script>
+  <script src="https://www.climameteoinfo.com/js/dataTables.fixedColumns.min.js"></script>
+  <script src="https://www.climameteoinfo.com/js/natural.js"></script>
+
+  <script src="https://www.climameteoinfo.com/js/pdf/dataTables.buttons.min.js"></script>
+  <script src="https://www.climameteoinfo.com/js/pdf/pdfmake.min.js"></script>
+  <script src="https://www.climameteoinfo.com/js/pdf/vfs_fonts.js"></script>
+  <script src="https://www.climameteoinfo.com/js/pdf/buttons.html5.min.js"></script>
+
+  <script src="https://www.climameteoinfo.com/js/pdf/bootstrap.bundle.min.js"></script>
+  <script src="https://www.climameteoinfo.com/js/pdf/bootstrap.min.js"></script>
+
+  <link rel="stylesheet" href="https://www.climameteoinfo.com/js/pdf/bootstrap.min.css">
+  <link rel="stylesheet" href="https://www.climameteoinfo.com/js/pdf/buttons.dataTables.min.css">
+
+  <link rel="icon" href="https://www.climameteoinfo.com/logos/favicon.ico">
+  <link href="https://www.climameteoinfo.com/logos/cmisocialF.jpg" rel="image_src">
+  <link href="https://www.climameteoinfo.com/logos/apple-touch-icon.png" rel="apple-touch-icon" />
+  <link href="https://www.climameteoinfo.com/logos/icon-hires.png" rel="icon" />
+  <link href="https://www.climameteoinfo.com/logos/icon-normal.png" rel="icon" />
+
+  <link rel="stylesheet"
+    href="https://www.climameteoinfo.com/js/cmi.css?v=">
+
+
+
+  <title>ClimaMeteoInfo</title>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+  <meta name="DC.Language" scheme="RFC1766" content="es" />
+  <meta name="author" content="CMI" />
+  <meta name="description" content="Red Meteorológica" />
+  <meta name="keywords"
+    content="CMI Red Meteorológica, ClimaMeteoInfo, Catalunya, meteo, temps, tiempo, temperatura, humedad, viento, lluvia" />
+  <meta name="resource-type" content="homepage" />
+  <meta name="revisit-after" content="1 days" />
+  <meta name="robots" content="follow" />
+  <meta name="distribution" content="global" />
+  <meta property="og:image" content="https://www.climameteoinfo.com/logos/cmisocialF.jpg" />
+
+
+
+  <meta property="og:url" content="CMI" />
+  <meta property="og:type" content="CMI" />
+  <meta property="og:title" content="CMI" />
+  <meta property="og:description" content="Red Meteorológica" />
+  <meta property="og:image" content="https://www.climameteoinfo.com/logos/clima_negre.png" />
+  <meta property="og:image:secure_url" content="https://www.climameteoinfo.com/logos/clima_negre.png" />
+
+
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:site" content="@GRUPCMI" />
+  <meta name="twitter:title" content="CMI" />
+  <meta name="twitter:description" content="Red Meteorológica" />
+  <meta name="twitter:image" content="https://www.climameteoinfo.com/logos/cmisocialT.jpg" />
+
+</head>
