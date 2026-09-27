@@ -1,209 +1,283 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MeteoTetuán - Módulo de Extremos</title>
-    <!-- Tailwind CSS -->
-    <script src="https://tailwindcss.com"></script>
-    <style>
-        /* Optimizado para iframe: sin márgenes externos y fondo acoplable */
-        body { background-color: #0f172a; color: #f8fafc; margin: 0; padding: 0; overflow-x: hidden; }
-        ::-webkit-scrollbar { width: 6px; }
-        ::-webkit-scrollbar-track { background: #0f172a; }
-        ::-webkit-scrollbar-thumb { background: #334155; border-radius: 3px; }
-    </style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Módulo de Extremos - MeteoTetuán</title>
+  <style>
+    /* DISEÑO VISUAL MATTE ELEGANTE ADAPTADO PARA EXTREMOS */
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      background-color: #f5f6f8;
+      margin: 0;
+      padding: 5px 15px 15px 15px;
+      color: #fff;
+    }
+    
+    /* Contenedor adaptativo */
+    .dashboard-grid {
+      max-width: 1100px;
+      margin: 0 auto;
+      display: flex;
+      flex-direction: column;
+      gap: 15px;
+    }
+
+    /* Pestañas de control integradas en la estética */
+    .selector-periodo {
+      display: flex;
+      justify-content: center;
+      gap: 10px;
+      margin-bottom: 5px;
+    }
+    .btn-pestana {
+      background-color: #edf2f7;
+      color: #4a5568;
+      border: 1px solid #e2e8f0;
+      padding: 10px 30px;
+      font-size: 0.9rem;
+      font-weight: 700;
+      border-radius: 20px;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+    .btn-pestana.activo {
+      background-color: #4a69bd;
+      color: #fff;
+      border-color: #4a69bd;
+      box-shadow: 0 4px 10px rgba(74,105,189,0.25);
+    }
+    .btn-pestana:hover:not(.activo) {
+      background-color: #e2e8f0;
+    }
+
+    /* Distribución simétrica de 9 tarjetas (3 + 3 + 3) */
+    .fila-1, .fila-2, .fila-3 {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 15px;
+      width: 100%;
+    }
+
+    /* Estilo Premium de Tarjeta idéntico a tu plantilla */
+    .tarjeta {
+      border-radius: 16px;
+      padding: 22px 15px;
+      text-align: center;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      position: relative;
+      border: 1px solid rgba(255,255,255,0.05);
+    }
+    
+    .icono {
+      font-size: 1.6rem;
+      margin-bottom: 6px;
+      opacity: 0.9;
+    }
+    
+    .tarjeta h3 {
+      margin: 0 0 6px 0;
+      font-size: 0.8rem;
+      color: rgba(255, 255, 255, 0.75);
+      text-transform: uppercase;
+      letter-spacing: 0.8px;
+      font-weight: 600;
+    }
+    
+    .valor {
+      font-size: 2.1rem;
+      font-weight: 700;
+      margin: 0;
+    }
+    
+    .unidad {
+      font-size: 1rem;
+      font-weight: 500;
+      color: rgba(255, 255, 255, 0.85);
+      margin-left: 2px;
+    }
+
+    /* PALETA DE COLORES APAGADOS ORIGINALES */
+    .temp-max { background-color: #4a69bd; }   /* Azul Jeans */
+    .temp-min { background-color: #60a3bc; }   /* Azul Pastel */
+    .viento { background-color: #3c6382; }     /* Azul Pizarra */
+    
+    .hum-max { background-color: #6a89cc; }    /* Azul Lavanda */
+    .hum-min { background-color: #4b6584; }    /* Gris Azulado Oscuro */
+    .uv { background-color: #d4af37; }         /* Amarillo Oro Mate */
+    
+    .presion-max { background-color: #38ada9; }/* Turquesa Opaco */
+    .presion-min { background-color: #57606f; }/* Gris Tormenta */
+    .lluvia { background-color: #20b2aa; }     /* Verde Claro Marino */
+
+    /* Barra inferior de sincronización */
+    .actualizado {
+      text-align: center;
+      font-size: 0.85rem;
+      color: #4a5568;
+      font-weight: 600;
+      background: #edf2f7;
+      padding: 8px 25px;
+      border-radius: 20px;
+      display: inline-block;
+      margin: 20px auto 0 auto;
+      border: 1px solid #e2e8f0;
+    }
+    .center-wrapper {
+      text-align: center;
+    }
+  </style>
 </head>
-<body class="font-sans antialiased p-4">
+<body>
 
-    <!-- CONTENEDOR PRINCIPAL DEL IFRAME -->
-    <div class="w-full space-y-6">
-        
-        <!-- BARRA DE PESTAÑAS Y CONTROL -->
-        <div class="flex justify-between items-center border-b border-slate-800 pb-3">
-            <div class="bg-slate-900 border border-slate-800 p-1 rounded-lg flex gap-1 w-[450px]">
-                <button onclick="switchPeriod('dia')" id="btn-dia" class="flex-1 text-center py-2 text-sm font-bold rounded-md transition-all duration-200 bg-blue-600 text-white shadow">
-                    Diarios
-                </button>
-                <button onclick="switchPeriod('mes')" id="btn-mes" class="flex-1 text-center py-2 text-sm font-bold rounded-md transition-all duration-200 text-slate-400 hover:text-white hover:bg-slate-800/50">
-                    Mensuales
-                </button>
-                <button onclick="switchPeriod('any')" id="btn-any" class="flex-1 text-center py-2 text-sm font-bold rounded-md transition-all duration-200 text-slate-400 hover:text-white hover:bg-slate-800/50">
-                    Anuales
-                </button>
-            </div>
-            
-            <!-- Indicador de Sincronización discreto -->
-            <div class="flex items-center gap-2 bg-slate-900 border border-slate-800 px-3 py-1.5 rounded-md text-xs text-slate-400 font-mono">
-                <span id="status-dot" class="w-2 h-2 rounded-full bg-amber-500 animate-pulse"></span>
-                <span id="status-text">CMI API</span>
-            </div>
-        </div>
+  <!-- Selector superior mimetizado con tu entorno web -->
+  <div class="selector-periodo">
+    <button onclick="switchPeriod('dia')" id="btn-dia" class="btn-pestana activo">📅 Extremos Diarios</button>
+    <button onclick="switchPeriod('mes')" id="btn-mes" class="btn-pestana">🗓️ Extremos Mensuales</button>
+    <button onclick="switchPeriod('any')" id="btn-any" class="btn-pestana">🎆 Extremos Anuales</button>
+  </div>
 
-        <!-- CUADRÍCULA DE EXTREMOS (Fija 3 columnas de Escritorio) -->
-        <section class="grid grid-cols-3 gap-4">
+  <div class="dashboard-grid">
+    
+    <!-- FILA 1: EXTREMOS TÉRMICOS Y DE VIENTO -->
+    <div class="fila-1">
+      <div class="tarjeta temp-max">
+        <div class="icono">🔥</div>
+        <h3>Temperatura Máxima</h3>
+        <p class="valor" id="ext-tmax">--<span class="unidad">°C</span></p>
+      </div>
+      
+      <div class="tarjeta temp-min">
+        <div class="icono">❄️</div>
+        <h3>Temperatura Mínima</h3>
+        <p class="valor" id="ext-tmin">--<span class="unidad">°C</span></p>
+      </div>
+      
+      <div class="tarjeta viento">
+        <div class="icono">🌪️</div>
+        <h3>Racha Máxima Viento</h3>
+        <p class="valor" id="ext-vmax">--<span class="unidad">km/h</span></p>
+      </div>
+    </div>
+ <!-- FILA 2: HIGROMETRÍA Y RADIACIÓN -->
+    <div class="fila-2">
+      <div class="tarjeta hum-max">
+        <div class="icono">💧</div>
+        <h3>Humedad Máxima</h3>
+        <p class="valor" id="ext-hmax">--<span class="unidad">%</span></p>
+      </div>
 
-            <!-- Temperatura Máxima -->
-            <div class="bg-slate-900 border border-slate-800 rounded-xl p-5 relative overflow-hidden transition hover:border-red-500/30">
-                <div class="flex justify-between items-center mb-2">
-                    <span class="text-[10px] font-bold text-red-400 uppercase tracking-wider bg-red-500/10 px-2 py-0.5 rounded border border-red-500/15">Máxima</span>
-                    <span class="text-lg">🔥</span>
-                </div>
-                <h3 class="text-slate-400 text-xs font-medium">Temperatura Máxima</h3>
-                <div class="text-3xl font-black text-white mt-2 font-mono tracking-tight" id="ext-tmax">-- °C</div>
-            </div>
+      <div class="tarjeta hum-min">
+        <div class="icono">🏜️</div>
+        <h3>Humedad Mínima</h3>
+        <p class="valor" id="ext-hmin">--<span class="unidad">%</span></p>
+      </div>
 
-            <!-- Temperatura Mínima -->
-            <div class="bg-slate-900 border border-slate-800 rounded-xl p-5 relative overflow-hidden transition hover:border-blue-500/30">
-                <div class="flex justify-between items-center mb-2">
-                    <span class="text-[10px] font-bold text-blue-400 uppercase tracking-wider bg-blue-500/10 px-2 py-0.5 rounded border border-blue-500/15">Mínima</span>
-                    <span class="text-lg">❄️</span>
-                </div>
-                <h3 class="text-slate-400 text-xs font-medium">Temperatura Mínima</h3>
-                <div class="text-3xl font-black text-white mt-2 font-mono tracking-tight" id="ext-tmin">-- °C</div>
-            </div>
-
-            <!-- Racha de Viento -->
-            <div class="bg-slate-900 border border-slate-800 rounded-xl p-5 relative overflow-hidden transition hover:border-amber-500/30">
-                <div class="flex justify-between items-center mb-2">
-                    <span class="text-[10px] font-bold text-amber-400 uppercase tracking-wider bg-amber-500/10 px-2 py-0.5 rounded border border-amber-500/15">Viento</span>
-                    <span class="text-lg">🌪️</span>
-                </div>
-                <h3 class="text-slate-400 text-xs font-medium">Racha Máxima</h3>
-                <div class="text-3xl font-black text-white mt-2 font-mono tracking-tight" id="ext-vmax">-- km/h</div>
-            </div>
-
-  <!-- Humedad Máxima -->
-            <div class="bg-slate-900 border border-slate-800 rounded-xl p-5 relative overflow-hidden transition hover:border-emerald-500/30">
-                <div class="flex justify-between items-center mb-2">
-                    <span class="text-[10px] font-bold text-emerald-400 uppercase tracking-wider bg-emerald-500/10 px-2 py-0.5 rounded border border-emerald-500/15">Higrometría</span>
-                    <span class="text-lg">💧</span>
-                </div>
-                <h3 class="text-slate-400 text-xs font-medium">Humedad Máxima</h3>
-                <div class="text-3xl font-black text-white mt-2 font-mono tracking-tight" id="ext-hmax">-- %</div>
-            </div>
-
-            <!-- Humedad Mínima -->
-            <div class="bg-slate-900 border border-slate-800 rounded-xl p-5 relative overflow-hidden transition hover:border-orange-500/30">
-                <div class="flex justify-between items-center mb-2">
-                    <span class="text-[10px] font-bold text-orange-400 uppercase tracking-wider bg-orange-500/10 px-2 py-0.5 rounded border border-orange-500/15">Higrometría</span>
-                    <span class="text-lg">🏜️</span>
-                </div>
-                <h3 class="text-slate-400 text-xs font-medium">Humedad Mínima</h3>
-                <div class="text-3xl font-black text-white mt-2 font-mono tracking-tight" id="ext-hmin">-- %</div>
-            </div>
-
-            <!-- Presión Máxima -->
-            <div class="bg-slate-900 border border-slate-800 rounded-xl p-5 relative overflow-hidden transition hover:border-indigo-500/30">
-                <div class="flex justify-between items-center mb-2">
-                    <span class="text-[10px] font-bold text-indigo-400 uppercase tracking-wider bg-indigo-500/10 px-2 py-0.5 rounded border border-indigo-500/15">Barometría</span>
-                    <span class="text-lg">📈</span>
-                </div>
-                <h3 class="text-slate-400 text-xs font-medium">Presión Máxima</h3>
-                <div class="text-3xl font-black text-white mt-2 font-mono tracking-tight" id="ext-pmax">-- hPa</div>
-            </div>
-
-            <!-- Presión Mínima -->
-            <div class="bg-slate-900 border border-slate-800 rounded-xl p-5 relative overflow-hidden transition hover:border-teal-500/30">
-                <div class="flex justify-between items-center mb-2">
-                    <span class="text-[10px] font-bold text-teal-400 uppercase tracking-wider bg-teal-500/10 px-2 py-0.5 rounded border border-teal-500/15">Barometría</span>
-                    <span class="text-lg">📉</span>
-                </div>
-                <h3 class="text-slate-400 text-xs font-medium">Presión Mínima</h3>
-                <div class="text-3xl font-black text-white mt-2 font-mono tracking-tight" id="ext-pmin">-- hPa</div>
-            </div>
-
-            <!-- Índice UV Máximo -->
-            <div class="bg-slate-900 border border-slate-800 rounded-xl p-5 relative overflow-hidden transition hover:border-yellow-500/30">
-                <div class="flex justify-between items-center mb-2">
-                    <span class="text-[10px] font-bold text-yellow-400 uppercase tracking-wider bg-yellow-500/10 px-2 py-0.5 rounded border border-yellow-500/15">Radiación</span>
-                    <span class="text-lg">☀️</span>
-                </div>
-                <h3 class="text-slate-400 text-xs font-medium">UV Máximo</h3>
-                <div class="text-3xl font-black text-white mt-2 font-mono tracking-tight" id="ext-uvmax">--</div>
-            </div>
-
-            <!-- Precipitación Acumulada -->
-            <div class="bg-slate-900 border border-slate-800 rounded-xl p-5 relative overflow-hidden transition hover:border-sky-500/30">
-                <div class="flex justify-between items-center mb-2">
-                    <span class="text-[10px] font-bold text-sky-400 uppercase tracking-wider bg-sky-500/10 px-2 py-0.5 rounded border border-sky-500/15">Pluviometría</span>
-                    <span class="text-xl">🌧️</span>
-                </div>
-                <h3 class="text-slate-400 text-xs font-medium">Precipitación</h3>
-                <div class="text-3xl font-black text-white mt-2 font-mono tracking-tight" id="ext-ppt">-- mm</div>
-            </div>
-
-        </section>
+      <div class="tarjeta uv">
+        <div class="icono">☀️</div>
+        <h3>Índice UV Máximo</h3>
+        <p class="valor" id="ext-uvmax">--<span class="unidad">UVI</span></p>
+      </div>
     </div>
 
-    <script>
-        // Leemos tu propio JSON local autogenerado de forma directa
-        const LOCAL_JSON_URL = 'datos-estacion.json';
+    <!-- FILA 3: BAROMETRÍA Y PLUVIOMETRÍA -->
+    <div class="fila-3">
+      <div class="tarjeta presion-max">
+        <div class="icono">📈</div>
+        <h3>Presión Máxima</h3>
+        <p class="valor" id="ext-pmax">--<span class="unidad">hPa</span></p>
+      </div>
+
+      <div class="tarjeta presion-min">
+        <div class="icono">📉</div>
+        <h3>Presión Mínima</h3>
+        <p class="valor" id="ext-pmin">--<span class="unidad">hPa</span></p>
+      </div>
+
+      <div class="tarjeta lluvia">
+        <div class="icono">🌧️</div>
+        <h3>Precipitación Total</h3>
+        <p class="valor" id="ext-ppt">--<span class="unidad">mm</span></p>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- Barra de Sincronización Local idéntica a tu otra plantilla -->
+  <div class="center-wrapper">
+    <div class="actualizado" id="txt-tiempo">Sincronizando los extremos de Tetuán...</div>
+  </div>
+
+  <script>
+    // Conexión limpia con tu archivo local generado automáticamente en segundo plano
+    const LOCAL_JSON_URL = 'datos-estacion.json';
+    
+    let weatherData = null;
+    let currentPeriod = 'dia'; 
+
+    async function loadData() {
+      try {
+        const response = await fetch(LOCAL_JSON_URL);
+        if (!response.ok) throw new Error('Carga fallida');
         
-        let weatherData = null;
-        let currentPeriod = 'dia'; 
+        weatherData = await response.json();
+        renderData();
 
-        async function loadData() {
-            try {
-                const response = await fetch(LOCAL_JSON_URL);
-                if (!response.ok) throw new Error('Archivo local no encontrado');
-                
-                weatherData = await response.json();
-                renderData();
+        document.getElementById('txt-tiempo').textContent = 'Extremos sincronizados correctamente desde base local';
+      } catch (error) {
+        console.error("Error al leer el archivo autogenerado:", error);
+        document.getElementById('txt-tiempo').textContent = 'Error: Esperando actualización del robot de GitHub...';
+      }
+    }
 
-                document.getElementById('status-dot').className = "w-2 h-2 rounded-full bg-emerald-500";
-                document.getElementById('status-text').textContent = "SINCRO LOCAL";
-            } catch (error) {
-                console.error("Error al leer el archivo autogenerado:", error);
-                document.getElementById('status-dot').className = "w-2 h-2 rounded-full bg-red-500 animate-none";
-                document.getElementById('status-text').textContent = "ERROR LOCAL";
-            }
-        }
+    function renderData() {
+      if (!weatherData) return;
 
-        function renderData() {
-            if (!weatherData) return;
+      let block = {};
+      let suffix = '';
 
-            let block = {};
-            let suffix = '';
+      if (currentPeriod === 'dia') {
+        block = weatherData.dades_dia || {};
+        suffix = '_d';
+      } else if (currentPeriod === 'mes') {
+        block = weatherData.dades_mes || {};
+        suffix = '_m';
+      } else if (currentPeriod === 'any') {
+        block = weatherData.dades_any || {};
+        suffix = '_a';
+      }
 
-            if (currentPeriod === 'dia') {
-                block = weatherData.dades_dia || {};
-                suffix = '_d';
-            } else if (currentPeriod === 'mes') {
-                block = weatherData.dades_mes || {};
-                suffix = '_m';
-            } else if (currentPeriod === 'any') {
-                block = weatherData.dades_any || {};
-                suffix = '_a';
-            }
+      // Mapeo preciso inyectando los valores respetando tus etiquetas <span class="unidad">
+      document.getElementById('ext-tmax').innerHTML = block['TMax' + suffix] ? block['TMax' + suffix] + '<span class="unidad">°C</span>' : '--<span class="unidad">°C</span>';
+      document.getElementById('ext-tmin').innerHTML = block['TMin' + suffix] ? block['TMin' + suffix] + '<span class="unidad">°C</span>' : '--<span class="unidad">°C</span>';
+      document.getElementById('ext-vmax').innerHTML = block['VMax' + suffix] ? block['VMax' + suffix] + '<span class="unidad">km/h</span>' : '--<span class="unidad">km/h</span>';
+      document.getElementById('ext-hmax').innerHTML = block['HMax' + suffix] ? block['HMax' + suffix] + '<span class="unidad">%</span>' : '--<span class="unidad">%</span>';
+      document.getElementById('ext-hmin').innerHTML = block['HMin' + suffix] ? block['HMin' + suffix] + '<span class="unidad">%</span>' : '--<span class="unidad">%</span>';
+      document.getElementById('ext-pmax').innerHTML = block['PMax' + suffix] ? block['PMax' + suffix] + '<span class="unidad">hPa</span>' : '--<span class="unidad">hPa</span>';
+      document.getElementById('ext-pmin').innerHTML = block['PMin' + suffix] ? block['PMin' + suffix] + '<span class="unidad">hPa</span>' : '--<span class="unidad">hPa</span>';
+      document.getElementById('ext-uvmax').innerHTML = block['UVMax' + suffix] ? block['UVMax' + suffix] + '<span class="unidad">UVI</span>' : '--<span class="unidad">UVI</span>';
+      document.getElementById('ext-ppt').innerHTML = block['PPT' + suffix] ? block['PPT' + suffix] + '<span class="unidad">mm</span>' : '--<span class="unidad">mm</span>';
+    }
 
-            // Mapeo corregido de literales eliminando los caracteres de escape conflictivos
-            document.getElementById('ext-tmax').textContent = block['TMax' + suffix] ? block['TMax' + suffix] + ' °C' : '-- °C';
-            document.getElementById('ext-tmin').textContent = block['TMin' + suffix] ? block['TMin' + suffix] + ' °C' : '-- °C';
-            document.getElementById('ext-vmax').textContent = block['VMax' + suffix] ? block['VMax' + suffix] + ' km/h' : '-- km/h';
-            document.getElementById('ext-hmax').textContent = block['HMax' + suffix] ? block['HMax' + suffix] + ' %' : '-- %';
-            document.getElementById('ext-hmin').textContent = block['HMin' + suffix] ? block['HMin' + suffix] + ' %' : '-- %';
-            document.getElementById('ext-pmax').textContent = block['PMax' + suffix] ? block['PMax' + suffix] + ' hPa' : '-- hPa';
-            document.getElementById('ext-pmin').textContent = block['PMin' + suffix] ? block['PMin' + suffix] + ' hPa' : '-- hPa';
-            document.getElementById('ext-uvmax').textContent = block['UVMax' + suffix] || '--';
-            document.getElementById('ext-ppt').textContent = block['PPT' + suffix] ? block['PPT' + suffix] + ' mm' : '-- mm';
-        }
+    function switchPeriod(period) {
+      currentPeriod = period;
+      
+      // Alternar clases activas de los botones de pestañas
+      ['dia', 'mes', 'any'].forEach(p => {
+        const btn = document.getElementById('btn-' + p);
+        btn.classList.remove('activo');
+      });
 
-        function switchPeriod(period) {
-            currentPeriod = period;
-            
-            ['dia', 'mes', 'any'].forEach(p => {
-                const btn = document.getElementById('btn-' + p);
-                btn.className = "flex-1 text-center py-2 text-sm font-bold rounded-md transition-all duration-200 text-slate-400 hover:text-white hover:bg-slate-800/50";
-            });
+      const activeBtn = document.getElementById('btn-' + period);
+      activeBtn.classList.add('activo');
 
-            const activeBtn = document.getElementById('btn-' + period);
-            activeBtn.className = "flex-1 text-center py-2 text-sm font-bold rounded-md transition-all duration-200 bg-blue-600 text-white shadow";
+      renderData();
+    }
 
-            renderData();
-        }
-
-        loadData();
-    </script>
+    loadData();
+  </script>
 </body>
-</html>
+</html>      
