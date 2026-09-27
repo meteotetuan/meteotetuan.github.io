@@ -73,7 +73,7 @@
                 <div class="text-3xl font-black text-white mt-2 font-mono tracking-tight" id="ext-vmax">-- km/h</div>
             </div>
 
-   <!-- Humedad Máxima -->
+  <!-- Humedad Máxima -->
             <div class="bg-slate-900 border border-slate-800 rounded-xl p-5 relative overflow-hidden transition hover:border-emerald-500/30">
                 <div class="flex justify-between items-center mb-2">
                     <span class="text-[10px] font-bold text-emerald-400 uppercase tracking-wider bg-emerald-500/10 px-2 py-0.5 rounded border border-emerald-500/15">Higrometría</span>
@@ -137,42 +137,26 @@
     </div>
 
     <script>
-        const API_ENDPOINT = 'https://climameteoinfo.com';
-        // Desvío dinámico mediante túnel asíncrono transparente para enmascarar el User-Agent
-        const GATEWAY_URL = 'https://herokuapp.com' + API_ENDPOINT;
+        // Leemos tu propio JSON local autogenerado de forma directa
+        const LOCAL_JSON_URL = 'datos-estacion.json';
         
         let weatherData = null;
         let currentPeriod = 'dia'; 
 
         async function loadData() {
             try {
-                // Hacemos una llamada directa al servicio espejo alternativo de baja fricción
-                const response = await fetch('https://codetabs.com' + encodeURIComponent(API_ENDPOINT));
-                if (!response.ok) throw new Error('Cortafuegos activo');
+                const response = await fetch(LOCAL_JSON_URL);
+                if (!response.ok) throw new Error('Archivo local no encontrado');
                 
                 weatherData = await response.json();
                 renderData();
 
                 document.getElementById('status-dot').className = "w-2 h-2 rounded-full bg-emerald-500";
-                document.getElementById('status-text').textContent = "ONLINE";
+                document.getElementById('status-text').textContent = "SINCRO LOCAL";
             } catch (error) {
-                console.error("Reintentando pasarela secundaria...");
-                fallbackLoad();
-            }
-        }
-
-        async function fallbackLoad() {
-            try {
-                // Segundo puente CDN de contingencia en texto plano por si el principal tiene latencia
-                const response = await fetch('https://freeboard.io' + API_ENDPOINT);
-                weatherData = await response.json();
-                renderData();
-                document.getElementById('status-dot').className = "w-2 h-2 rounded-full bg-emerald-500";
-                document.getElementById('status-text').textContent = "ONLINE (FB)";
-            } catch (e) {
-                console.error("Error definitivo de comunicación:", e);
-                document.getElementById('status-dot').className = "w-2 h-2 rounded-full bg-red-500";
-                document.getElementById('status-text').textContent = "ERROR CONEXIÓN";
+                console.error("Error al leer el archivo autogenerado:", error);
+                document.getElementById('status-dot').className = "w-2 h-2 rounded-full bg-red-500 animate-none";
+                document.getElementById('status-text').textContent = "ERROR LOCAL";
             }
         }
 
@@ -193,26 +177,27 @@
                 suffix = '_a';
             }
 
-            document.getElementById('ext-tmax').textContent = block[`TMax${suffix}`] ? `${block[`TMax\${suffix}`]} °C` : '-- °C';
-            document.getElementById('ext-tmin').textContent = block[`TMin${suffix}`] ? `${block[`TMin\${suffix}`]} °C` : '-- °C';
-            document.getElementById('ext-vmax').textContent = block[`VMax${suffix}`] ? `${block[`VMax\${suffix}`]} km/h` : '-- km/h';
-            document.getElementById('ext-hmax').textContent = block[`HMax${suffix}`] ? `${block[`HMax\${suffix}`]} %` : '-- %';
-            document.getElementById('ext-hmin').textContent = block[`HMin${suffix}`] ? `${block[`HMin\${suffix}`]} %` : '-- %';
-            document.getElementById('ext-pmax').textContent = block[`PMax${suffix}`] ? `${block[`PMax\${suffix}`]} hPa` : '-- hPa';
-            document.getElementById('ext-pmin').textContent = block[`PMin${suffix}`] ? `${block[`PMin\${suffix}`]} hPa` : '-- hPa';
-            document.getElementById('ext-uvmax').textContent = block[`UVMax${suffix}`] || '--';
-            document.getElementById('ext-ppt').textContent = block[`PPT${suffix}`] ? `${block[`PPT\${suffix}`]} mm` : '-- mm';
+            // Mapeo corregido de literales eliminando los caracteres de escape conflictivos
+            document.getElementById('ext-tmax').textContent = block['TMax' + suffix] ? block['TMax' + suffix] + ' °C' : '-- °C';
+            document.getElementById('ext-tmin').textContent = block['TMin' + suffix] ? block['TMin' + suffix] + ' °C' : '-- °C';
+            document.getElementById('ext-vmax').textContent = block['VMax' + suffix] ? block['VMax' + suffix] + ' km/h' : '-- km/h';
+            document.getElementById('ext-hmax').textContent = block['HMax' + suffix] ? block['HMax' + suffix] + ' %' : '-- %';
+            document.getElementById('ext-hmin').textContent = block['HMin' + suffix] ? block['HMin' + suffix] + ' %' : '-- %';
+            document.getElementById('ext-pmax').textContent = block['PMax' + suffix] ? block['PMax' + suffix] + ' hPa' : '-- hPa';
+            document.getElementById('ext-pmin').textContent = block['PMin' + suffix] ? block['PMin' + suffix] + ' hPa' : '-- hPa';
+            document.getElementById('ext-uvmax').textContent = block['UVMax' + suffix] || '--';
+            document.getElementById('ext-ppt').textContent = block['PPT' + suffix] ? block['PPT' + suffix] + ' mm' : '-- mm';
         }
 
         function switchPeriod(period) {
             currentPeriod = period;
             
             ['dia', 'mes', 'any'].forEach(p => {
-                const btn = document.getElementById(`btn-${p}`);
+                const btn = document.getElementById('btn-' + p);
                 btn.className = "flex-1 text-center py-2 text-sm font-bold rounded-md transition-all duration-200 text-slate-400 hover:text-white hover:bg-slate-800/50";
             });
 
-            const activeBtn = document.getElementById(`btn-${period}`);
+            const activeBtn = document.getElementById('btn-' + period);
             activeBtn.className = "flex-1 text-center py-2 text-sm font-bold rounded-md transition-all duration-200 bg-blue-600 text-white shadow";
 
             renderData();
