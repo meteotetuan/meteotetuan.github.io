@@ -203,15 +203,19 @@
     let weatherData = null;
     let currentPeriod = 'dia'; 
 
-    async function loadData() {
+ async function loadData() {
       try {
-        const response = await fetch(LOCAL_JSON_URL);
+        // Añadimos un número único basado en la hora actual (?v=12345678)
+        // Esto engaña al navegador obligándole a descargar el archivo real sin usar la caché
+        const antiCacheUrl = `${LOCAL_JSON_URL}?v=${new Date().getTime()}`;
+        
+        const response = await fetch(antiCacheUrl);
         if (!response.ok) throw new Error('Carga fallida');
         
         weatherData = await response.json();
         renderData();
 
-        // Extracción y formateo correcto de la fecha y hora sin bugs de split
+        // Extracción y formateo correcto de la fecha y hora
         if (weatherData.dades_act && weatherData.dades_act.DATA_HORA) {
           const fechaHoraOriginal = weatherData.dades_act.DATA_HORA; 
           const partes = fechaHoraOriginal.split(' ');
@@ -231,6 +235,7 @@
         document.getElementById('txt-tiempo').textContent = 'Error: Esperando actualización del robot...';
       }
     }
+    
 
     function renderData() {
       if (!weatherData) return;
