@@ -72,10 +72,12 @@
                 <h3 class="text-slate-400 text-xs font-medium">Racha Máxima</h3>
                 <div class="text-3xl font-black text-white mt-2 font-mono tracking-tight" id="ext-vmax">-- km/h</div>
             </div>
-            <!-- Humedad Máxima -->
+
+
+ <!-- Humedad Máxima -->
             <div class="bg-slate-900 border border-slate-800 rounded-xl p-5 relative overflow-hidden transition hover:border-emerald-500/30">
                 <div class="flex justify-between items-center mb-2">
-                    <span class="text-[10px] font-bold text-emerald-400 uppercase tracking-wider bg-emerald-500/10 px-2 py-0.5 rounded border border-emerald-500/15">Humedad</span>
+                    <span class="text-[10px] font-bold text-emerald-400 uppercase tracking-wider bg-emerald-500/10 px-2 py-0.5 rounded border border-emerald-500/15">Higrometría</span>
                     <span class="text-lg">💧</span>
                 </div>
                 <h3 class="text-slate-400 text-xs font-medium">Humedad Máxima</h3>
@@ -85,7 +87,7 @@
             <!-- Humedad Mínima -->
             <div class="bg-slate-900 border border-slate-800 rounded-xl p-5 relative overflow-hidden transition hover:border-orange-500/30">
                 <div class="flex justify-between items-center mb-2">
-                    <span class="text-[10px] font-bold text-orange-400 uppercase tracking-wider bg-orange-500/10 px-2 py-0.5 rounded border border-orange-500/15">Humedad</span>
+                    <span class="text-[10px] font-bold text-orange-400 uppercase tracking-wider bg-orange-500/10 px-2 py-0.5 rounded border border-orange-500/15">Higrometría</span>
                     <span class="text-lg">🏜️</span>
                 </div>
                 <h3 class="text-slate-400 text-xs font-medium">Humedad Mínima</h3>
@@ -95,7 +97,7 @@
             <!-- Presión Máxima -->
             <div class="bg-slate-900 border border-slate-800 rounded-xl p-5 relative overflow-hidden transition hover:border-indigo-500/30">
                 <div class="flex justify-between items-center mb-2">
-                    <span class="text-[10px] font-bold text-indigo-400 uppercase tracking-wider bg-indigo-500/10 px-2 py-0.5 rounded border border-indigo-500/15">Presión</span>
+                    <span class="text-[10px] font-bold text-indigo-400 uppercase tracking-wider bg-indigo-500/10 px-2 py-0.5 rounded border border-indigo-500/15">Barometría</span>
                     <span class="text-lg">📈</span>
                 </div>
                 <h3 class="text-slate-400 text-xs font-medium">Presión Máxima</h3>
@@ -105,7 +107,7 @@
             <!-- Presión Mínima -->
             <div class="bg-slate-900 border border-slate-800 rounded-xl p-5 relative overflow-hidden transition hover:border-teal-500/30">
                 <div class="flex justify-between items-center mb-2">
-                    <span class="text-[10px] font-bold text-teal-400 uppercase tracking-wider bg-teal-500/10 px-2 py-0.5 rounded border border-teal-500/15">Presión</span>
+                    <span class="text-[10px] font-bold text-teal-400 uppercase tracking-wider bg-teal-500/10 px-2 py-0.5 rounded border border-teal-500/15">Barometría</span>
                     <span class="text-lg">📉</span>
                 </div>
                 <h3 class="text-slate-400 text-xs font-medium">Presión Mínima</h3>
@@ -125,7 +127,7 @@
             <!-- Precipitación Acumulada -->
             <div class="bg-slate-900 border border-slate-800 rounded-xl p-5 relative overflow-hidden transition hover:border-sky-500/30">
                 <div class="flex justify-between items-center mb-2">
-                    <span class="text-[10px] font-bold text-sky-400 uppercase tracking-wider bg-sky-500/10 px-2 py-0.5 rounded border border-sky-500/15">Lluvia</span>
+                    <span class="text-[10px] font-bold text-sky-400 uppercase tracking-wider bg-sky-500/10 px-2 py-0.5 rounded border border-sky-500/15">Pluviometría</span>
                     <span class="text-xl">🌧️</span>
                 </div>
                 <h3 class="text-slate-400 text-xs font-medium">Precipitación</h3>
@@ -136,22 +138,18 @@
     </div>
 
     <script>
-        const ORIGINAL_API_URL = 'https://climameteoinfo.com';
-        // Usamos un proxy inverso abierto para saltar bloqueos CORS del navegador
-        const PROXY_URL = 'https://allorigins.win' + encodeURIComponent(ORIGINAL_API_URL);
+        const TARGET_API = 'https://climameteoinfo.com';
+        // Nuevo proxy ultrarrápido integrado vía CDN global
+        const PROXY_URL = 'https://corsproxy.io/?' + encodeURIComponent(TARGET_API);
         
         let weatherData = null;
         let currentPeriod = 'dia'; 
 
         async function loadData() {
             try {
-                // Intentamos primero a través del proxy CORS que formatea cabeceras automáticamente
-                let response = await fetch(PROXY_URL);
-                
-                // Si falla, hacemos fallback a la URL directa por si acaso
-                if (!response.ok) {
-                    response = await fetch(ORIGINAL_API_URL);
-                }
+                // Forzamos la petición limpia a través de la infraestructura CDN del proxy
+                const response = await fetch(PROXY_URL);
+                if (!response.ok) throw new Error('Proxy desincronizado');
                 
                 weatherData = await response.json();
                 renderData();
@@ -159,9 +157,9 @@
                 document.getElementById('status-dot').className = "w-2 h-2 rounded-full bg-emerald-500";
                 document.getElementById('status-text').textContent = "ONLINE";
             } catch (error) {
-                console.error("Error cargando extremos:", error);
+                console.error("Error en pasarela CORS:", error);
                 document.getElementById('status-dot').className = "w-2 h-2 rounded-full bg-red-500 animate-none";
-                document.getElementById('status-text').textContent = "CORS ERR";
+                document.getElementById('status-text').textContent = "ERROR CONEXIÓN";
             }
         }
 
