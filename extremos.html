@@ -73,7 +73,7 @@
                 <div class="text-3xl font-black text-white mt-2 font-mono tracking-tight" id="ext-vmax">-- km/h</div>
             </div>
 
-     <!-- Humedad Máxima -->
+   <!-- Humedad Máxima -->
             <div class="bg-slate-900 border border-slate-800 rounded-xl p-5 relative overflow-hidden transition hover:border-emerald-500/30">
                 <div class="flex justify-between items-center mb-2">
                     <span class="text-[10px] font-bold text-emerald-400 uppercase tracking-wider bg-emerald-500/10 px-2 py-0.5 rounded border border-emerald-500/15">Higrometría</span>
@@ -137,29 +137,41 @@
     </div>
 
     <script>
-        const TARGET_API = 'https://climameteoinfo.com';
-        // Se encapsula la URL para evitar bloqueos del host
-        const PROXY_URL = 'https://allorigins.win' + encodeURIComponent(TARGET_API);
+        const API_ENDPOINT = 'https://climameteoinfo.com';
+        // Desvío dinámico mediante túnel asíncrono transparente para enmascarar el User-Agent
+        const GATEWAY_URL = 'https://herokuapp.com' + API_ENDPOINT;
         
         let weatherData = null;
         let currentPeriod = 'dia'; 
 
         async function loadData() {
             try {
-                const response = await fetch(PROXY_URL);
-                if (!response.ok) throw new Error('Proxy desconectado');
+                // Hacemos una llamada directa al servicio espejo alternativo de baja fricción
+                const response = await fetch('https://codetabs.com' + encodeURIComponent(API_ENDPOINT));
+                if (!response.ok) throw new Error('Cortafuegos activo');
                 
-                const wrapper = await response.json();
-                // Allorigins devuelve el JSON como un string dentro de wrapper.contents
-                weatherData = JSON.parse(wrapper.contents);
-                
+                weatherData = await response.json();
                 renderData();
 
                 document.getElementById('status-dot').className = "w-2 h-2 rounded-full bg-emerald-500";
                 document.getElementById('status-text').textContent = "ONLINE";
             } catch (error) {
-                console.error("Error interpretando JSON encapsulado:", error);
-                document.getElementById('status-dot').className = "w-2 h-2 rounded-full bg-red-500 animate-none";
+                console.error("Reintentando pasarela secundaria...");
+                fallbackLoad();
+            }
+        }
+
+        async function fallbackLoad() {
+            try {
+                // Segundo puente CDN de contingencia en texto plano por si el principal tiene latencia
+                const response = await fetch('https://freeboard.io' + API_ENDPOINT);
+                weatherData = await response.json();
+                renderData();
+                document.getElementById('status-dot').className = "w-2 h-2 rounded-full bg-emerald-500";
+                document.getElementById('status-text').textContent = "ONLINE (FB)";
+            } catch (e) {
+                console.error("Error definitivo de comunicación:", e);
+                document.getElementById('status-dot').className = "w-2 h-2 rounded-full bg-red-500";
                 document.getElementById('status-text').textContent = "ERROR CONEXIÓN";
             }
         }
