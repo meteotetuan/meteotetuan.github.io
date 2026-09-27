@@ -73,8 +73,7 @@
                 <div class="text-3xl font-black text-white mt-2 font-mono tracking-tight" id="ext-vmax">-- km/h</div>
             </div>
 
-
- <!-- Humedad Máxima -->
+     <!-- Humedad Máxima -->
             <div class="bg-slate-900 border border-slate-800 rounded-xl p-5 relative overflow-hidden transition hover:border-emerald-500/30">
                 <div class="flex justify-between items-center mb-2">
                     <span class="text-[10px] font-bold text-emerald-400 uppercase tracking-wider bg-emerald-500/10 px-2 py-0.5 rounded border border-emerald-500/15">Higrometría</span>
@@ -139,25 +138,27 @@
 
     <script>
         const TARGET_API = 'https://climameteoinfo.com';
-        // Nuevo proxy ultrarrápido integrado vía CDN global
-        const PROXY_URL = 'https://corsproxy.io/?' + encodeURIComponent(TARGET_API);
+        // Se encapsula la URL para evitar bloqueos del host
+        const PROXY_URL = 'https://allorigins.win' + encodeURIComponent(TARGET_API);
         
         let weatherData = null;
         let currentPeriod = 'dia'; 
 
         async function loadData() {
             try {
-                // Forzamos la petición limpia a través de la infraestructura CDN del proxy
                 const response = await fetch(PROXY_URL);
-                if (!response.ok) throw new Error('Proxy desincronizado');
+                if (!response.ok) throw new Error('Proxy desconectado');
                 
-                weatherData = await response.json();
+                const wrapper = await response.json();
+                // Allorigins devuelve el JSON como un string dentro de wrapper.contents
+                weatherData = JSON.parse(wrapper.contents);
+                
                 renderData();
 
                 document.getElementById('status-dot').className = "w-2 h-2 rounded-full bg-emerald-500";
                 document.getElementById('status-text').textContent = "ONLINE";
             } catch (error) {
-                console.error("Error en pasarela CORS:", error);
+                console.error("Error interpretando JSON encapsulado:", error);
                 document.getElementById('status-dot').className = "w-2 h-2 rounded-full bg-red-500 animate-none";
                 document.getElementById('status-text').textContent = "ERROR CONEXIÓN";
             }
