@@ -3,98 +3,142 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MeteoTetuán</title>
+    <title>MeteoTetuán - Panel de Gráficos</title>
     <style>
-        /* Fondo completamente blanco y tipografía limpia */
+        /* Fondo completamente blanco */
         body {
             background-color: #ffffff;
             font-family: Arial, sans-serif;
             margin: 0;
-            padding: 20px;
+            padding: 0;
+            color: #333333;
             text-align: center;
         }
-        /* Contenedor estático (no responsive) para mantener el tamaño real de tus gráficos */
+
+        /* Encabezado Principal */
+        header {
+            padding: 30px 0 20px 0;
+            border-bottom: 1px solid #eeeeee;
+            margin-bottom: 40px;
+        }
+        header h1 {
+            margin: 0;
+            font-size: 2.5em;
+            color: #1a1a1a;
+            font-weight: bold;
+            letter-spacing: -0.5px;
+        }
+
+        /* Contenedor Estático de Ancho Fijo (No responsive) */
         .panel-estatico {
-            width: 1000px; /* Puedes ampliar este ancho si tus gráficos son más grandes */
+            width: 1000px; 
             margin: 0 auto;
-            text-align: center; /* Centra las imágenes dentro del bloque fijo */
+            text-align: center;
         }
-        /* Espaciado para separar una imagen de otra */
+
+        /* Bloques de las imágenes fijas con sus títulos */
         .bloque-imagen {
-            margin-bottom: 30px;
-            display: inline-block;
-        }
-        /* Desactivamos el comportamiento responsive para conservar el tamaño original */
-        .bloque-imagen img {
+            margin-bottom: 45px;
             display: block;
-            max-width: none; 
+            text-align: center;
+        }
+        .titulo-grafico {
+            font-size: 1.2em;
+            font-weight: bold;
+            color: #1a1a1a;
+            margin-bottom: 12px;
+        }
+        .bloque-imagen img {
+            display: inline-block;
+            max-width: none;
             height: auto;
         }
-        /* Reloj de actualización discreto */
-        .reloj-status {
-            font-size: 14px;
-            color: #444444;
-            margin-bottom: 25px;
+
+        /* Botón de volver abajo */
+        footer {
+            margin: 60px 0;
+            padding-top: 30px;
+            border-top: 1px solid #eeeeee;
+        }
+        .btn-volver {
+            display: inline-block;
+            padding: 12px 30px;
+            background-color: #1a1a1a;
+            color: #ffffff;
+            text-decoration: none;
             font-weight: bold;
+            border-radius: 4px;
+            font-size: 0.95em;
+        }
+        .btn-volver:hover {
+            background-color: #444444;
         }
     </style>
 </head>
 <body>
 
-    <div class="reloj-status" id="reloj">Cargando panel meteorológico...</div>
+    <!-- Encabezado de MeteoTetuán -->
+    <header>
+        <h1>MeteoTetuán</h1>
+    </header>
 
-    <!-- Contenedor donde se inyectan las 7 imágenes dinámicamente -->
-    <div class="panel-estatico" id="contenedorMeteo">
-        <!-- El script se encarga de rellenar esto sin usar la caché vieja -->
-    </div>
+    <!-- Contenedor donde aparecerán los títulos y las imágenes -->
+    <div class="panel-estatico" id="contenedorMeteo"></div>
+
+    <!-- Enlace de vuelta a la página de inicio -->
+    <footer>
+        <a href="https://github.io" class="btn-volver">← Volver a la página de inicio</a>
+    </footer>
 
 <script>
-    // Listado con las 7 URLs exactas que me has facilitado
-    const listaImagenes = [
-        "https://meteotetuan.byethost7.com/pantalla.jpg",
-        "https://meteotetuan.byethost7.com/dailyhighlowbaroetc.gif",
-        "https://meteotetuan.byethost7.com/curr48hourgraph.gif",
-        "https://meteotetuan.byethost7.com/curr72hourgraph.gif",
-        "https://meteotetuan.byethost7.com/raindetail.gif",
-        "https://meteotetuan.byethost7.com/sunicon.jpg"
+    // Configuración de las imágenes con sus respectivos nombres de título personalizados
+    const datosImagenes = [
+        { url: "https://byethost7.com", titulo: "Pantalla Actual Weather Display" },
+        { url: "https://byethost7.com", titulo: "Valores Extremos Diarios (Barómetro y Otros)" },
+        { url: "https://byethost7.com", titulo: "Gráfico de las Últimas 24 Horas" },
+        { url: "https://byethost7.com", titulo: "Gráfico de las Últimas 48 Horas" },
+        { url: "https://byethost7.com", titulo: "Gráfico de las Últimas 72 Horas" },
+        { url: "https://byethost7.com", titulo: "Detalle de Precipitación" },
+        { url: "https://byethost7.com", titulo: "Radiación e Índice UV" }
     ];
 
-    const tiempoRefresco = 60000; // 60 segundos (1 minuto)
+    const tiempoRefresco = 60000; // Sincronización en vivo cada 1 minuto
 
-    function refrescarPanelCompleto() {
+    function refrescarTodoElPanel() {
         const contenedor = document.getElementById('contenedorMeteo');
-        const reloj = document.getElementById('reloj');
-        
-        // Generamos la marca de tiempo para obligar a ByetHost a dar el archivo nuevo
         const cacheBuster = new Date().getTime();
         
-        // Vaciamos el contenedor anterior para limpiar la memoria del navegador
+        // Limpiamos el contenedor para forzar la actualización limpia
         contenedor.innerHTML = "";
         
-        // Creamos cada elemento de imagen desde cero
-        listaImagenes.forEach(url => {
+        // Generamos los bloques estructurados con Título + Imagen
+        datosImagenes.forEach(item => {
             const divBloque = document.createElement('div');
             divBloque.className = "bloque-imagen";
             
-            const imgNode = document.createElement('img');
-            // Unimos la URL con el truco del tiempo variable (?v=12345678)
-            imgNode.src = url + "?v=" + cacheBuster;
-            imgNode.alt = "Datos MeteoTetuán";
+            // Creamos el elemento del título
+            const h3Titulo = document.createElement('div');
+            h3Titulo.className = "titulo-grafico";
+            h3Titulo.innerText = item.titulo;
             
+            // Creamos la imagen aplicando la protección anti-caché y anti-bloqueo
+            const imgNode = document.createElement('img');
+            imgNode.src = item.url + "?v=" + cacheBuster;
+            imgNode.alt = item.titulo;
+            imgNode.setAttribute('referrerpolicy', 'no-referrer');
+            
+            // Unimos todo en la interfaz
+            divBloque.appendChild(h3Titulo);
             divBloque.appendChild(imgNode);
             contenedor.appendChild(divBloque);
         });
-        
-        // Mostramos la hora exacta en la que se ha forzado la descarga
-        const ahora = new Date();
-        reloj.innerText = "🔄 Panel actualizado: " + ahora.toLocaleTimeString();
     }
 
-    // Primera ejecución al cargar la web por primera vez
-    refrescarPanelCompleto();
+    // Inicialización inmediata al abrir el sitio
+    refrescarTodoElPanel();
 
-    // Bucle automático para renovar las 7 imágenes simultáneamente cada minuto
-    setInterval(refrescarPanelCompleto, tiempoRefresco);
+    // Actualización silenciosa automática permanente
+    setInterval(refrescarTodoElPanel, tiempoRefresco);
 </script>
 
 </body>
