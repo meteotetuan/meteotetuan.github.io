@@ -211,7 +211,7 @@
     <div class="actualizado" id="txt-tiempo">Sincronizando los extremos de Tetuán...</div>
   </div>
 
-  <script>
+ <script>
     // Conexión limpia con tu archivo local generado automáticamente en segundo plano
     const LOCAL_JSON_URL = 'datos-estacion.json';
     
@@ -226,7 +226,23 @@
         weatherData = await response.json();
         renderData();
 
-        document.getElementById('txt-tiempo').textContent = 'Extremos sincronizados correctamente desde base local';
+        // Extraer la hora de la actualización del JSON de la estación
+        if (weatherData.dades_act && weatherData.dades_act.DATA_HORA) {
+          const fechaHoraOriginal = weatherData.dades_act.DATA_HORA; // Formato: "2026-09-27 22:00:00"
+          
+          // Separar la fecha de la hora para dejarlo más estético
+          const partes = fechaHoraOriginal.split(' ');
+          const fechaComponentes = partes[0].split('-');
+          const horaComponentes = partes[1].split(':');
+          
+          const fechaFormateada = `${fechaComponentes[2]}/${fechaComponentes[1]}/${fechaComponentes[0]}`;
+          const horaFormateada = `${horaComponentes[0]}:${horaComponentes[1]}`;
+
+          document.getElementById('txt-tiempo').textContent = `Extremos actualizados: ${fechaFormateada} a las ${horaFormateada}`;
+        } else {
+          document.getElementById('txt-tiempo').textContent = 'Extremos sincronizados correctamente desde base local';
+        }
+
       } catch (error) {
         console.error("Error al leer el archivo autogenerado:", error);
         document.getElementById('txt-tiempo').textContent = 'Error: Esperando actualización del robot de GitHub...';
@@ -279,5 +295,6 @@
 
     loadData();
   </script>
+  
 </body>
 </html>      
