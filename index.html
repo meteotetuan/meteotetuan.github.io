@@ -769,44 +769,12 @@
         <p class="intro">
 
             Estación de MeteoTetuán en tiempo real 
-		
-<div id="reloj" style="font-family: Arial, sans-serif; font-size: 20px; font-weight: bold; color: #333; text-align: center; margin-top: 20px;">
-  Cargando hora...
-</div>
 
-<script>
-  function actualizarReloj() {
-    const ahora = new Date();
-    
-    // Opciones para formatear la fecha en español
-    const opciones = { 
-      weekday: 'long', 
-      year: 'numeric', 
-      month: 'long', 
-      day: 'numeric',
-      hour: '2-digit',
-      minute: '2-digit',
-      second: '2-digit',
-      hour12: false // Cambia a true si prefieres formato de 12 horas (AM/PM)
-    };
-    
-    // Formatear la fecha y hora según el idioma del navegador
-    const fechaFormateada = ahora.toLocaleDateString('es-ES', opciones);
-    
-    // Insertar el texto en el HTML
-    document.getElementById('reloj').textContent = fechaFormateada;
-  }
-
-  // Ejecutar la función inmediatamente al cargar la página
-  actualizarReloj();
-  
-  // Actualizar el reloj cada segundo (1000 milisegundos)
-  setInterval(actualizarReloj, 1000);
-</script>        </p>
+      </p>
 
         <div class="resumen-meteo">
-      <div style="width: 1000px; height: 800px; overflow: hidden; position: relative;">
-		  <iframe src="https://www.weatherlink.com/embeddablePage/show/69089c037c094f15a466feb66f9ccf92/summary" scrolling="no" frameborder="0" width="1000" height="1550" style="border-radius: 15px; position: absolute; top: -150px; left: -30px; border: none;"></iframe>
+      <div style="width: 930px; height: 530px; overflow: hidden; position: relative;">
+		  <iframe src="https://www.weatherlink.com/embeddablePage/show/69089c037c094f15a466feb66f9ccf92/fullscreen" scrolling="no" frameborder="0" width="930" height="530" style="border-radius: 15px; position: absolute; top: -0px; left: -0px; border: none;"></iframe>
 	  </div>
 
  
