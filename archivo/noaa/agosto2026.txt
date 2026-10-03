@@ -1,9 +1,9 @@
                    MONTHLY CLIMATOLOGICAL SUMMARY for AUG. 2026
 
-NAME: MeteoTetuán   CITY: Madrid-Tetuan   STATE: Madrid 
+NAME: MeteoTetuan   CITY: Madrid-Tetuan   STATE: Madrid 
 ELEV:   695 m  LAT:  40 27' 37" N  LONG:   3 42' 21" W
 
-                   TEMPERATURE (°C), RAIN  (mm), WIND SPEED (km/hr)
+                   TEMPERATURE (C), RAIN  (mm), WIND SPEED (km/hr)
 
                                       HEAT  COOL        AVG
     MEAN                              DEG   DEG         WIND                 DOM
