@@ -372,8 +372,7 @@
             font-size: 11px;
             text-align: center;
         }
-
-
+			
         /* =========================================================
            ESTACIÓN
         ========================================================= */
@@ -640,6 +639,51 @@
             border: 0;
         }
 
+
+   /* =========================================================
+           TABLA INFORMES NOAA
+        ========================================================= */
+
+        .seccion-noaa {
+            width: 900px;
+            margin: 0 auto;
+        }
+
+        .tabla-noaa {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 15px;
+            font-size: 13px;
+        }
+
+        .tabla-noaa th {
+            background-color: #245b8a;
+            color: #ffffff;
+            font-weight: 600;
+            padding: 10px 5px;
+            text-align: center;
+            border: 1px solid #245b8a;
+        }
+
+        .tabla-noaa td {
+            padding: 10px 5px;
+            text-align: center;
+            border: 1px solid #dddddd;
+        }
+
+        .tabla-noaa tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+
+        .tabla-noaa tr:hover {
+            background-color: #f1f5f9;
+        }
+
+        .tabla-noaa td.mes-vacio {
+            color: #bbbbbb;
+            font-style: italic;
+        }
+			
     </style>
 
 </head>
@@ -1042,6 +1086,138 @@
 
     </section>
 
+<section class="seccion-noaa">
+        <h2>Archivos Climáticos NOAA (WeatherLink)</h2>
+        <div class="intro">
+            Consulta los resúmenes mensuales detallados de la estación meteorológica generados de forma automática.
+        </div>
+
+        <table class="tabla-noaa">
+            <thead>
+                <tr>
+                    <th>Año</th>
+                    <th>Ene</th>
+                    <th>Feb</th>
+                    <th>Mar</th>
+                    <th>Abr</th>
+                    <th>May</th>
+                    <th>Jun</th>
+                    <th>Jul</th>
+                    <th>Ago</th>
+                    <th>Sep</th>
+                    <th>Oct</th>
+                    <th>Nov</th>
+                    <th>Dic</th>
+                </tr>
+            </thead>
+            <tbody>
+                <!-- Año 2023 -->
+                <tr>
+                    <!-- Reemplaza el # por la URL correspondiente de WeatherLink -->
+                    <td><strong>2023</strong></td>
+                    <td><a href="#">Ene</a></td>
+                    <td><a href="#">Feb</a></td>
+                    <td><a href="#">Mar</a></td>
+                    <td><a href="#">Abr</a></td>
+                    <td><a href="#">May</a></td>
+                    <td><a href="#">Jun</a></td>
+                    <td><a href="#">Jul</a></td>
+                    <td><a href="#">Ago</a></td>
+                    <td><a href="#">Sep</a></td>
+                    <td><a href="#">Oct</a></td>
+                    <td><a href="#">Nov</a></td>
+                    <td><a href="#">Dic</a></td>
+                </tr>
+
+                <!-- Año 2024 -->
+                <tr>
+                    <td><strong>2024</strong></td>
+                    <td><a href="#">Ene</a></td>
+                    <td><a href="#">Feb</a></td>
+                    <td><a href="#">Mar</a></td>
+                    <td><a href="#">Abr</a></td>
+                    <td><a href="#">May</a></td>
+                    <td><a href="#">Jun</a></td>
+                    <td><a href="#">Jul</a></td>
+                    <td><a href="#">Ago</a></td>
+                    <td><a href="#">Sep</a></td>
+                    <td><a href="#">Oct</a></td>
+                    <td><a href="#">Nov</a></td>
+                    <td><a href="#">Dic</a></td>
+                </tr>
+
+                <!-- Año 2025 -->
+                <tr>
+                    <td><strong>2025</strong></td>
+                    <td><a href="#">Ene</a></td>
+                    <td><a href="#">Feb</a></td>
+                    <td><a href="#">Mar</a></td>
+                    <td><a href="#">Abr</a></td>
+                    <td><a href="#">May</a></td>
+                    <td><a href="#">Jun</a></td>
+                    <td><a href="#">Jul</a></td>
+                    <td><a href="#">Ago</a></td>
+                    <td><a href="#">Sep</a></td>
+                    <td><a href="#">Oct</a></td>
+                    <td><a href="#">Nov</a></td>
+                    <td><a href="#">Dic</a></td>
+                </tr>
+
+                <!-- Año 2026 -->
+                <tr>
+                    <td><strong>2026</strong></td>
+                    <td><a href="#">Ene</a></td>
+                    <td><a href="#">Feb</a></td>
+                    <td><a href="#">Mar</a></td>
+                    <td><a href="#">Abr</a></td>
+                    <td><a href="#">May</a></td>
+                    <td><a href="#">Jun</a></td>
+                    <td><a href="#">Jul</a></td>
+                    <td><a href="#">Ago</a></td>
+                    <td><a href="#">Sep</a></td>
+                    <!-- A partir de aquí los he dejado preparados como 'mes-vacio' sin enlace -->
+                    <td class="mes-vacio">Oct</td>
+                    <td class="mes-vacio">Nov</td>
+                    <td class="mes-vacio">Dic</td>
+                </tr>
+
+                <!-- Año 2027 -->
+                <tr>
+                    <td><strong>2027</strong></td>
+                    <td class="mes-vacio">Ene</td>
+                    <td class="mes-vacio">Feb</td>
+                    <td class="mes-vacio">Mar</td>
+                    <td class="mes-vacio">Abr</td>
+                    <td class="mes-vacio">May</td>
+                    <td class="mes-vacio">Jun</td>
+                    <td class="mes-vacio">Jul</td>
+                    <td class="mes-vacio">Ago</td>
+                    <td class="mes-vacio">Sep</td>
+                    <td class="mes-vacio">Oct</td>
+                    <td class="mes-vacio">Nov</td>
+                    <td class="mes-vacio">Dic</td>
+                </tr>
+
+                <!-- Año 2028 -->
+                <tr>
+                    <td><strong>2028</strong></td>
+                    <td class="mes-vacio">Ene</td>
+                    <td class="mes-vacio">Feb</td>
+                    <td class="mes-vacio">Mar</td>
+                    <td class="mes-vacio">Abr</td>
+                    <td class="mes-vacio">May</td>
+                    <td class="mes-vacio">Jun</td>
+                    <td class="mes-vacio">Jul</td>
+                    <td class="mes-vacio">Ago</td>
+                    <td class="mes-vacio">Sep</td>
+                    <td class="mes-vacio">Oct</td>
+                    <td class="mes-vacio">Nov</td>
+                    <td class="mes-vacio">Dic</td>
+                </tr>
+            </tbody>
+        </table>
+    </section>
+	
 
     <!-- =========================================================
          LA ESTACIÓN
