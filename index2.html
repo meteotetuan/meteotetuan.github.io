@@ -382,3 +382,163 @@
             border-radius: 4px;
             overflow: hidden;
         }
+                /* =========================================================
+           PREVISIÓN AEMET
+        ========================================================= */
+
+        /*
+           El iframe de AEMET genera bastante espacio blanco inferior.
+           Dejamos el iframe completo, pero recortamos visualmente
+           el contenedor al alto real del frame (370px).
+        */
+
+        .prevision {
+            width: 900px;
+            height: 370px; /* Corregido hueco fantasma inferior de 720px a 370px */
+            margin: 0 auto;
+            overflow: hidden;
+        }
+
+        .prevision iframe {
+            display: block;
+            width: 900px;
+            height: 370px;
+            border: 0;
+        }
+
+        .fuente-prevision {
+            margin-top: 8px;
+            color: #777777;
+            font-size: 11px;
+            text-align: center;
+        }
+			
+        /* =========================================================
+           ESTACIÓN
+        ========================================================= */
+
+        .texto-estacion {
+            width: 1000px;
+            margin: 0 auto 22px;
+            color: #444444;
+            text-align: center;
+        }
+
+        .equipamiento {
+            width: 800px;
+            margin: 0 auto 28px;
+            text-align: center;
+        }
+
+        .equipamiento span:not(:last-child)::after {
+            content: " · ";
+            color: #888888;
+        }
+
+        .galeria {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 8px;
+            width: 900px;
+            margin: 0 auto;
+        }
+
+        .galeria img {
+            width: 100%;
+            height: 220px;
+            object-fit: cover;
+            border-radius: 4px; /* Esquinas redondeadas unificadas con el widget */
+        }
+
+
+        /* =========================================================
+           ENLACES
+        ========================================================= */
+
+        .enlaces {
+            display: flex;
+            justify-content: space-between;
+            width: 800px;
+            margin: 0 auto;
+        }
+
+        .grupo {
+            width: 240px;
+        }
+
+        .grupo h3 {
+            margin: 0 0 10px;
+            font-size: 15px;
+            font-weight: normal;
+        }
+
+        .grupo ul {
+            margin: 0;
+            padding-left: 18px;
+        }
+
+        .grupo li {
+            margin-bottom: 5px;
+        }
+
+
+        /* =========================================================
+           REDES METEOROLÓGICAS
+        ========================================================= */
+
+        .redes-meteo {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 24px 16px;
+            width: 900px;
+            margin: 0 auto;
+            text-align: center;
+        }
+
+        .redes-meteo a {
+            display: block;
+            margin: 0;
+            color: #444444;
+            font-size: 12px;
+            text-decoration: none;
+        }
+
+        .redes-meteo a:hover {
+            color: #245b8a;
+            text-decoration: none;
+        }
+
+        .redes-meteo img {
+            width: 68px;
+            height: 68px;
+            margin: 0 auto 8px;
+            border-radius: 4px; /* Cambiado de 14px a 4px para unificar el redondeado fino */
+            object-fit: cover;
+            transition: transform .15s ease;
+        }
+
+        .redes-meteo a:hover img {
+            transform: translateY(-2px);
+        }
+
+        .texto-redes {
+            width: 760px;
+            margin: 0 auto 20px;
+            color: #555555;
+            text-align: center;
+        }
+
+
+        /* =========================================================
+           FOOTER
+        ========================================================= */
+
+        footer {
+            padding: 30px 0 45px;
+            color: #777777;
+            font-size: 11px;
+            text-align: center;
+        }
+
+    </style>
+</head>
