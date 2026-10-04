@@ -542,3 +542,202 @@
 
     </style>
 </head>
+        /* =========================================================
+           DATOS ACTUALES - RESUMEN HORIZONTAL
+        ========================================================= */
+
+        .resumen-meteo {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 12px;
+            width: 940px;
+            margin: 0 auto;
+        }
+
+        .dato-meteo {
+            box-sizing: border-box;
+            width: 220px;
+            min-height: 145px;
+            padding: 17px 10px 20px;
+            border: 1px solid;
+            border-radius: 12px;
+            text-align: center;
+        }
+
+        .dato-meteo-icono {
+            display: block;
+            width: 28px;
+            height: 28px;
+            margin: 0 auto 6px;
+        }
+
+        .dato-meteo-icono svg {
+            display: block;
+            width: 28px;
+            height: 28px;
+            fill: none;
+            stroke: currentColor;
+            stroke-width: 1.8;
+            stroke-linecap: round;
+            stroke-linejoin: round;
+        }
+
+        .dato-meteo-nombre {
+            display: block;
+            margin-bottom: 8px;
+            font-size: 14px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.3px;
+        }
+
+        .dato-meteo-valor {
+            display: block;
+            font-size: 37px;
+            font-weight: 700;
+            line-height: 1.2;
+        }
+
+        .dato-temperatura {
+            background: #fff5f2;
+            border-color: #f2d5cc;
+            color: #b9573f;
+        }
+
+        .dato-humedad {
+            background: #f1f8fd;
+            border-color: #cfe3f1;
+            color: #3277a8;
+        }
+
+        .dato-presion {
+            background: #f4f6fa;
+            border-color: #d8dee8;
+            color: #596a82;
+        }
+
+        .dato-viento {
+            background: #f1faf7;
+            border-color: #cfe8df;
+            color: #39806c;
+        }
+
+        .dato-lluvia {
+            background: #f0f9fb;
+            border-color: #cce7ec;
+            color: #278095;
+        }
+
+        .dato-uv {
+            background: #fffbea;
+            border-color: #eee1aa;
+            color: #9b7a12;
+        }
+
+        .dato-solar {
+            background: #fff6e9;
+            border-color: #efd9b8;
+            color: #b46b20;
+        }
+
+        .dato-meteo .dato-meteo-nombre,
+        .dato-meteo .dato-meteo-valor {
+            color: inherit;
+        }
+
+
+        /* =========================================================
+           FACEBOOK
+        ========================================================= */
+
+        .facebook-bloque {
+            width: 560px;
+            margin: 25px auto 10px;
+            padding: 22px 20px 24px;
+            background: #f8fafc;
+            border: 1px solid #d9e2ea;
+            border-radius: 12px;
+            text-align: center;
+        }
+
+        .facebook-bloque h2 {
+            margin: 0 0 16px;
+            color: #333333;
+            font-size: 18px;
+            font-weight: normal;
+        }
+
+        .facebook-contenido {
+            width: 500px;
+            margin: 0 auto;
+            overflow: hidden;
+            display: flex;
+            justify-content: center;
+        }
+
+        /* Garantiza total fluidez de renderizado si decides usar el iframe seguro */
+        .facebook-contenido iframe {
+            display: block;
+            width: 500px;
+            height: 500px;
+            margin: 0 auto;
+            border: 0;
+            border-radius: 4px;
+            -webkit-overflow-scrolling: touch;
+        }
+
+
+        /* =========================================================
+           TABLA INFORMES NOAA
+        ========================================================= */
+
+        .seccion-noaa {
+            width: 900px;
+            margin: 0 auto;
+        }
+
+        .tabla-noaa {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 15px;
+            font-size: 13px;
+        }
+
+        .tabla-noaa th {
+            background-color: #245b8a;
+            color: #ffffff;
+            font-weight: 600;
+            padding: 10px 5px;
+            text-align: center;
+            border: 1px solid #245b8a;
+        }
+
+        .tabla-noaa td {
+            padding: 10px 5px;
+            text-align: center;
+            border: 1px solid #dddddd;
+        }
+
+        .tabla-noaa tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+
+        .tabla-noaa tr:hover {
+            background-color: #f1f5f9;
+        }
+
+        .tabla-noaa td.mes-vacio {
+            color: #bbbbbb;
+            font-style: italic;
+        }
+			
+    </style>
+
+</head>
+
+<!-- Raíz oficial requerida por Meta SDK -->
+<div id="fb-root"></div>
+<script async defer crossorigin="anonymous" src="https://connect.facebook.net/es_ES/sdk.js#xfbml=1&version=v21.0"></script>
+
+<body>
