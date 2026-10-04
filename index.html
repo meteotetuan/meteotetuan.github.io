@@ -774,53 +774,15 @@
 
         <div class="resumen-meteo">
 
-<!-- Contenedor Davis centrado con tus medidas exactas -->
-<div id="contenedor-davis-estacion" style="width: 930px; height: 550px; margin: 0 auto; overflow: hidden;"></div>
-
-<script>
-  (function() {
-    // URL de tu estación meteorológica Davis en Madrid-Tetuán
-    var urlOriginal = "https://www.weatherlink.com/embeddablePage/show/69089c037c094f15a466feb66f9ccf92/fullscreen"; 
-
-    // Función para inyectar la marca de tiempo y romper la caché de Apple (WebKit)
-    function generarUrlLimpia() {
-      var t = new Date().getTime();
-      return urlOriginal + "?v=" + t;
-    }
-
-    // Creamos el iframe con tus especificaciones exactas
-    var iframe = document.createElement('iframe');
-    iframe.id = "estacion-davis";
-    iframe.src = generarUrlLimpia();
-    iframe.style.width = "930px";
-    iframe.style.height = "550px";
-    iframe.style.border = "none";
-    iframe.setAttribute("frameborder", "0"); // Sin bordes
-    iframe.setAttribute("scrolling", "no");    // Sin barras de scroll
-    iframe.setAttribute("allowfullscreen", "true");
-    iframe.setAttribute("importance", "high"); // Prioridad alta en el navegador
-    
-    // Insertamos el iframe en la web
-    document.getElementById('contenedor-davis-estacion').appendChild(iframe);
-
-    // EL PARCHE: Forzamos el empujón invisible a los 1,8 segundos para activar los datos
-    setTimeout(function() {
-      var miIframe = document.getElementById('estacion-davis');
-      if (miIframe) {
-        miIframe.src = generarUrlLimpia();
-      }
-    }, 1800);
-  })();
-</script>
-			
-        </div>
+<a href="https://www.climameteoinfo.com/webest/id.MAD_232106844758.html"><img src="https://www.climameteoinfo.com/past/id.MAD_232106844758.png" alt="Datos actuales Tetuán CMI"
+                 style="border-radius: 15px;"></a>
 
 
         <div class="datos-completos">
 
             <a
                 class="boton-datos"
-                href="https://www.weatherlink.com/embeddablePage/show/69089c037c094f15a466feb66f9ccf92/summary"
+                href="https://www.climameteoinfo.com/webest/id.MAD_232106844758.html"
                 target="_blank"
             >
                 <svg viewBox="0 0 24 24" aria-hidden="true">
@@ -829,7 +791,7 @@
                     <path d="M16 19v-7"></path>
                     <path d="M22 19H2"></path>
                 </svg>
-                Sumario de datos completo
+                Click para datos, extremos y gráficos completos
             </a>
   <a
                 class="boton-datos"
@@ -864,8 +826,7 @@
 
             <a
                 href="https://images-webcams.windy.com/06/1714715306/current/full/1714715306.jpg"
-                target="_blank"
-             style="border-radius: 15px;">
+                target="_blank">
 
                 <img
                     id="imagenWebcam"
