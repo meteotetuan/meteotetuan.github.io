@@ -1,0 +1,384 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+
+    <!-- Mantiene el ancho fijo también en móvil -->
+    <meta name="viewport" content="width=1050">
+
+    <meta
+        name="description"
+        content="MeteoTetuán. Datos meteorológicos en tiempo real desde Tetuán, Madrid."
+    >
+
+    <title>MeteoTetuán</title>
+    <link rel="icon" href="favicon.ico" type="image/x-icon">
+    <style>
+
+        /* =========================================================
+           GENERAL
+        ========================================================= */
+
+        body {
+            margin: 0;
+            padding: 0;
+            background: #ffffff;
+            color: #222222;
+            font-family: Arial, Helvetica, sans-serif;
+            font-size: 14px;
+            line-height: 1.6;
+        }
+
+        .web {
+            width: 1000px;
+            margin: 0 auto;
+        }
+
+        img {
+            display: block;
+            max-width: 100%;
+        }
+
+        a {
+            color: #245b8a;
+            text-decoration: none;
+        }
+
+        a:visited {
+            color: #245b8a;
+        }
+
+        a:hover {
+            color: #173f63;
+            text-decoration: underline;
+        }
+
+
+        /* =========================================================
+           LOGO
+        ========================================================= */
+
+        h1 {
+            margin: 28px 0 18px;
+            color: #245b8a;
+            font-size: 36px;
+            font-weight: 800;
+            letter-spacing: -1px;
+            text-align: center;
+        }
+
+
+        /* =========================================================
+           ENCABEZADO
+        ========================================================= */
+
+        .encabezado {
+            position: relative;
+            width: 1000px;
+            overflow: hidden;
+        }
+
+        .encabezado img {
+            width: 1000px;
+            height: 200px;
+            object-fit: cover;
+        }
+
+        /*
+           Difuminado muy ligero en los laterales
+           para integrar la foto con el fondo blanco.
+        */
+
+        .encabezado::before,
+        .encabezado::after {
+            position: absolute;
+            top: 0;
+            bottom: 0;
+            z-index: 2;
+            width: 75px;
+            content: "";
+            pointer-events: none;
+        }
+
+        .encabezado::before {
+            left: 0;
+            background: linear-gradient(
+                to right,
+                rgba(255,255,255,0.95),
+                rgba(255,255,255,0)
+            );
+        }
+
+        .encabezado::after {
+            right: 0;
+            background: linear-gradient(
+                to left,
+                rgba(255,255,255,0.95),
+                rgba(255,255,255,0)
+            );
+        }
+
+
+        /* =========================================================
+           MENÚ
+        ========================================================= */
+
+        .menu {
+            padding: 14px 0;
+            text-align: center;
+        }
+
+        .menu a {
+            margin: 0 6px;
+            font-size: 13px;
+        }
+
+
+        /* =========================================================
+           SECCIONES
+        ========================================================= */
+
+        section {
+            padding: 38px 0;
+        }
+
+        h2 {
+            margin: 0 0 20px;
+            font-size: 20px;
+            font-weight: normal;
+            text-align: center;
+        }
+
+        .intro {
+            width: 760px;
+            margin: 0 auto 25px;
+            color: #555555;
+            text-align: center;
+        }
+
+
+        /* =========================================================
+           ESTADO ONLINE
+        ========================================================= */
+
+        .titulo-estado {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .estado-online {
+            display: inline-flex;
+            align-items: center;
+            color: #555555;
+            font-size: 11px;
+            font-weight: normal;
+        }
+
+        .piloto-online {
+            display: inline-block;
+            width: 8px;
+            height: 8px;
+            margin-right: 5px;
+            background: #20b520;
+            border-radius: 50%;
+            animation: parpadeo 1.4s infinite;
+        }
+
+        @keyframes parpadeo {
+
+            0%,
+            100% {
+                opacity: 1;
+            }
+
+            50% {
+                opacity: 0.2;
+            }
+
+        }
+
+
+        /* =========================================================
+           WEATHERLINK / CLIMAMETEOINFO
+        ========================================================= */
+
+        .weatherlink {
+            width: 1000px;
+            margin: 0 auto;
+            overflow: hidden;
+            display: flex;
+            justify-content: center;
+        }
+
+        .weatherlink-card {
+            background-color: #1a1e24; 
+            padding: 15px; 
+            border-radius: 4px; 
+            overflow: hidden; 
+            box-shadow: 0 4px 12px rgba(0,0,0,0.3); 
+            transition: transform 0.2s, box-shadow 0.2s;
+            display: inline-block;
+            text-align: center;
+        }
+
+        .weatherlink-card:hover {
+            transform: scale(1.015); 
+            box-shadow: 0 6px 20px rgba(0,0,0,0.4);
+        }
+
+        .weatherlink img {
+            max-width: 100%; 
+            width: 620px; 
+            height: auto; 
+            border: none; 
+            display: block; 
+            margin: 0 auto; 
+            border-radius: 4px;
+        }
+
+
+        /* =========================================================
+           BOTÓN DATOS COMPLETOS
+        ========================================================= */
+
+        .datos-completos {
+            margin-top: 24px;
+            text-align: center;
+        }
+
+        .boton-datos {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 11px 20px;
+            background: #245b8a;
+            border: 1px solid #245b8a;
+            border-radius: 9px;
+            color: #ffffff;
+            font-size: 13px;
+            font-weight: 600;
+            text-decoration: none;
+            box-shadow: 0 3px 10px rgba(36, 91, 138, 0.16);
+            transition: background .15s ease, border-color .15s ease, transform .15s ease, box-shadow .15s ease;
+        }
+
+        .boton-datos:visited {
+            color: #ffffff;
+        }
+
+        .boton-datos:hover {
+            background: #1d4b72;
+            border-color: #1d4b72;
+            color: #ffffff;
+            text-decoration: none;
+            transform: translateY(-1px);
+            box-shadow: 0 5px 14px rgba(36, 91, 138, 0.22);
+        }
+
+        .boton-datos svg {
+            width: 17px;
+            height: 17px;
+            fill: none;
+            stroke: currentColor;
+            stroke-width: 2;
+            stroke-linecap: round;
+            stroke-linejoin: round;
+        }
+
+
+        /* =========================================================
+           WEBCAM
+        ========================================================= */
+
+        .webcam {
+            width: 900px;
+            margin: 0 auto;
+        }
+
+        .webcam img {
+            width: 900px;
+            height: auto;
+            border-radius: 4px; /* Esquinas redondeadas unificadas */
+        }
+
+
+        /* =========================================================
+           RADAR Y SATÉLITE
+        ========================================================= */
+
+        .observacion {
+            display: flex;
+            justify-content: space-between;
+            width: 900px;
+            margin: 0 auto;
+        }
+
+        .observacion-bloque {
+            width: 430px;
+            text-align: center;
+        }
+
+        .observacion-bloque h3 {
+            margin: 0 0 10px;
+            font-size: 15px;
+            font-weight: normal;
+        }
+
+        .observacion-bloque img {
+            width: 430px;
+            height: 350px;
+            object-fit: contain;
+            border-radius: 4px; /* Esquinas redondeadas unificadas */
+        }
+
+        .fuente {
+            margin-top: 7px;
+            color: #777777;
+            font-size: 11px;
+        }
+
+
+        /* =========================================================
+           WINDY
+        ========================================================= */
+
+        .windy {
+            width: 900px;
+            margin: 35px auto 0;
+            text-align: center;
+        }
+
+        .windy h3 {
+            margin: 0 0 12px;
+            font-size: 15px;
+            font-weight: normal;
+        }
+
+        .windy iframe {
+            display: block;
+            width: 900px;
+            height: 500px;
+            border: 0;
+            border-radius: 4px; /* Esquinas redondeadas unificadas */
+        }
+
+        /* =========================================================
+           WIDGET FACEBOOK (Parche de visualización para Safari)
+        ========================================================= */
+        .facebook-container {
+            width: 1000px;
+            margin: 30px auto 0;
+            display: flex;
+            justify-content: center;
+            clear: both;
+        }
+        .facebook-widget {
+            display: block;
+            min-width: 340px;
+            max-width: 500px;
+            background: #ffffff;
+            border-radius: 4px;
+            overflow: hidden;
+        }
