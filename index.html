@@ -774,44 +774,7 @@
 
         <div class="resumen-meteo">
 
-<!-- Contenedor Davis centrado con tus medidas exactas -->
-<div id="contenedor-davis-estacion" style="width: 930px; height: 550px; margin: 0 auto; overflow: hidden;"></div>
-
-<script>
-  (function() {
-    // URL de tu estación meteorológica Davis en Madrid-Tetuán
-    var urlOriginal = "https://www.weatherlink.com/embeddablePage/show/69089c037c094f15a466feb66f9ccf92/fullscreen"; 
-
-    // Función para inyectar la marca de tiempo y romper la caché de Apple (WebKit)
-    function generarUrlLimpia() {
-      var t = new Date().getTime();
-      return urlOriginal + "?v=" + t;
-    }
-
-    // Creamos el iframe con tus especificaciones exactas
-    var iframe = document.createElement('iframe');
-    iframe.id = "estacion-davis";
-    iframe.src = generarUrlLimpia();
-    iframe.style.width = "930px";
-    iframe.style.height = "550px";
-    iframe.style.border = "none";
-    iframe.setAttribute("frameborder", "0"); // Sin bordes
-    iframe.setAttribute("scrolling", "no");    // Sin barras de scroll
-    iframe.setAttribute("allowfullscreen", "true");
-    iframe.setAttribute("importance", "high"); // Prioridad alta en el navegador
-    
-    // Insertamos el iframe en la web
-    document.getElementById('contenedor-davis-estacion').appendChild(iframe);
-
-    // EL PARCHE: Forzamos el empujón invisible a los 1,8 segundos para activar los datos
-    setTimeout(function() {
-      var miIframe = document.getElementById('estacion-davis');
-      if (miIframe) {
-        miIframe.src = generarUrlLimpia();
-      }
-    }, 1800);
-  })();
-</script>			
+<iframe src="https://www.awekas.at/premium/insert.php4?id=29195&lg=es&eh=c&tz=0&header=1" width="600" height="690" frameborder="0" scrolling="no"></iframe>
 
         </div>
 
