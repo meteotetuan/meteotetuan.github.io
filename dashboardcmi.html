@@ -201,7 +201,6 @@
         <p class="valor"><span id="val-sun">--</span>  <span class="unidad">W/m2</span></p>
       </div>
     </div>
-    
     <!-- NUEVOS DATOS EN LÍNEAS (DOS COLUMNAS) -->
     <div class="seccion-datos-lineas">
       <!-- Columna Izquierda: Extremos Diarios -->
@@ -278,7 +277,9 @@
   <script>
     async function cargarDatosDashboard() {
       try {
-        const respuesta = await fetch('datos.php');
+        // Consultamos la API directamente
+        const urlApi = "https://climameteoinfo.com";
+        const respuesta = await fetch(urlApi);
         const json = await respuesta.json();
 
         const act = json.dades_act;
@@ -321,7 +322,7 @@
 
       } catch (error) {
         console.error("Error cargando los datos:", error);
-        document.getElementById('val-fecha').textContent = "Error de conexión con datos.php";
+        document.getElementById('val-fecha').textContent = "Error al conectar directamente con la API";
       }
     }
 
