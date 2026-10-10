@@ -278,7 +278,7 @@
     async function cargarDatosDashboard() {
       try {
         // Consultamos la API directamente
-        const urlApi = "https://climameteoinfo.com";
+        const urlApi = "https://www.climameteoinfo.com/bd/api.php?id_est=MAD_232106844758&key=bb46a5b59a796bcca0e2f576de0834b8a280b708bd71d66253ba5f8a79f460e4&format=json";
         const respuesta = await fetch(urlApi);
         const json = await respuesta.json();
 
