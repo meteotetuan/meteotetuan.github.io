@@ -215,7 +215,7 @@
   <script>
     async function actualizarMeteo() {
       try {
-        const respuesta = await fetch('datos.php');
+        const respuesta = await fetch('https://meteotetuan.w5.lt/datos.php');
         const data = await respuesta.json();
         
      
