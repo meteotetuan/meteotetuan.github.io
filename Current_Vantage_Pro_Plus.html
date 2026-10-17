@@ -168,12 +168,15 @@
 <script>
 async function cargarDatosMeteo() {
     try {
-        const url = 'https://w5.lt';
+        const url = 'https://meteotetuan.w5.lt/datos.php';
         const respuesta = await fetch(url);
         const data = await respuesta.json();
 
-        // 1. Mostrar la hora limpia (horas:minutos) usando la propiedad HORA del JSON
-        document.getElementById('lbl-actualizacion').textContent = data.dades_act.HORA + " horas";
+        // 1. Extraer de forma segura y limpia las horas y minutos (HH:MM)
+        // Cortamos el formato extendido "YYYY-MM-DD HH:MM:SS" para mostrar solo los 5 caracteres del tiempo
+        const fechaHoraCompleta = data.dades_act.DATA_HORA; 
+        const horaMinutos = fechaHoraCompleta.split(' ')[1].substring(0, 5); 
+        document.getElementById('lbl-actualizacion').textContent = horaMinutos + " horas";
 
         // 2. Inyección de Condiciones Actuales
         document.getElementById('val-temp').textContent = data.dades_act.TEMP;
@@ -221,7 +224,7 @@ async function cargarDatosMeteo() {
         document.getElementById('ext-sun-max-a').textContent = data.dades_any.RMax_a;
 
     } catch (error) {
-        console.error("Error cargando los datos del clima de Tetuán:", error);
+        console.error("Error al cargar el JSON meteorológico:", error);
         document.getElementById('lbl-actualizacion').textContent = "Error de conexión";
     }
 }
