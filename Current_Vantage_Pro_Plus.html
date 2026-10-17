@@ -165,17 +165,20 @@
 </tr>
 </table>
 
- <script>
+<script>
 async function cargarDatosMeteo() {
     try {
-        const url = 'https://meteotetuan.w5.lt/datos.php';
+        const url = 'https://w5.lt';
         const respuesta = await fetch(url);
         const data = await respuesta.json();
 
-        // Actualización de Fecha/Hora
-        document.getElementById('lbl-actualizacion').textContent = data.dades_act.DATA_HORA + " horas";
+        // 1. Filtrar Fecha y Hora para mostrar solo HH:MM
+        // Cortamos el texto original "YYYY-MM-DD HH:MM:SS" para quedarnos solo con "HH:MM"
+        const fechaHoraCompleta = data.dades_act.DATA_HORA; // Ejemplo: "2026-10-17 19:35:00"
+        const horaMinutos = fechaHoraCompleta.split(" ")[1].substring(0, 5); // Resultado: "19:35"
+        document.getElementById('lbl-actualizacion').textContent = horaMinutos + " horas";
 
-        // Datos Actuales
+        // 2. Inyección de Condiciones Actuales
         document.getElementById('val-temp').textContent = data.dades_act.TEMP;
         document.getElementById('val-hum').textContent = data.dades_act.HUM;
         document.getElementById('val-wind-dir').textContent = data.dades_act.DIR;
@@ -187,7 +190,7 @@ async function cargarDatosMeteo() {
         document.getElementById('val-uvi').textContent = data.dades_act.UVI;
         document.getElementById('val-sun').textContent = data.dades_act.SUN;
 
-        // Extremos Diarios (Hoy)
+        // 3. Inyección de Extremos DIARIOS
         document.getElementById('ext-temp-max-d').textContent = data.dades_dia.TMax_d;
         document.getElementById('ext-temp-min-d').textContent = data.dades_dia.TMin_d;
         document.getElementById('ext-hum-max-d').textContent = data.dades_dia.HMax_d;
@@ -198,7 +201,7 @@ async function cargarDatosMeteo() {
         document.getElementById('ext-uvi-max-d').textContent = data.dades_dia.UVMax_d;
         document.getElementById('ext-sun-max-d').textContent = data.dades_dia.RMax_d;
 
-        // Extremos Mensuales (Mes)
+        // 4. Inyección de Extremos MENSUALES
         document.getElementById('ext-temp-max-m').textContent = data.dades_mes.TMax_m;
         document.getElementById('ext-temp-min-m').textContent = data.dades_mes.TMin_m;
         document.getElementById('ext-hum-max-m').textContent = data.dades_mes.HMax_m;
@@ -209,7 +212,7 @@ async function cargarDatosMeteo() {
         document.getElementById('ext-uvi-max-m').textContent = data.dades_mes.UVMax_m;
         document.getElementById('ext-sun-max-m').textContent = data.dades_mes.RMax_m;
 
-        // Extremos Anuales (Año)
+        // 5. Inyección de Extremos ANUALES
         document.getElementById('ext-temp-max-a').textContent = data.dades_any.TMax_a;
         document.getElementById('ext-temp-min-a').textContent = data.dades_any.TMin_a;
         document.getElementById('ext-hum-max-a').textContent = data.dades_any.HMax_a;
@@ -221,7 +224,7 @@ async function cargarDatosMeteo() {
         document.getElementById('ext-sun-max-a').textContent = data.dades_any.RMax_a;
 
     } catch (error) {
-        console.error("Error al cargar el JSON meteorológico:", error);
+        console.error("Error cargando los datos del clima de Tetuán:", error);
         document.getElementById('lbl-actualizacion').textContent = "Error de conexión";
     }
 }
