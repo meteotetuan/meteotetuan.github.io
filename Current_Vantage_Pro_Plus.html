@@ -172,11 +172,8 @@ async function cargarDatosMeteo() {
         const respuesta = await fetch(url);
         const data = await respuesta.json();
 
-        // 1. Filtrar Fecha y Hora para mostrar solo HH:MM
-        // Cortamos el texto original "YYYY-MM-DD HH:MM:SS" para quedarnos solo con "HH:MM"
-        const fechaHoraCompleta = data.dades_act.DATA_HORA; // Ejemplo: "2026-10-17 19:35:00"
-        const horaMinutos = fechaHoraCompleta.split(" ")[1].substring(0, 5); // Resultado: "19:35"
-        document.getElementById('lbl-actualizacion').textContent = horaMinutos + " horas";
+        // 1. Mostrar la hora limpia (horas:minutos) usando la propiedad HORA del JSON
+        document.getElementById('lbl-actualizacion').textContent = data.dades_act.HORA + " horas";
 
         // 2. Inyección de Condiciones Actuales
         document.getElementById('val-temp').textContent = data.dades_act.TEMP;
