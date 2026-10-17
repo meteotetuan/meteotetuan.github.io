@@ -1,0 +1,375 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Dashboard MeteoTetu&aacute;n - Realtime Pure</title>
+  <style>
+    /* DISEÑO VISUAL MATTE ELEGANTE - ESTÁTICO FIJO A 900PX */
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      background-color: #f5f6f8;
+      margin: 0;
+      padding: 15px;
+      color: #fff;
+      width: 900px;
+      margin: 0 auto;
+    }
+    
+    /* Contenedor estático */
+    .dashboard-grid {
+      width: 900px;
+      margin: 0 auto;
+      display: flex;
+      flex-direction: column;
+      gap: 15px;
+    }
+
+    /* Configuración de 4 columnas perfectas para todas las filas */
+    .fila-1, .fila-2, .fila-3, .fila-4 {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 15px;
+    }
+
+    /* Estilo Premium de Tarjeta */
+    .tarjeta {
+      border-radius: 16px;
+      padding: 22px 15px;
+      text-align: center;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      position: relative;
+      border: 1px solid rgba(255,255,255,0.05);
+    }
+    
+    .icono {
+      font-size: 1.6rem;
+      margin-bottom: 6px;
+      opacity: 0.9;
+    }
+    
+    .tarjeta h3 {
+      margin: 0 0 6px 0;
+      font-size: 0.8rem;
+      color: rgba(255, 255, 255, 0.75);
+      text-transform: uppercase;
+      letter-spacing: 0.8px;
+      font-weight: 600;
+    }
+    
+    .valor {
+      font-size: 2.1rem;
+      font-weight: 700;
+      margin: 0;
+    }
+    
+    .unidad {
+      font-size: 1rem;
+      font-weight: 500;
+      color: rgba(255, 255, 255, 0.85);
+      margin-left: 2px;
+    }
+
+    /* PALETA DE COLORES ORIGINALES AMPLIADA */
+    .temp { background-color: #4a69bd; }       /* Azul Jeans */
+    .hum { background-color: #60a3bc; }        /* Azul Pastel */
+    .viento { background-color: #3c6382; }     /* Azul Pizarra */
+    .dir { background-color: #6a89cc; }        /* Azul Lavanda */
+    
+    .presion { background-color: #38ada9; }    /* Turquesa Opaco */
+    .lluvia { background-color: #20b2aa; }     /* Verde Claro Marino */
+    .uv { background-color: #d4af37; }         /* Amarillo Oro Mate */
+    .solar { background-color: #fa983a; }      /* Naranja Ocre */
+
+    /* COLORES METEO AVANZADA DE SENSACIONES */
+    .chill { background-color: #70a1ff; }      /* Azul Hielo / Frío */
+    .heat { background-color: #ff6b81; }       /* Rosa Intenso / Calor */
+    .dew { background-color: #10ac84; }        /* Verde Gota / Rocío */
+
+    /* PALETA AIRE / AIRLINK DE TARJETAS */
+    .aqi { background-color: #78e08f; color: #1e3d59; }  /* Verde Menta Suave */
+    .pm1 { background-color: #4da1a9; }        /* Turquesa Medio */
+    .pm25 { background-color: #348aa7; }       /* Azul Verdoso */
+    .pm10 { background-color: #22577a; }       /* Azul Profundo */
+    .aqi-desc { font-weight: 800; text-transform: uppercase; font-size: 1.5rem; margin: 0; }
+
+    /* ESTILO DE LOS BOTONES DE ENLACE EXTERNO */
+    .contenedor-botones {
+      display: flex;
+      justify-content: center;
+      gap: 20px;
+      margin-top: 15px;
+    }
+
+    .btn-enlace {
+      display: inline-block;
+      width: 45%;
+      padding: 15px 20px;
+      border-radius: 12px;
+      text-align: center;
+      text-decoration: none;
+      font-weight: 700;
+      font-size: 0.95rem;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+      transition: transform 0.2s, opacity 0.2s;
+    }
+
+    .btn-enlace:hover {
+      transform: translateY(-2px);
+      opacity: 0.95;
+    }
+
+    .btn-weatherlink { background-color: #1e3d59; color: #fff; border: 1px solid rgba(255,255,255,0.1); }
+    .btn-climameteo { background-color: #10ac84; color: #fff; border: 1px solid rgba(255,255,255,0.1); }
+
+    /* Barra inferior de sincronización */
+    .actualizado {
+      text-align: center;
+      font-size: 0.85rem;
+      color: #4a5568;
+      font-weight: 600;
+      background: #edf2f7;
+      padding: 8px 25px;
+      border-radius: 20px;
+      display: inline-block;
+      margin: 15px auto 0 auto;
+      border: 1px solid #e2e8f0;
+    }
+    .center-wrapper {
+      text-align: center;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- CONTENEDOR PRINCIPAL -->
+  <div class="dashboard-grid">
+    
+    <!-- FILA 1: METEO BASE -->
+    <div class="fila-1">
+      <div class="tarjeta temp">
+        <div class="icono">🌡</div>
+        <h3>Temperatura actual</h3>
+        <p class="valor" id="current-temp">-- <span class="unidad">&deg;C</span></p>
+      </div>
+      
+      <div class="tarjeta hum">
+        <div class="icono">💧</div>
+        <h3>Humedad relativa</h3>
+        <p class="valor" id="current-hum">--<span class="unidad">%</span></p>
+      </div>
+      
+      <div class="tarjeta viento">
+        <div class="icono">💨</div>
+        <h3>Viento</h3>
+        <p class="valor" id="current-wind">--<span class="unidad">km/h</span></p>
+      </div>
+
+      <div class="tarjeta dir">
+        <div class="icono">🧭</div>
+        <h3>Direcci&oacute;n</h3>
+        <p class="valor" id="current-dir">--</p>
+      </div>
+    </div>
+    
+    <!-- FILA 2: METEO AVANZADA -->
+    <div class="fila-2">
+      <div class="tarjeta presion">
+        <div class="icono">◉</div>
+        <h3>Presi&oacute;n atmosf&eacute;rica</h3>
+        <p class="valor" id="current-press">--<span class="unidad">hPa</span></p>
+      </div>
+
+      <div class="tarjeta lluvia">
+        <div class="icono">☔</div>
+        <h3>Lluvia hoy</h3>
+        <p class="valor" id="current-rain">--<span class="unidad">l/m2</span></p>
+      </div>
+
+      <div class="tarjeta uv">
+        <div class="icono">☀</div>
+        <h3>&Iacute;ndice UV</h3>
+        <p class="valor" id="current-uv">-- <span class="unidad">UVI</span></p>
+      </div>
+
+      <div class="tarjeta solar">
+        <div class="icono">☀</div>
+        <h3>Radiaci&oacute;n Solar</h3>
+        <p class="valor" id="current-solar">--  <span class="unidad">W/m2</span></p>
+      </div>
+    </div>
+
+    <!-- FILA 3: CONDICIONES TÉRMICAS AVANZADAS Y CALIDAD DEL AIRE AQI -->
+    <div class="fila-3">
+      <div class="tarjeta chill">
+        <div class="icono">❄️</div>
+        <h3>Sensaci&oacute;n (Wind Chill)</h3>
+        <p class="valor" id="current-card-chill">--<span class="unidad">&deg;C</span></p>
+      </div>
+
+      <div class="tarjeta heat">
+        <div class="icono">🔥</div>
+        <h3>&Iacute;ndice Calor</h3>
+        <p class="valor" id="current-card-heat">--<span class="unidad">&deg;C</span></p>
+      </div>
+
+      <div class="tarjeta dew">
+        <div class="icono">💧</div>
+        <h3>Pto. Roc&iacute;o (Dew)</h3>
+        <p class="valor" id="current-card-dew">--<span class="unidad">&deg;C</span></p>
+      </div>
+
+      <div class="tarjeta aqi">
+        <div class="icono">🍃</div>
+        <h3 style="color: #1e3d59;">Calidad Aire (AQI)</h3>
+        <p class="aqi-desc" id="current-aqi">--</p>
+      </div>
+    </div>
+
+    <!-- FILA 4: REJILLA DE PARTÍCULAS CALIDAD DEL AIRE Y ACUMULADOS -->
+    <div class="fila-4">
+      <div class="tarjeta pm1">
+        <div class="icono">😷</div>
+        <h3>Part&iacute;culas PM1</h3>
+        <p class="valor" id="current-pm1">--<span class="unidad">µg/m³</span></p>
+      </div>
+
+      <div class="tarjeta pm25">
+        <div class="icono">😷</div>
+        <h3>Part&iacute;culas PM2.5</h3>
+        <p class="valor" id="current-pm25">--<span class="unidad">µg/m³</span></p>
+      </div>
+
+      <div class="tarjeta pm10">
+        <div class="icono">🌫️</div>
+        <h3>Part&iacute;culas PM10</h3>
+        <p class="valor" id="current-pm10">--<span class="unidad">µg/m³</span></p>
+      </div>
+
+      <div class="tarjeta lluvia" style="background-color: #05c46b;">
+        <div class="icono">📅</div>
+        <h3>Lluvia Mes / Año</h3>
+        <p class="valor" id="current-rain-history" style="font-size: 1.25rem;">-- / -- <span class="unidad">mm</span></p>
+      </div>
+    </div>
+
+    <!-- SECCIÓN DE BOTONES ESTRATÉGICOS MINIMALISTAS -->
+    <div class="contenedor-botones">
+      <a href="https://weatherlink.com" target="_blank" class="btn-enlace btn-weatherlink">📊 Historial y Gráficas Oficiales (WeatherLink)</a>
+      <a href="https://climameteoinfo.com" target="_blank" class="btn-enlace btn-climameteo">📈 Series e Históricos (ClimaMeteoInfo)</a>
+    </div>
+
+  </div> <!-- CIERRE DEL DASHBOARD-GRID -->
+  
+<div class="center-wrapper">
+    <div class="actualizado">&Uacute;ltima actualizaci&oacute;n: <span id="sync-time">--/--/---- --:--</span></div>
+  </div>
+  
+   <!-- SCRIPT DE MAPEADO CORREGIDO CON PRIORIDAD DE SENSADO ISS -->
+  <script>
+    const FtoC = f => (f !== null && f !== undefined) ? ((f - 32) * 5 / 9).toFixed(1) : '--.-';
+    const mphToKmh = m => (m !== null && m !== undefined) ? (m * 1.60934).toFixed(1) : '--.-';
+    const inHgTohPa = i => (i !== null && i !== undefined) ? (i * 33.8639).toFixed(1) : '----';
+    
+    function degToCard(deg) {
+      if (deg === null || deg === undefined) return '--';
+      const rumbos = ["N", "NNE", "NE", "ENE", "E", "ESE", "SE", "SSE", "S", "SSW", "SW", "WSW", "W", "WNW", "NW", "NNW"];
+      const val = Math.floor((deg / 22.5) + 0.5);
+      return rumbos[(val % 16)];
+    }
+
+    async function actualizarMeteo() {
+      try {
+        const respuesta = await fetch('weather_proxy.php');
+        if (!respuesta.ok) throw new Error("Error al obtener la caché local.");
+        const data = await respuesta.json();
+        
+        let d = {
+          TEMP: null, HUM: null, VEL: null, DIR: null, PREC: 0, UVI: 0, SUN: 0,
+          CHILL: null, HEAT: null, DEW: null, PREC_M: 0, PREC_A: 0, V10: null,
+          BAR: null, AQI_TXT: '--', PM25: null, PM10: null, PM1: null
+        };
+
+        if (!data.sensors || !Array.isArray(data.sensors)) return;
+
+        // ASIGNACIÓN REVISADA CON PRIORIDAD ESTRICTA PARA SENSOR_TYPE 46 (ISS)
+        data.sensors.forEach(sensor => {
+          if (!sensor.data || !Array.isArray(sensor.data) || sensor.data.length === 0) return;
+          const b = sensor.data[0]; // Corrección de lectura: Accedemos al primer elemento del array de datos
+
+          switch(parseInt(sensor.sensor_type)) {
+            case 46: // ISS Exterior Principal (Meteo Oficial - PRIORIDAD MÁXIMA)
+              d.TEMP = b.temp ?? d.TEMP;
+              d.HUM = b.hum ?? d.HUM;
+              d.VEL = b.wind_speed_last ?? d.VEL; // Captura el viento actual real de la copa
+              d.DIR = b.wind_dir_last ?? d.DIR;
+              d.PREC = b.rainfall_daily_mm ?? d.PREC; 
+              d.UVI = b.uv_index ?? d.UVI;
+              d.SUN = b.solar_rad ?? d.SUN;
+              d.TS = b.ts ?? d.TS;
+              d.CHILL = b.wind_chill ?? d.CHILL;
+              d.HEAT = b.heat_index ?? d.HEAT;
+              d.DEW = b.dew_point ?? d.DEW;
+              d.PREC_M = b.rainfall_monthly_mm ?? d.PREC_M;
+              d.PREC_A = b.rainfall_year_mm ?? d.PREC_A;
+              d.V10 = b.wind_speed_hi_last_10_min ?? d.V10;
+              break;
+              
+            case 242: // Barómetro interno
+              d.BAR = b.bar_sea_level;
+              break;
+
+            case 323: // AirLink (Calidad de Aire)
+              d.AQI_TXT = b.aqi_desc ?? '--';
+              d.PM25 = b.pm_2p5 ?? null;
+              d.PM10 = b.pm_10 ?? null;
+              d.PM1 = b.pm_1 ?? null;
+              break;
+
+            case 55: // Viento Auxiliar / Ráfagas cortas (Solo si el sensor principal ISS no ha respondido)
+              if (d.VEL === null) d.VEL = b.wind_speed_last;
+              if (d.DIR === null) d.DIR = b.wind_dir_last;
+              break;
+          }
+        });
+
+        // INYECCIÓN DE DATOS
+        document.getElementById('current-temp').innerHTML = `${FtoC(d.TEMP)} <span class="unidad">&deg;C</span>`;
+        document.getElementById('current-hum').innerHTML = `${d.HUM !== null ? d.HUM : '--'}<span class="unidad">%</span>`;
+        document.getElementById('current-wind').innerHTML = `${mphToKmh(d.VEL)} <span class="unidad">km/h</span>`;
+        document.getElementById('current-dir').innerText = `${degToCard(d.DIR)} (${d.DIR !== null ? d.DIR : '--'}\u00B0)`;
+
+        document.getElementById('current-press').innerHTML = `${inHgTohPa(d.BAR)}<span class="unidad">hPa</span>`;
+        document.getElementById('current-rain').innerHTML = `${d.PREC !== null ? d.PREC.toFixed(1) : '0.0'}<span class="unidad">l/m2</span>`;
+        document.getElementById('current-uv').innerHTML = `${d.UVI !== null ? d.UVI : '0'} <span class="unidad">UVI</span>`;
+        document.getElementById('current-solar').innerHTML = `${d.SUN !== null ? d.SUN : '0'} <span class="unidad">W/m2</span>`;
+
+        document.getElementById('current-card-chill').innerHTML = `${d.CHILL ? FtoC(d.CHILL) : FtoC(d.TEMP)} <span class="unidad">&deg;C</span>`;
+        document.getElementById('current-card-heat').innerHTML = `${d.HEAT ? FtoC(d.HEAT) : FtoC(d.TEMP)} <span class="unidad">&deg;C</span>`;
+        document.getElementById('current-card-dew').innerHTML = `${FtoC(d.DEW)} <span class="unidad">&deg;C</span>`;
+        document.getElementById('current-aqi').innerText = d.AQI_TXT;
+
+        document.getElementById('current-pm1').innerHTML = `${d.PM1 !== null ? d.PM1.toFixed(1) : '--'}<span class="unidad">µg/m³</span>`;
+        document.getElementById('current-pm25').innerHTML = `${d.PM25 !== null ? d.PM25.toFixed(1) : '--'}<span class="unidad">µg/m³</span>`;
+        document.getElementById('current-pm10').innerHTML = `${d.PM10 !== null ? d.PM10.toFixed(1) : '--'}<span class="unidad">µg/m³</span>`;
+        document.getElementById('current-rain-history').innerHTML = `${d.PREC_M ? d.PREC_M.toFixed(1) : '0.0'} / ${d.PREC_A ? d.PREC_A.toFixed(1) : '0.0'} <span class="unidad">mm</span>`;
+
+        if (d.TS) {
+          const fObj = new Date(d.TS * 1000);
+          document.getElementById('sync-time').innerText = fObj.toLocaleDateString('es-ES', { day: '2-digit', month: '2-digit', year: 'numeric' }) + " a las " + fObj.toLocaleTimeString('es-ES', { hour: '2-digit', minute: '2-digit' });
+        }
+
+      } catch (error) {
+        console.error("Error en la ejecución del refresco:", error);
+      }
+    }
+
+    document.addEventListener("DOMContentLoaded", actualizarMeteo);
+    setInterval(actualizarMeteo, 150000); 
+  </script>
+</body>
+</html>
