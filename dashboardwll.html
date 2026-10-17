@@ -284,7 +284,7 @@
 
     async function actualizarMeteo() {
       try {
-        const respuesta = await fetch('weather_proxy.php');
+        const respuesta = await fetch('https://meteotetuan.w5.lt/weather_proxy.php');
         if (!respuesta.ok) throw new Error("Error al obtener la caché local.");
         const data = await respuesta.json();
         
