@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Estación Meteorológica - MeteoTetuán</title>
+    <style>
+        /* Elimina los márgenes del navegador y asegura que el cuerpo ocupe toda la pantalla */
+        html, body {
+            margin: 0;
+            padding: 0;
+            width: 100%;
+            height: 100%;
+            overflow: hidden; /* Evita barras de scroll dobles en el contenedor principal */
+            background-color: #f4f4f9; /* Color de fondo limpio mientras carga */
+            font-family: Arial, sans-serif;
+        }
+
+        /* Contenedor flexible que se expande a pantalla completa */
+        .iframe-container {
+            display: flex;
+            width: 100%;
+            height: 100%;
+        }
+
+        /* Estilos del iframe para integrarse por completo sin bordes */
+        .iframe-container iframe {
+            width: 100%;
+            height: 100%;
+            border: none;
+            display: block;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="iframe-container">
+        <iframe 
+            src="https://meteotetuan.w5.lt/Weather_Summary_Vantage_Pro_Plus.html" 
+            title="MeteoTetuán - Weather Summary"
+            allowfullscreen>
+        </iframe>
+    </div>
+
+</body>
+</html>
