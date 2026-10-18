@@ -272,14 +272,19 @@
   <div class="center-wrapper">
     <div class="actualizado">&Uacute;ltima actualizaci&oacute;n: <span id="sync-time">--/--/---- --:--</span></div>
   </div>
- <!-- SCRIPT DE MAPEADO REAL CORREGIDO PARA TU JSON -->
+  <!-- SCRIPT DE MAPEADO PROCESADO POR SERVIDOR (PHP) -->
+  <?php
+    // 1. Leemos el archivo JSON directamente desde el disco local de tu hosting
+    \$json_content = file_get_contents('https://meteotetuan.w5.lt/api.php');
+    \(data = json_decode(\)json_content, true);
+  ?>
+
   <script>
-    async function actualizarMeteo() {
-      try {
-        // Conexión directa a la URL exacta de tu archivo JSON
-        const respuesta = await fetch('https://meteotetuan.w5.lt/api.php');
-        const data = await respuesta.json();
-        
+    // Pasamos los datos leídos por PHP de forma segura y directa a JavaScript
+    const data = <?php echo json_encode(\$data); ?>;
+
+    try {
+      if (data) {
         // 1. ASIGNACIÓN FILA 1 (TARJETAS SUPERIORES)
         document.getElementById('current-temp').innerHTML = `${data.temperatura} <span class="unidad">&deg;C</span>`;
         document.getElementById('current-hum').innerHTML = `${data.humedad}<span class="unidad">%</span>`;
@@ -292,7 +297,7 @@
         document.getElementById('current-uv').innerHTML = `${data.indice_uv} <span class="unidad">UVI</span>`;
         document.getElementById('current-solar').innerHTML = `${data.radiacion_solar.trim()} <span class="unidad">W/m2</span>`;
 
-        // 3. ASIGNACIÓN BLOQUE DE LÍNEAS INFERIORES (MAPPED CORRECTAMENTE)
+        // 3. ASIGNACIÓN BLOQUE DE LÍNEAS INFERIORES
         document.getElementById('estacion-titulo').textContent = `Dashboard ${data.estacion_nombre}`;
         document.getElementById('wt-rocio').innerHTML = `${data.punto_rocio} &deg;C`;
         document.getElementById('wt-lluvia-int').textContent = `${data.lluvia_intensidad} mm/h`;
@@ -302,23 +307,21 @@
         
         document.getElementById('wt-lluvia-mes').textContent = `${data.lluvia_mes} mm`;
         document.getElementById('wt-lluvia-anual').textContent = `${data.lluvia_anual} mm`;
-        document.getElementById('wt-temp-in').innerHTML = `${data["temperatura interior"]} &deg;C`;
-        document.getElementById('wt-hum-in').textContent = `${data["humedad interior"]} %`;
+        
+        // Acceso seguro a variables con espacios usando la matriz de PHP
+        document.getElementById('wt-temp-in').innerHTML = `${data['temperatura interior']} &deg;C`;
+        document.getElementById('wt-hum-in').textContent = `${data['humedad interior']} %`;
         document.getElementById('wt-voltaje').textContent = `${data.voltaje_consola} V`;
 
         // 4. BARRA DE SINCRONIZACIÓN INFERIOR
         document.getElementById('sync-time').innerText = `${data.dia} a las ${data.hora}`;
-
-      } catch (error) {
-        console.error("Error al actualizar los datos meteorológicos:", error);
       }
+    } catch (error) {
+      console.error("Error al renderizar los datos meteorológicos:", error);
     }
 
-    // Ejecución inicial al cargar la página
-    actualizarMeteo();
-    
-    // Auto-actualización interna cada 1 minuto (60000 ms)
-    setInterval(actualizarMeteo, 60000);
+    // Recargar la página completa cada 2 minutos para asegurar datos frescos del PHP
+    setInterval(() => { window.location.reload(); }, 120000);
   </script>
 </body>
 </html>
