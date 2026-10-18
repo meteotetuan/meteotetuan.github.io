@@ -276,9 +276,15 @@
   <script>
     async function actualizarMeteo() {
       try {
-        // Conexión directa a la URL exacta que me has facilitado
-        const respuesta = await fetch('https://meteotetuan.w5.lt/api.json');
-        const data = await respuesta.json();
+        // Usamos un proxy gratuito (cors-anywhere / AllOrigins) para saltarnos el bloqueo CORS del navegador
+        const urlOriginal = 'https://meteotetuan.w5.lt/api.json';
+        const respuesta = await fetch(`https://allorigins.win{encodeURIComponent(urlOriginal)}&_=${Date.now()}`);
+        
+        if (!respuesta.ok) throw new Error("Error en la red");
+        
+        const wrapper = await respuesta.json();
+        // AllOrigins mete el JSON real dentro de una propiedad llamada 'contents' como un string texto
+        const data = JSON.parse(wrapper.contents);
         
         // 1. ASIGNACIÓN FILA 1 (TARJETAS)
         document.getElementById('current-temp').innerHTML = `${data.temperatura} <span class="unidad">&deg;C</span>`;
