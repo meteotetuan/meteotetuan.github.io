@@ -272,20 +272,14 @@
   <div class="center-wrapper">
     <div class="actualizado">&Uacute;ltima actualizaci&oacute;n: <span id="sync-time">--/--/---- --:--</span></div>
   </div>
-  <!-- SCRIPT DE MAPEADO REAL CORREGIDO PARA TU JSON -->
+<!-- SCRIPT DE MAPEADO REAL CORREGIDO PARA TU JSON -->
   <script>
     async function actualizarMeteo() {
       try {
-        // Conexión directa a tu archivo JSON con cache busting cada 1 minuto (60000 ms)
-        const respuesta = await fetch(`https://meteotetuan.w5.lt/api.json{Date.now()}`);
+        // Conexión directa a la URL exacta que me has facilitado
+        const respuesta = await fetch('https://meteotetuan.w5.lt/api.json');
         const data = await respuesta.json();
         
-        // Corrección automática del set de caracteres "TetuÃ¡n" -> "Tetuán"
-        let nombreLimpio = data.estacion_nombre;
-        if (nombreLimpio.includes("TetuÃ¡n")) {
-          nombreLimpio = nombreLimpio.replace("TetuÃ¡n", "Tetuán");
-        }
-
         // 1. ASIGNACIÓN FILA 1 (TARJETAS)
         document.getElementById('current-temp').innerHTML = `${data.temperatura} <span class="unidad">&deg;C</span>`;
         document.getElementById('current-hum').innerHTML = `${data.humedad}<span class="unidad">%</span>`;
@@ -299,7 +293,7 @@
         document.getElementById('current-solar').innerHTML = `${data.radiacion_solar.trim()} <span class="unidad">W/m2</span>`;
 
         // 3. ASIGNACIÓN BLOQUE DE LÍNEAS INFERIORES
-        document.getElementById('estacion-titulo').textContent = `Dashboard ${nombreLimpio}`;
+        document.getElementById('estacion-titulo').textContent = `Dashboard ${data.estacion_nombre}`;
         document.getElementById('wt-rocio').innerHTML = `${data.punto_rocio} &deg;C`;
         document.getElementById('wt-lluvia-int').textContent = `${data.lluvia_intensidad} mm/h`;
         document.getElementById('wt-lluvia-epi').textContent = `${data.lluvia_episodio} mm`;
@@ -308,8 +302,8 @@
         
         document.getElementById('wt-lluvia-mes').textContent = `${data.lluvia_mes} mm`;
         document.getElementById('wt-lluvia-anual').textContent = `${data.lluvia_anual} mm`;
-        document.getElementById('wt-temp-in').innerHTML = `${data.temperatura_in} &deg;C`;
-        document.getElementById('wt-hum-in').textContent = `${data.humedad_in} %`;
+        document.getElementById('wt-temp-in').innerHTML = `${data["temperatura interior"]} &deg;C`;
+        document.getElementById('wt-hum-in').textContent = `${data["humedad interior"]} %`;
         document.getElementById('wt-voltaje').textContent = `${data.voltaje_consola} V`;
 
         // 4. BARRA DE SINCRONIZACIÓN INFERIOR
@@ -323,7 +317,7 @@
     // Ejecución inicial al cargar la página
     actualizarMeteo();
     
-    // Auto-actualización interna optimizada a cada 1 minuto (60000 ms) para acoplar al refresco de la Davis
+    // Auto-actualización interna cada 1 minuto (60000 ms)
     setInterval(actualizarMeteo, 60000);
   </script>
 </body>
