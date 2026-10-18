@@ -215,11 +215,11 @@
       </div>
     </div>
 
-    <!-- VARIABLES EN LÍNEAS ADAPTADAS A LA API REAL -->
+    <!-- VARIABLES EN LÍNEAS OPTIMIZADAS -->
     <div class="seccion-datos-lineas">
       <h2 class="bloque-titulo">Variables calculadas y Acumulados</h2>
       
-      <!-- Columna Izquierda: Sol, Consola y Cálculos -->
+      <!-- Columna Izquierda: Sol, Cálculos y Predicción -->
       <div class="columna-datos">
         <div class="linea-dato">
           <span class="dato-titulo">Salida del sol</span>
@@ -238,16 +238,12 @@
           <span class="dato-valor" id="day-dewpoint">-- &deg;C</span>
         </div>
         <div class="linea-dato">
-          <span class="dato-titulo">Voltaje de consola</span>
-          <span class="dato-valor" id="day-voltage">-- V</span>
-        </div>
-        <div class="linea-dato">
           <span class="dato-titulo">Predicci&oacute;n</span>
           <span class="dato-valor" id="day-forecast" style="font-size: 0.8rem; text-align: right; max-width: 250px; font-weight: 500;">--</span>
         </div>
       </div>
 
-      <!-- Columna Derecha: Climatología Interior y Totales de Lluvia -->
+      <!-- Columna Derecha: Climatología Interior y Lluvia Separada -->
       <div class="columna-datos">
         <div class="linea-dato">
           <span class="dato-titulo">Temperatura interior</span>
@@ -270,8 +266,12 @@
           <span class="dato-valor" id="day-rainepisode">-- l/m2</span>
         </div>
         <div class="linea-dato">
-          <span class="dato-titulo">Lluvia acumulada mes / a&ntilde;o</span>
-          <span class="dato-valor"><span id="month-rain">--</span> l/m2</span> / <span class="dato-valor"><span id="year-rain">--</span> l/m2</span>        
+          <span class="dato-titulo">Lluvia acumulada mes</span>
+          <span class="dato-valor"><span id="month-rain">--</span> l/m2</span>
+        </div>
+        <div class="linea-dato">
+          <span class="dato-titulo">Lluvia acumulada a&ntilde;o</span>
+          <span class="dato-valor"><span id="year-rain">--</span> l/m2</span>
         </div>
       </div>
     </div>
@@ -308,22 +308,21 @@
         document.getElementById('current-uv').innerHTML = `${data["indice_uv"]} <span class="unidad">UVI</span>`;
         document.getElementById('current-solar').innerHTML = `${data["radiacion_solar"].trim()} <span class="unidad">W/m2</span>`;
 
-        // 3. ASIGNACIÓN COLUMNA IZQUIERDA (SOL, CONSOLA Y CÁLCULOS)
+        // 3. ASIGNACIÓN COLUMNA IZQUIERDA (SOL, CÁLCULOS Y PREDICCIÓN)
         document.getElementById('day-sunrise').innerText = data["salida_sol"].trim();
         document.getElementById('day-sunset').innerText = data["puesta_sol"].trim();
         document.getElementById('day-evapo').innerText = `${data["evapotranspiracion"]} mm`;
         document.getElementById('day-dewpoint').innerText = `${data["punto_rocio"]} °C`;
-        document.getElementById('day-voltage').innerText = `${data["voltaje_consola"]} V`;
         document.getElementById('day-forecast').innerText = data["prevision"];
 
-        // 4. ASIGNACIÓN COLUMNA DERECHA (INTERIOR Y LLUVIA EXTRA)
+        // 4. ASIGNACIÓN COLUMNA DERECHA (INTERIOR Y LLUVIAS SEPARADAS)
         document.getElementById('in-temp').innerText = `${data["temperatura interior"]} °C`;
         document.getElementById('in-hum').innerText = `${data["humedad interior"]} %`;
         document.getElementById('day-windgust').innerText = `${data["viento_racha"]} km/h`;
         document.getElementById('day-rainrate').innerText = `${data["lluvia_intensidad"]} mm/h`;
         document.getElementById('day-rainepisode').innerText = `${data["lluvia_episodio"]} l/m2`;
         
-        // Acumulados mensuales y anuales
+        // Asignación de lluvias en filas independientes
         document.getElementById('month-rain').innerText = data["lluvia_mes"];
         document.getElementById('year-rain').innerText = data["lluvia_anual"];
 
