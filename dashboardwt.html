@@ -1,0 +1,345 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Dashboard MeteoTetu&aacute;n</title>
+  <style>
+    /* DISEÑO VISUAL MATTE ELEGANTE - ESTÁTICO FIJO A 900PX */
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      background-color: #f5f6f8;
+      margin: 0;
+      padding: 15px;
+      color: #fff;
+      width: 900px;
+      margin: 0 auto;
+    }
+    
+    /* Contenedor estático de tres niveles */
+    .dashboard-grid {
+      width: 900px;
+      margin: 0 auto;
+      display: flex;
+      flex-direction: column;
+      gap: 15px;
+    }
+
+    .fila-1, .fila-2 {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 15px;
+    }
+
+    /* Estilo Premium de Tarjeta */
+    .tarjeta {
+      border-radius: 16px;
+      padding: 22px 15px;
+      text-align: center;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      position: relative;
+      border: 1px solid rgba(255,255,255,0.05);
+    }
+    
+    .icono {
+      font-size: 1.6rem;
+      margin-bottom: 6px;
+      opacity: 0.9;
+    }
+    
+    .tarjeta h3 {
+      margin: 0 0 6px 0;
+      font-size: 0.8rem;
+      color: rgba(255, 255, 255, 0.75);
+      text-transform: uppercase;
+      letter-spacing: 0.8px;
+      font-weight: 600;
+    }
+    
+    .valor {
+      font-size: 2.1rem;
+      font-weight: 700;
+      margin: 0;
+    }
+    
+    .unidad {
+      font-size: 1rem;
+      font-weight: 500;
+      color: rgba(255, 255, 255, 0.85);
+      margin-left: 2px;
+    }
+
+    /* PALETA DE COLORES ORIGINALES */
+    .temp { background-color: #4a69bd; }       /* Azul Jeans */
+    .hum { background-color: #60a3bc; }        /* Azul Pastel */
+    .viento { background-color: #3c6382; }     /* Azul Pizarra */
+    .dir { background-color: #6a89cc; }        /* Azul Lavanda */
+    
+    .presion { background-color: #38ada9; }    /* Turquesa Opaco */
+    .lluvia { background-color: #20b2aa; }     /* Verde Claro Marino */
+    .uv { background-color: #d4af37; }         /* Amarillo Oro Mate */
+    .solar { background-color: #fa983a; }      /* Naranja Ocre */
+
+    /* SECCIÓN DE DATOS EN LÍNEAS / DOS COLUMNAS */
+    .seccion-datos-lineas {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 30px;
+      background-color: #ffffff;
+      border-radius: 16px;
+      padding: 25px 30px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.03);
+      border: 1px solid #e2e8f0;
+      margin-top: 10px;
+    }
+
+    .bloque-titulo {
+      grid-column: span 2;
+      font-size: 1.1rem;
+      font-weight: 700;
+      color: #2d3748;
+      margin: 0 0 5px 0;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      border-bottom: 2px solid #edf2f7;
+      padding-bottom: 8px;
+    }
+
+    .columna-datos {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .linea-dato {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding-bottom: 8px;
+      border-bottom: 1px dashed #e2e8f0;
+      font-size: 0.95rem;
+      color: #4a5568;
+    }
+
+    .linea-dato:last-child {
+      border-bottom: none;
+    }
+
+    .dato-titulo {
+      font-weight: 500;
+      color: #718096;
+    }
+
+    .dato-valor {
+      font-weight: 700;
+      color: #2d3748;
+    }
+
+    /* Barra inferior de sincronización */
+    .actualizado {
+      text-align: center;
+      font-size: 0.85rem;
+      color: #4a5568;
+      font-weight: 600;
+      background: #edf2f7;
+      padding: 8px 25px;
+      border-radius: 20px;
+      display: inline-block;
+      margin: 25px auto 0 auto;
+      border: 1px solid #e2e8f0;
+    }
+    .center-wrapper {
+      text-align: center;
+      width: 100%;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- CONTENEDOR PRINCIPAL -->
+  <div class="dashboard-grid">
+    
+    <!-- FILA 1: METEO BASE -->
+    <div class="fila-1">
+      <div class="tarjeta temp">
+        <div class="icono">🌡</div>
+        <h3>Temperatura actual</h3>
+        <p class="valor" id="current-temp">-- <span class="unidad">&deg;C</span></p>
+      </div>
+      
+      <div class="tarjeta hum">
+        <div class="icono">💧</div>
+        <h3>Humedad relativa</h3>
+        <p class="valor" id="current-hum">--<span class="unidad">%</span></p>
+      </div>
+      
+      <div class="tarjeta viento">
+        <div class="icono">💨</div>
+        <h3>Viento</h3>
+        <p class="valor" id="current-wind">--<span class="unidad">km/h</span></p>
+      </div>
+
+      <div class="tarjeta dir">
+        <div class="icono">🧭</div>
+        <h3>Direcci&oacute;n</h3>
+        <p class="valor" id="current-dir">--</p>
+      </div>
+    </div>
+    
+    <!-- FILA 2: METEO AVANZADA -->
+    <div class="fila-2">
+      <div class="tarjeta presion">
+        <div class="icono">◉</div>
+        <h3>Presi&oacute;n Atmosf&eacute;rica</h3>
+        <p class="valor" id="current-press">--<span class="unidad">hPa</span></p>
+      </div>
+
+      <div class="tarjeta lluvia">
+        <div class="icono">☔</div>
+        <h3>Lluvia hoy</h3>
+        <p class="valor" id="current-rain">--<span class="unidad">l/m2</span></p>
+      </div>
+
+      <div class="tarjeta uv">
+        <div class="icono">☀</div>
+        <h3>&Iacute;ndice UV</h3>
+        <p class="valor" id="current-uv">-- <span class="unidad">UVI</span></p>
+      </div>
+
+      <div class="tarjeta solar">
+        <div class="icono">☀</div>
+        <h3>Radiaci&oacute;n Solar</h3>
+        <p class="valor" id="current-solar">--  <span class="unidad">W/m2</span></p>
+      </div>
+    </div>
+
+    <!-- VARIABLES EN LÍNEAS ADAPTADAS A LA API REAL -->
+    <div class="seccion-datos-lineas">
+      <h2 class="bloque-titulo">Variables calculadas y Acumulados</h2>
+      
+      <!-- Columna Izquierda: Sol, Consola y Cálculos -->
+      <div class="columna-datos">
+        <div class="linea-dato">
+          <span class="dato-titulo">Salida del sol</span>
+          <span class="dato-valor" id="day-sunrise">--</span>
+        </div>
+        <div class="linea-dato">
+          <span class="dato-titulo">Puesta del sol</span>
+          <span class="dato-valor" id="day-sunset">--</span>
+        </div>
+        <div class="linea-dato">
+          <span class="dato-titulo">Evapotranspiraci&oacute;n</span>
+          <span class="dato-valor" id="day-evapo">-- mm</span>
+        </div>
+        <div class="linea-dato">
+          <span class="dato-titulo">Punto de roc&iacute;o</span>
+          <span class="dato-valor" id="day-dewpoint">-- &deg;C</span>
+        </div>
+        <div class="linea-dato">
+          <span class="dato-titulo">Voltaje de consola</span>
+          <span class="dato-valor" id="day-voltage">-- V</span>
+        </div>
+        <div class="linea-dato">
+          <span class="dato-titulo">Predicci&oacute;n</span>
+          <span class="dato-valor" id="day-forecast" style="font-size: 0.8rem; text-align: right; max-width: 250px; font-weight: 500;">--</span>
+        </div>
+      </div>
+
+      <!-- Columna Derecha: Climatología Interior y Totales de Lluvia -->
+      <div class="columna-datos">
+        <div class="linea-dato">
+          <span class="dato-titulo">Temperatura interior</span>
+          <span class="dato-valor" id="in-temp">-- &deg;C</span>
+        </div>
+        <div class="linea-dato">
+          <span class="dato-titulo">Humedad interior</span>
+          <span class="dato-valor" id="in-hum">-- %</span>
+        </div>
+        <div class="linea-dato">
+          <span class="dato-titulo">Racha de viento m&aacute;xima</span>
+          <span class="dato-valor" id="day-windgust">-- km/h</span>
+        </div>
+        <div class="linea-dato">
+          <span class="dato-titulo">Intensidad de lluvia</span>
+          <span class="dato-valor" id="day-rainrate">-- mm/h</span>
+        </div>
+        <div class="linea-dato">
+          <span class="dato-titulo">Lluvia episodio</span>
+          <span class="dato-valor" id="day-rainepisode">-- l/m2</span>
+        </div>
+        <div class="linea-dato">
+          <span class="dato-titulo">Lluvia acumulada mes / a&ntilde;o</span>
+          <span class="dato-valor"><span id="month-rain">--</span> l/m2</span> / <span class="dato-valor"><span id="year-rain">--</span> l/m2</span>        
+        </div>
+      </div>
+    </div>
+
+  </div> <!-- CIERRE DEL DASHBOARD-GRID -->
+
+  <div class="center-wrapper">
+    <div class="actualizado">&Uacute;ltima actualizaci&oacute;n: <span id="sync-time">--/--/---- --:--</span></div>
+  </div>
+  
+  <!-- SCRIPT DE MAPEADO CON API CORREGIDA -->
+  <script>
+    async function actualizarMeteo() {
+      try {
+        const respuesta = await fetch('https://meteotetuan.w5.lt/api.php');
+        let textoRaw = await respuesta.text();
+        
+        // Corrección de la coma faltante en el JSON de la API
+        if (!textoRaw.includes('"voltaje_consola": "4,72",')) {
+          textoRaw = textoRaw.replace('"voltaje_consola": "4,72"', '"voltaje_consola": "4,72",');
+        }
+        
+        const data = JSON.parse(textoRaw);
+        
+        // 1. ASIGNACIÓN FILA 1 (TARJETAS EXTERIOR)
+        document.getElementById('current-temp').innerHTML = `${data["temperatura"]} <span class="unidad">&deg;C</span>`;
+        document.getElementById('current-hum').innerHTML = `${data["humedad"]}<span class="unidad">%</span>`;
+        document.getElementById('current-wind').innerHTML = `${data["viento_velocidad"]}<span class="unidad">km/h</span>`;
+        document.getElementById('current-dir').innerHTML = `${data["viento_dir_sector"]} <span class="unidad">(${data["viento_dir_grados"]}&deg;)</span>`;
+
+        // 2. ASIGNACIÓN FILA 2 (TARJETAS AVANZADAS)
+        document.getElementById('current-press').innerHTML = `${data["presion_rel"]}<span class="unidad">hPa</span>`;
+        document.getElementById('current-rain').innerHTML = `${data["lluvia_diaria"]}<span class="unidad">l/m2</span>`;
+        document.getElementById('current-uv').innerHTML = `${data["indice_uv"]} <span class="unidad">UVI</span>`;
+        document.getElementById('current-solar').innerHTML = `${data["radiacion_solar"].trim()} <span class="unidad">W/m2</span>`;
+
+        // 3. ASIGNACIÓN COLUMNA IZQUIERDA (SOL, CONSOLA Y CÁLCULOS)
+        document.getElementById('day-sunrise').innerText = data["salida_sol"].trim();
+        document.getElementById('day-sunset').innerText = data["puesta_sol"].trim();
+        document.getElementById('day-evapo').innerText = `${data["evapotranspiracion"]} mm`;
+        document.getElementById('day-dewpoint').innerText = `${data["punto_rocio"]} °C`;
+        document.getElementById('day-voltage').innerText = `${data["voltaje_consola"]} V`;
+        document.getElementById('day-forecast').innerText = data["prevision"];
+
+        // 4. ASIGNACIÓN COLUMNA DERECHA (INTERIOR Y LLUVIA EXTRA)
+        document.getElementById('in-temp').innerText = `${data["temperatura interior"]} °C`;
+        document.getElementById('in-hum').innerText = `${data["humedad interior"]} %`;
+        document.getElementById('day-windgust').innerText = `${data["viento_racha"]} km/h`;
+        document.getElementById('day-rainrate').innerText = `${data["lluvia_intensidad"]} mm/h`;
+        document.getElementById('day-rainepisode').innerText = `${data["lluvia_episodio"]} l/m2`;
+        
+        // Acumulados mensuales y anuales
+        document.getElementById('month-rain').innerText = data["lluvia_mes"];
+        document.getElementById('year-rain').innerText = data["lluvia_anual"];
+
+        // 5. BARRA DE SINCRONIZACIÓN
+        document.getElementById('sync-time').innerText = `${data["dia"]} a las ${data["hora"]} (${data["estacion_nombre"]})`;
+
+      } catch (error) {
+        console.error("Error al actualizar los datos meteorológicos:", error);
+      }
+    }
+
+    // Ejecución inicial inmediata al cargar
+    actualizarMeteo();
+    
+    // Auto-actualización programada cada 10 minutos (600000 ms)
+    setInterval(actualizarMeteo, 600000);
+  </script>
+</body>
+</html>
