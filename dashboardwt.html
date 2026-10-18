@@ -272,27 +272,27 @@
   <div class="center-wrapper">
     <div class="actualizado">&Uacute;ltima actualizaci&oacute;n: <span id="sync-time">--/--/---- --:--</span></div>
   </div>
-<!-- SCRIPT DE MAPEADO REAL CORREGIDO PARA TU JSON GENERADO COMO PHP -->
+ <!-- SCRIPT DE MAPEADO REAL CORREGIDO PARA TU JSON -->
   <script>
     async function actualizarMeteo() {
       try {
-        // Conexión directa a tu nueva ruta PHP que escupe el JSON sin bloqueos
+        // Conexión directa a la URL exacta de tu archivo JSON
         const respuesta = await fetch('https://meteotetuan.w5.lt/api.php');
         const data = await respuesta.json();
         
-        // 1. ASIGNACIÓN FILA 1 (TARJETAS)
+        // 1. ASIGNACIÓN FILA 1 (TARJETAS SUPERIORES)
         document.getElementById('current-temp').innerHTML = `${data.temperatura} <span class="unidad">&deg;C</span>`;
         document.getElementById('current-hum').innerHTML = `${data.humedad}<span class="unidad">%</span>`;
         document.getElementById('current-wind').innerHTML = `${data.viento_velocidad} <span class="unidad">km/h</span>`;
         document.getElementById('current-dir').innerHTML = `${data.viento_dir_sector} <span class="unidad" style="font-size:1.1rem; font-weight:600;">(${data.viento_dir_grados}°)</span>`;
 
-        // 2. ASIGNACIÓN FILA 2 (TARJETAS)
+        // 2. ASIGNACIÓN FILA 2 (TARJETAS SUPERIORES)
         document.getElementById('current-press').innerHTML = `${data.presion_rel}<span class="unidad">hPa</span>`;
         document.getElementById('current-rain').innerHTML = `${data.lluvia_diaria}<span class="unidad">mm</span>`;
         document.getElementById('current-uv').innerHTML = `${data.indice_uv} <span class="unidad">UVI</span>`;
         document.getElementById('current-solar').innerHTML = `${data.radiacion_solar.trim()} <span class="unidad">W/m2</span>`;
 
-        // 3. ASIGNACIÓN BLOQUE DE LÍNEAS INFERIORES
+        // 3. ASIGNACIÓN BLOQUE DE LÍNEAS INFERIORES (MAPPED CORRECTAMENTE)
         document.getElementById('estacion-titulo').textContent = `Dashboard ${data.estacion_nombre}`;
         document.getElementById('wt-rocio').innerHTML = `${data.punto_rocio} &deg;C`;
         document.getElementById('wt-lluvia-int').textContent = `${data.lluvia_intensidad} mm/h`;
