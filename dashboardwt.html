@@ -246,14 +246,6 @@
       <!-- Columna Derecha: Climatología Interior y Lluvia Separada -->
       <div class="columna-datos">
         <div class="linea-dato">
-          <span class="dato-titulo">Temperatura interior</span>
-          <span class="dato-valor" id="in-temp">-- &deg;C</span>
-        </div>
-        <div class="linea-dato">
-          <span class="dato-titulo">Humedad interior</span>
-          <span class="dato-valor" id="in-hum">-- %</span>
-        </div>
-        <div class="linea-dato">
           <span class="dato-titulo">Racha de viento m&aacute;xima</span>
           <span class="dato-valor" id="day-windgust">-- km/h</span>
         </div>
@@ -316,8 +308,6 @@
         document.getElementById('day-forecast').innerText = data["prevision"];
 
         // 4. ASIGNACIÓN COLUMNA DERECHA (INTERIOR Y LLUVIAS SEPARADAS)
-        document.getElementById('in-temp').innerText = `${data["temperatura interior"]} °C`;
-        document.getElementById('in-hum').innerText = `${data["humedad interior"]} %`;
         document.getElementById('day-windgust').innerText = `${data["viento_racha"]} km/h`;
         document.getElementById('day-rainrate').innerText = `${data["lluvia_intensidad"]} mm/h`;
         document.getElementById('day-rainepisode').innerText = `${data["lluvia_episodio"]} l/m2`;
