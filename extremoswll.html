@@ -176,23 +176,22 @@
         const respuesta = await fetch('https://meteotetuan.w5.lt/historicotetuan/weather_historic_proxy.php');
         const dataExtremos = await respuesta.json();
         
-
-        // ASIGNACIÓN DE LOS 12 EXTREMOS EN MATRIZ SIMÉTRICA
-        document.getElementById('day-tmax').innerHTML = dataExtremos.temp_max !== null ? `<font color="red">${dataExtremos.temp_max} &deg;C</font>` : '<font color="red">-- &deg;C</font>';
-        document.getElementById('day-tmin').innerHTML = dataExtremos.temp_min !== null ? `<font color="blue">${dataExtremos.temp_min} &deg;C</font>` : '<font color="blue">-- &deg;C</font>';
+        // ASIGNACIÓN DE LOS 12 EXTREMOS EN MATRIZ SIMÉTRICA (Uso seguro de Unicode \u00B0 para grados)
+        document.getElementById('day-tmax').innerHTML = dataExtremos.temp_max !== null ? `<font color="red">${dataExtremos.temp_max} \u00B0C</font>` : '<font color="red">-- \u00B0C</font>';
+        document.getElementById('day-tmin').innerHTML = dataExtremos.temp_min !== null ? `<font color="blue">${dataExtremos.temp_min} \u00B0C</font>` : '<font color="blue">-- \u00B0C</font>';
         document.getElementById('day-hmax').innerText = dataExtremos.hum_max !== null ? `${dataExtremos.hum_max} %` : '-- %';
         document.getElementById('day-hmin').innerText = dataExtremos.hum_min !== null ? `${dataExtremos.hum_min} %` : '-- %';
-        document.getElementById('day-dpmax').innerText = dataExtremos.rocio_max !== null ? `${dataExtremos.rocio_max} &deg;C` : '-- &deg;C';
-        document.getElementById('day-dpmin').innerText = dataExtremos.rocio_min !== null ? `${dataExtremos.rocio_min} &deg;C` : '-- &deg;C';
+        document.getElementById('day-dpmax').innerHTML = dataExtremos.rocio_max !== null ? `${dataExtremos.rocio_max} \u00B0C` : '-- \u00B0C';
+        document.getElementById('day-dpmin').innerHTML = dataExtremos.rocio_min !== null ? `${dataExtremos.rocio_min} \u00B0C` : '-- \u00B0C';
         
         document.getElementById('day-pmax').innerText = dataExtremos.presion_max !== null ? `${dataExtremos.presion_max} hPa` : '-- hPa';
         document.getElementById('day-pmin').innerText = dataExtremos.presion_min !== null ? `${dataExtremos.presion_min} hPa` : '-- hPa';
         document.getElementById('day-vmax').innerText = dataExtremos.racha_max !== null ? `${dataExtremos.racha_max} km/h` : '-- km/h';
-        document.getElementById('day-chillmin').innerHTML = dataExtremos.sensacion_min !== null ? `<font color="blue">${dataExtremos.sensacion_min} &deg;C</font>` : '<font color="blue">-- &deg;C</font>';
+        document.getElementById('day-chillmin').innerHTML = dataExtremos.sensacion_min !== null ? `<font color="blue">${dataExtremos.sensacion_min} \u00B0C</font>` : '<font color="blue">-- \u00B0C</font>';
         document.getElementById('day-radmax').innerText = dataExtremos.radiacion_max !== null ? `${dataExtremos.radiacion_max} W/m2` : '-- W/m2';
         document.getElementById('day-uvmax').innerText = dataExtremos.uv_max !== null ? `${dataExtremos.uv_max} UVI` : '-- UVI';
 
-        // BARRA DE SINCRONIZACIÓN INFERIOR (Corta los últimos tres caracteres ":SS" para ocultar segundos)
+        // BARRA DE SINCRONIZACIÓN INFERIOR (Oculta los segundos)
         if (dataExtremos.fecha_calculo) {
           const horaLimpia = dataExtremos.fecha_calculo.substring(0, dataExtremos.fecha_calculo.length - 3);
           document.getElementById('sync-time').innerText = horaLimpia;
@@ -210,4 +209,4 @@
     setInterval(actualizarMeteo, 600000);
   </script>
 </body>
-</html>  
+</html>
