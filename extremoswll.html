@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Dashboard MeteoTetu&aacute;n - Extremos Hoy</title>
+  <style>
+    /* DISEÑO VISUAL MATTE ELEGANTE - ESTÁTICO FIJO A 900PX */
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      background-color: #f5f6f8;
+      margin: 0;
+      padding: 15px;
+      color: #fff;
+      width: 900px;
+      margin: 0 auto;
+    }
+    
+    /* Contenedor estático */
+    .dashboard-grid {
+      width: 900px;
+      margin: 0 auto;
+      display: flex;
+      flex-direction: column;
+      gap: 15px;
+    }
+
+    /* SECCIONES DE DATOS EN LÍNEAS / DOS COLUMNAS */
+    .seccion-datos-lineas {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 30px;
+      background-color: #ffffff;
+      border-radius: 16px;
+      padding: 25px 30px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.03);
+      border: 1px solid #e2e8f0;
+      margin-top: 5px;
+    }
+
+    .bloque-titulo {
+      grid-column: span 2;
+      font-size: 1.1rem;
+      font-weight: 700;
+      color: #2d3748;
+      margin: 0 0 5px 0;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      border-bottom: 2px solid #edf2f7;
+      padding-bottom: 8px;
+    }
+
+    .columna-datos {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .linea-dato {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding-bottom: 8px;
+      border-bottom: 1px dashed #e2e8f0;
+      font-size: 0.95rem;
+      color: #4a5568;
+    }
+
+    .linea-dato:last-child {
+      border-bottom: none;
+    }
+
+    .dato-titulo {
+      font-weight: 500;
+      color: #718096;
+    }
+
+    .dato-valor {
+      font-weight: 700;
+      color: #2d3748;
+    }
+
+    /* Barra inferior de sincronización */
+    .actualizado {
+      text-align: center;
+      font-size: 0.85rem;
+      color: #4a5568;
+      font-weight: 600;
+      background: #edf2f7;
+      padding: 8px 25px;
+      border-radius: 20px;
+      display: inline-block;
+      margin: 25px auto 0 auto;
+      border: 1px solid #e2e8f0;
+    }
+    .center-wrapper {
+      text-align: center;
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- CONTENEDOR PRINCIPAL -->
+  <div class="dashboard-grid">
+    
+
+    <!-- BLOQUE 2: EXTREMOS DIARIOS (HOY) -->
+    <div class="seccion-datos-lineas">
+      <h2 class="bloque-titulo">📊 Extremos Diarios (Hoy)</h2>
+      
+      <!-- Columna Izquierda -->
+      <div class="columna-datos">
+        <div class="linea-dato">
+          <span class="dato-titulo">Temperatura m&aacute;xima hoy</span>
+          <span class="dato-valor" id="day-tmax"><font color="red">-- &deg;C</font></span>
+        </div>
+        <div class="linea-dato">
+          <span class="dato-titulo">Temperatura m&iacute;nima hoy</span>
+          <span class="dato-valor" id="day-tmin"><font color="blue">-- &deg;C</font></span>
+        </div>
+        <div class="linea-dato">
+          <span class="dato-titulo">Humedad relativa m&aacute;xima hoy</span>
+          <span class="dato-valor" id="day-hmax">-- %</span>
+        </div>
+        <div class="linea-dato">
+          <span class="dato-titulo">Humedad relativa m&iacute;nima hoy</span>
+          <span class="dato-valor" id="day-hmin">-- %</span>
+        </div>
+      </div>
+
+      <!-- Columna Derecha -->
+      <div class="columna-datos">
+        <div class="linea-dato">
+          <span class="dato-titulo">Presi&oacute;n atmosf&eacute;rica m&aacute;xima hoy</span>
+          <span class="dato-valor" id="day-pmax">-- hPa</span>
+        </div>
+        <div class="linea-dato">
+          <span class="dato-titulo">Presi&oacute;n atmosf&eacute;rica m&iacute;nima hoy</span>
+          <span class="dato-valor" id="day-pmin">-- hPa</span>
+        </div>
+        <div class="linea-dato">
+          <span class="dato-titulo">Racha de viento m&aacute;xima hoy</span>
+          <span class="dato-valor" id="day-vmax">-- km/h</span>
+        </div>
+        <div class="linea-dato">
+          <span class="dato-titulo">&Iacute;ndice UV m&aacute;ximo hoy</span>
+          <span class="dato-valor" id="day-uvmax">-- UVI</span>
+        </div>
+      </div>
+    </div>
+
+  </div> <!-- CIERRE DEL DASHBOARD-GRID -->
+      
+  <div class="center-wrapper">
+    <div class="actualizado">&Uacute;ltima actualizaci&oacute;n: <span id="sync-time">--/--/---- --:--</span></div>
+  </div>
+  
+  <script>
+    async function actualizarMeteo() {
+      try {
+        // Una única petición exclusiva a tu proxy de históricos de la API v2
+        const respuesta = await fetch('https://meteotetuan.w5.lt/historicotetuan/weather_historic_proxy.php');
+        const dataExtremos = await respuesta.json();
+        
+
+        // ASIGNACIÓN EXTREMOS DIARIOS (HOY) DESDE TU PROXY HISTÓRICO
+        document.getElementById('day-tmax').innerHTML = dataExtremos.temp_max !== null ? `<font color="red">${dataExtremos.temp_max} &deg;C</font>` : '<font color="red">-- &deg;C</font>';
+        document.getElementById('day-tmin').innerHTML = dataExtremos.temp_min !== null ? `<font color="blue">${dataExtremos.temp_min} &deg;C</font>` : '<font color="blue">-- &deg;C</font>';
+        document.getElementById('day-hmax').innerText = dataExtremos.hum_max !== null ? `${dataExtremos.hum_max} %` : '-- %';
+        document.getElementById('day-hmin').innerText = dataExtremos.hum_min !== null ? `${dataExtremos.hum_min} %` : '-- %';
+        document.getElementById('day-pmax').innerText = dataExtremos.presion_max !== null ? `${dataExtremos.presion_max} hPa` : '-- hPa';
+        document.getElementById('day-pmin').innerText = dataExtremos.presion_min !== null ? `${dataExtremos.presion_min} hPa` : '-- hPa';
+        document.getElementById('day-vmax').innerText = dataExtremos.racha_max !== null ? `${dataExtremos.racha_max} km/h` : '-- km/h';
+        document.getElementById('day-uvmax').innerText = dataExtremos.uv_max !== null ? `${dataExtremos.uv_max} UVI` : '-- UVI';
+
+        // BARRA DE SINCRONIZACIÓN INFERIOR
+        if (dataExtremos.fecha_calculo) {
+          document.getElementById('sync-time').innerText = dataExtremos.fecha_calculo;
+        }
+
+      } catch (error) {
+        console.error("Error al actualizar los datos meteorológicos históricos:", error);
+      }
+    }
+
+    // Ejecución inicial automática al cargar la página
+    actualizarMeteo();
+    
+    // Auto-actualización pasiva cada 10 minutos (600000 ms)
+    setInterval(actualizarMeteo, 600000);
+  </script>
+</body>
+</html>
