@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Historial de Extremos - MeteoTetuán</title>
+  <style>
+    /* DISEÑO VISUAL MATTE ELEGANTE - ESTÁTICO FIJO A 900PX PARA IFRAME */
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      background-color: #f5f6f8;
+      margin: 0;
+      padding: 10px;
+      color: #333;
+      width: 900px;
+      margin: 0 auto;
+    }
+    
+    .dashboard-grid {
+      width: 900px;
+      margin: 0 auto;
+      display: flex;
+      flex-direction: column;
+      gap: 15px;
+    }
+
+    /* CONTENEDOR DE BLOQUE EN LÍNEAS */
+    .seccion-datos-lineas {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 30px;
+      background-color: #ffffff;
+      border-radius: 16px;
+      padding: 22px 30px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.03);
+      border: 1px solid #e2e8f0;
+    }
+
+    .bloque-titulo {
+      grid-column: span 2;
+      font-size: 1.1rem;
+      font-weight: 700;
+      color: #2d3748;
+      margin: 0 0 5px 0;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      border-bottom: 2px solid #edf2f7;
+      padding-bottom: 8px;
+    }
+
+    .subtitulo-tabla {
+      font-weight: 700;
+      color: #1a202c;
+      background-color: #f7fafc;
+      padding: 6px 10px;
+      border-radius: 6px;
+      font-size: 0.9rem;
+      letter-spacing: 0.5px;
+      margin-bottom: 5px;
+    }
+
+    .columna-datos {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .linea-dato {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding-bottom: 8px;
+      border-bottom: 1px dashed #e2e8f0;
+      font-size: 0.95rem;
+      color: #4a5568;
+    }
+
+    .linea-dato:last-child {
+      border-bottom: none;
+    }
+
+    .dato-titulo {
+      font-weight: 500;
+      color: #718096;
+    }
+
+    .dato-valor {
+      font-weight: 700;
+      color: #2d3748;
+    }
+
+    /* Barra inferior de sincronización */
+    .actualizado {
+      text-align: center;
+      font-size: 0.85rem;
+      color: #4a5568;
+      font-weight: 600;
+      background: #edf2f7;
+      padding: 8px 25px;
+      border-radius: 20px;
+      display: inline-block;
+      margin: 15px auto 0 auto;
+      border: 1px solid #e2e8f0;
+    }
+    .center-wrapper {
+      text-align: center;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="dashboard-grid">
+
+    <!-- BLOQUE ÚNICO: HISTORIAL COMPARATIVO PERÍODOS (MES VS AÑO) -->
+    <div class="seccion-datos-lineas">
+      <h2 class="bloque-titulo">🗓️ Historial Hist&oacute;rico Extremos</h2>
+      
+      <!-- Columna Izquierda: Mensual -->
+      <div class="columna-datos">
+        <div class="subtitulo-tabla">ESTAD&Iacute;STICAS DEL MES</div>
+        <div class="linea-dato">
+          <span class="dato-titulo">Temperatura m&aacute;xima mes</span>
+          <span class="dato-valor" id="month-tmax" style="color: #e55039;">-- &deg;C</span>
+        </div>
+        <div class="linea-dato">
+          <span class="dato-titulo">Temperatura m&iacute;nima mes</span>
+          <span class="dato-valor" id="month-tmin" style="color: #4a69bd;">-- &deg;C</span>
+        </div>
+        <div class="linea-dato">
+          <span class="dato-titulo">Humedad relativa m&aacute;xima mes</span>
+          <span class="dato-valor" id="month-hmax">-- %</span>
+        </div>
+        <div class="linea-dato">
+          <span class="dato-titulo">Humedad relativa m&iacute;nima mes</span>
+          <span class="dato-valor" id="month-hmin">-- %</span>
+        </div>
+        <div class="linea-dato">
+          <span class="dato-titulo">Presi&oacute;n atmosférica m&aacute;xima mes</span>
+          <span class="dato-valor" id="month-pmax">-- hPa</span>
+        </div>
+        <div class="linea-dato">
+          <span class="dato-titulo">Presi&oacute;n atmosférica m&iacute;nima mes</span>
+          <span class="dato-valor" id="month-pmin">-- hPa</span>
+        </div>
+        <div class="linea-dato">
+          <span class="dato-titulo">Racha de viento m&aacute;xima mes</span>
+          <span class="dato-valor" id="month-vmax">-- km/h</span>
+        </div>
+        <div class="linea-dato">
+          <span class="dato-titulo">Radiaci&oacute;n solar m&aacute;xima mes</span>
+          <span class="dato-valor" id="month-rmax">-- W/m2</span>
+        </div>
+        <div class="linea-dato">
+          <span class="dato-titulo">&Iacute;ndice UV m&aacute;ximo mes</span>
+          <span class="dato-valor" id="month-uvmax">-- UVI</span>
+        </div>
+        <div class="linea-dato">
+          <span class="dato-titulo">Lluvia mensual acumulada</span>
+          <span class="dato-valor" id="month-rain" style="color: #20b2aa;">-- l/m2</span>
+        </div>
+      </div>
+      
+      <!-- Columna Derecha: Anual -->
+      <div class="columna-datos">
+        <div class="subtitulo-tabla">ESTAD&Iacute;STICAS DEL A&Ntilde;O</div>
+        <div class="linea-dato">
+          <span class="dato-titulo">Temperatura m&aacute;xima a&ntilde;o</span>
+          <span class="dato-valor" id="year-tmax" style="color: #e55039;">-- &deg;C</span>
+        </div>
+        <div class="linea-dato">
+          <span class="dato-titulo">Temperatura m&iacute;nima a&ntilde;o</span>
+          <span class="dato-valor" id="year-tmin" style="color: #4a69bd;">-- &deg;C</span>
+        </div>
+        <div class="linea-dato">
+          <span class="dato-titulo">Humedad relativa m&aacute;xima a&ntilde;o</span>
+          <span class="dato-valor" id="year-hmax">-- %</span>
+        </div>
+        <div class="linea-dato">
+          <span class="dato-titulo">Humedad relativa m&iacute;nima a&ntilde;o</span>
+          <span class="dato-valor" id="year-hmin">-- %</span>
+        </div>
+        <div class="linea-dato">
+          <span class="dato-titulo">Presi&oacute;n atmosférica m&aacute;xima a&ntilde;o</span>
+          <span class="dato-valor" id="year-pmax">-- hPa</span>
+        </div>
+        <div class="linea-dato">
+          <span class="dato-titulo">Presi&oacute;n atmosférica m&iacute;nima a&ntilde;o</span>
+          <span class="dato-valor" id="year-pmin">-- hPa</span>
+        </div>
+        <div class="linea-dato">
+          <span class="dato-titulo">Racha de viento m&aacute;xima a&ntilde;o</span>
+          <span class="dato-valor" id="year-vmax">-- km/h</span>
+        </div>
+        <div class="linea-dato">
+          <span class="dato-titulo">Radiaci&oacute;n solar m&aacute;xima a&ntilde;o</span>
+          <span class="dato-valor" id="year-rmax">-- W/m2</span>
+        </div>
+        <div class="linea-dato">
+          <span class="dato-titulo">&Iacute;ndice UV m&aacute;ximo a&ntilde;o</span>
+          <span class="dato-valor" id="year-uvmax">-- UVI</span>
+        </div>
+        <div class="linea-dato">
+          <span class="dato-titulo">Lluvia anual acumulada</span>
+          <span class="dato-valor" id="year-rain" style="color: #20b2aa;">-- l/m2</span>
+        </div>
+      </div>
+    </div>
+
+
+  </div> <!-- CIERRE DEL DASHBOARD-GRID -->
+      
+  <div class="center-wrapper">
+    <div class="actualizado">Última actualización: <span id="sync-time">--/--/---- --:--</span></div>
+  </div>
+
+  <script>
+    async function actualizarMeteo() {
+      try {
+        const respuesta = await fetch('https://meteotetuan.w5.lt/datos.php');
+        const data = await respuesta.json();
+        
+     
+
+        // 2. ASIGNACIÓN ESTADÍSTICAS MENSUALES (MES)
+        document.getElementById('month-tmax').innerText = `${data.dades_mes.TMax_m} °C`;
+        document.getElementById('month-tmin').innerText = `${data.dades_mes.TMin_m} °C`;
+        document.getElementById('month-hmax').innerText = `${data.dades_mes.HMax_m} %`;
+        document.getElementById('month-hmin').innerText = `${data.dades_mes.HMin_m} %`;
+        document.getElementById('month-pmax').innerText = `${data.dades_mes.PMax_m} hPa`;
+        document.getElementById('month-pmin').innerText = `${data.dades_mes.PMin_m} hPa`;
+        document.getElementById('month-vmax').innerText = `${data.dades_mes.VMax_m} km/h`;
+        document.getElementById('month-rmax').innerText = `${data.dades_mes.RMax_m} W/m2`;
+        document.getElementById('month-uvmax').innerText = `${data.dades_mes.UVMax_m} UVI`;
+        document.getElementById('month-rain').innerText = `${data.dades_mes.PPT_m} l/m2`;
+
+        // 3. ASIGNACIÓN ESTADÍSTICAS ANUALES (AÑO)
+        document.getElementById('year-tmax').innerText = `${data.dades_any.TMax_a} °C`;
+        document.getElementById('year-tmin').innerText = `${data.dades_any.TMin_a} °C`;
+        document.getElementById('year-hmax').innerText = `${data.dades_any.HMax_a} %`;
+        document.getElementById('year-hmin').innerText = `${data.dades_any.HMin_a} %`;
+        document.getElementById('year-pmax').innerText = `${data.dades_any.PMax_a} hPa`;
+        document.getElementById('year-pmin').innerText = `${data.dades_any.PMin_a} hPa`;
+        document.getElementById('year-vmax').innerText = `${data.dades_any.VMax_a} km/h`;
+        document.getElementById('year-rmax').innerText = `${data.dades_any.RMax_a} W/m2`;
+        document.getElementById('year-uvmax').innerText = `${data.dades_any.UVMax_a} UVI`;
+        document.getElementById('year-rain').innerText = `${data.dades_any.PPT_a} l/m2`;
+
+        // 4. BARRA DE SINCRONIZACIÓN
+        document.getElementById('sync-time').innerText = `${data.dades_act.DATA} a las ${data.dades_act.HORA}`;
+
+      } catch (error) {
+        console.error("Error al actualizar los extremos meteorológicos:", error);
+      }
+    }
+
+    // Ejecución inicial al cargar la página
+    actualizarMeteo();
+    
+    // Auto-actualización interna cada 10 minutos (600000 ms)
+    setInterval(actualizarMeteo, 600000);
+  </script>
+</body>
+</html>
