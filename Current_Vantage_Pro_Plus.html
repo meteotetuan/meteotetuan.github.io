@@ -184,13 +184,14 @@
     var arr = ["N", "NNE", "NE", "ENE", "E", "ESE", "SE", "SSE", "S", "SSW", "SW", "WSW", "W", "WNW", "NW", "NNW"];
     return arr[(val % 16)];
   }
- function cargarDatosClima() {
-    // PETICIÓN SIMULTÁNEA EN PARALELO
+
+  function cargarDatosClima() {
     Promise.all([
       fetch(jsonUrl).then(function(res) { return res.json(); }),
       fetch(jsonHistUrl).then(function(res) { return res.json(); })
     ])
     .then(function(resultados) {
+      // CORRECCIÓN SEPARACIÓN DE RESPUESTAS
       var json = resultados[0];
       var hist = resultados[1];
 
@@ -204,6 +205,7 @@
           var sensor = sensors[i];
           if (!sensor.data || !Array.isArray(sensor.data) || sensor.data.length === 0) continue;
           
+          // CORRECCIÓN ACCESO AL OBJETO INTERNO DEL ARRAY
           var bloqueLecturas = sensor.data[0];
 
           if (sensor.sensor_type === 46) {
@@ -270,9 +272,9 @@
     .catch(function(error) {
       console.error("Error cargando los datos meteorológicos concurrentes:", error);
     });
-  }  
+  }
 
   window.onload = cargarDatosClima;
 </script>
 </BODY>
-    
+</HTML>
