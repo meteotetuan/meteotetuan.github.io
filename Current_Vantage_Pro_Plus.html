@@ -1,0 +1,245 @@
+<!DOCTYPE HTML>
+<HTML>
+<HEAD>
+<TITLE>Tiempo actual en Madrid-Tetuán</TITLE>
+<meta http-equiv="content-type" content="text/html; charset=UTF-8">
+<meta http-equiv="refresh" content="150">
+<script>
+// =======================================================================
+// MOTOR JAVASCRIPT PARA LEER LAS DOS FUENTES JSON DESDE GITHUB PAGES
+// =======================================================================
+async function actualizarMeteorologia() {
+    const urlActual = "https://meteotetuan.w5.lt/weather_proxy.php";
+    const urlHistorico = "https://meteotetuan.w5.lt/historicotetuan/weather_historic_proxy.php";
+
+    // Funciones auxiliares de conversión
+    const fToC = (f) => f !== null && f !== undefined ? ((f - 32) * 5 / 9).toFixed(1) : '----';
+    const inhgToHpa = (inhg) => inhg !== null && inhg !== undefined ? (inhg * 33.8639).toFixed(1) : '----';
+    const mphToKmh = (mph) => mph !== null && mph !== undefined ? (mph * 1.60934).toFixed(1) : '0.0';
+    const degToCardinal = (deg) => {
+        if (deg === null || deg === undefined) return '----';
+        const carDir = ["N", "NNE", "NE", "ENE", "E", "ESE", "SE", "SSE", "S", "SSW", "SW", "WSW", "W", "WNW", "NW", "NNW", "N"];
+        return carDir[Math.round(deg / 22.5)];
+    };
+
+    try {
+        // 1. LEER CONDICIONES ACTUALES
+        const resActual = await fetch(urlActual);
+        const api = await resActual.json();
+        
+        if (api.generated_at) {
+            const fecha = new Date(api.generated_at * 1000);
+            document.getElementById('fecha_hora').innerText = fecha.toLocaleDateString('es-ES') + " - " + fecha.toLocaleTimeString('es-ES', {hour: '2-digit', minute:'2-digit'}) + " horas";
+        }
+
+        if (api.sensors && Array.isArray(api.sensors)) {
+            api.sensors.forEach(sensor => {
+                const data = sensor.data ? sensor.data[0] : null;
+                if (!data) return;
+
+                if (sensor.sensor_type === 46) { // ISS Externa
+                    document.getElementById('temp_externa').innerText = fToC(data.temp) + "ºC";
+                    document.getElementById('humedad_externa').innerText = (data.hum ?? '----') + "%";
+                    document.getElementById('punto_rocio').innerText = fToC(data.dew_point) + "ºC";
+                    document.getElementById('viento').innerText = degToCardinal(data.wind_dir_last) + " a " + mphToKmh(data.wind_speed_last) + " km/hr";
+                    document.getElementById('lluvia_hoy').innerText = (data.rainfall_daily_mm ?? 0).toFixed(1) + " mm";
+                    document.getElementById('lluvia_intensidad').innerText = (data.rain_rate_last_mm ?? 0).toFixed(1) + " mm/hr";
+                    document.getElementById('lluvia_mes').innerText = (data.rainfall_monthly_mm ?? 0).toFixed(1) + " mm";
+                    document.getElementById('lluvia_ano').innerText = (data.rainfall_year_mm ?? 0).toFixed(1) + " mm";
+                    document.getElementById('sensacion_termica').innerText = fToC(data.wind_chill) + "ºC";
+                    document.getElementById('indice_thw').innerText = fToC(data.thw_index) + "ºC";
+                    document.getElementById('indice_calor').innerText = fToC(data.heat_index) + "ºC";
+                    document.getElementById('indice_uv').innerText = data.uv_index ?? '0.0';
+                    document.getElementById('radiacion_solar').innerText = (data.solar_rad ?? '0') + " W/m2";
+                }
+                if (sensor.sensor_type === 242) { // Barómetro
+                    document.getElementById('presion').innerText = inhgToHpa(data.bar_sea_level) + " hPa";
+                }
+            });
+        }
+
+        // 2. LEER MÁXIMAS Y MÍNIMAS HISTÓRICAS DE HOY
+        const resHist = await fetch(urlHistorico);
+        const hist = await resHist.json();
+        
+        if (hist) {
+            document.getElementById('temp_max').innerText = (hist.temp_max ?? '----') + "ºC";
+            document.getElementById('temp_min').innerText = (hist.temp_min ?? '----') + "ºC";
+            document.getElementById('humedad_max').innerText = (hist.hum_max ?? '----') + "%";
+            document.getElementById('humedad_min').innerText = (hist.hum_min ?? '----') + "%";
+            document.getElementById('punto_rocio_max').innerText = (hist.rocio_max ?? '----') + "ºC";
+            document.getElementById('punto_rocio_min').innerText = (hist.rocio_min ?? '----') + "ºC";
+            document.getElementById('presion_max').innerText = (hist.presion_max ?? '----') + " hPa";
+            document.getElementById('presion_min').innerText = (hist.presion_min ?? '----') + " hPa";
+            document.getElementById('sensacion_min').innerText = (hist.sensacion_min ?? '----') + "ºC";
+            document.getElementById('indice_calor_max').innerText = (hist.indice_calor_max ?? '----') + "ºC";
+            document.getElementById('uv_max').innerText = (hist.uv_max ?? '----') + " index";
+            document.getElementById('radiacion_max').innerText = (hist.radiacion_max ?? '----') + " W/m2";
+        }
+
+    } catch (error) {
+        console.error("Error cargando los datos meteorológicos:", error);
+    }
+}
+
+// Ejecutar al cargar la página
+window.onload = actualizarMeteorologia;
+</script>
+</HEAD>
+<BODY bgcolor="PaleGoldenrod">
+
+<table border="1" bordercolordark="#000000" bordercolorlight="#000000" cellpadding="2" cellspacing="2">
+<tr height="30">
+    <td align="center" bordercolor="#000000" colspan="2" style="border: thin solid rgb(0,0,0)"><img src=""></td>
+    <td width="700">
+        <center>
+            <font face="verdana" size="2">
+                <a href="http://webcindario.com" target="_blank">Datos este mes</a>&nbsp;&nbsp;-&nbsp;&nbsp;<a href="http://webcindario.com" target="_blank">Datos este año</a>
+            </font>
+        </center>
+    </td>
+</tr>
+
+<tr>
+    <td bordercolor="#000000" bgcolor="#000000" colspan="2" style="border: thin solid rgb(0,0,0)">
+        <font face="verdana, Arial, Helvetica">
+            <strong><font color="#A8B8C8"><big>Tiempo actual en Madrid, Tetuán</big></font></strong>
+            <font color="yellow"><br><B>Actualización: <span id="fecha_hora">Cargando...</span></B></font>
+        </font>
+    </td>
+    <td nowrap bordercolor="#000000" style="border: thin solid rgb(0,0,0)" rowspan="26" valign="top" align="center" bgcolor="#73ADD6">
+        <font face="verdana, Arial, Helvetica">
+            <p align="center">
+                <img src="https://webcindario.com" alt="Current Outside Temperature">&nbsp;&nbsp;
+                <img src="https://webcindario.com" alt="Current Outside Humidity">&nbsp;&nbsp;
+                <img src="https://webcindario.com" alt="Current Outside Dewpoint">
+            </p>
+            <p align="center">
+                <img src="https://webcindario.com" alt="Current Wind Chill">&nbsp;&nbsp;
+                <img src="https://webcindario.com" alt="Current THW Index">&nbsp;&nbsp;
+                <img src="https://webcindario.com" alt="Current Heat Index">
+            </p>
+            <p align="center">
+                <img src="https://webcindario.com" alt="Current Wind Direction">&nbsp;
+                <img src="https://webcindario.com" alt="Current UV Index">&nbsp;
+                <img src="https://webcindario.com" alt="Current Solar Radiation">&nbsp;
+                <img src="https://webcindario.com" alt="Current Wind Speed">
+            </p>
+            <p align="center">
+                <img src="https://webcindario.com" alt="Current Barometer">&nbsp;&nbsp;
+                <img src="https://webcindario.com" alt="Barometer History">
+            </p>
+            <p align="center">
+                <img src="https://webcindario.com" alt="Today's Rain">&nbsp;&nbsp;
+                <img src="https://webcindario.com" alt="Storm Rain Total">&nbsp;&nbsp;
+                <img src="https://webcindario.com" alt="Current Rain Rate">&nbsp;&nbsp;
+                <img src="https://webcindario.com" alt="Monthly Rain Total">&nbsp;&nbsp;
+                <img src="https://webcindario.com" alt="Yearly Rain Total">
+            </p>
+        </font>
+    </td>
+</tr>
+<tr>
+    <td bordercolor="#000000" style="border: thin solid rgb(0,0,0)"><font face="verdana, Arial, Helvetica"><small><strong><font color="Brown">Temperatura</font></strong><br></small></font></td>
+    <td width="200" bordercolor="#000000" style="border: thin solid rgb(0,0,0)"><font face="verdana, Arial, Helvetica"><strong><small><font color="#3366FF"><span id="temp_externa">----ºC</span></font><br></small></strong></font></td>
+</tr>
+<tr>
+    <td bordercolor="#000000" style="border: thin solid rgb(0,0,0)"><font face="verdana, Arial, Helvetica"><small><strong><font color="Brown">Humedad</font></strong><br></small></font></td>
+    <td bordercolor="#000000" style="border: thin solid rgb(0,0,0)"><font face="verdana, Arial, Helvetica"><strong><small><font color="#3366FF"><span id="humedad_externa">----%</span></font><br></small></strong></font></td>
+</tr>
+<tr>
+    <td bordercolor="#000000" style="border: thin solid rgb(0,0,0)"><font face="verdana, Arial, Helvetica"><small><strong><font color="Brown">Punto de rocío</font></strong><br></small></font></td>
+    <td bordercolor="#000000" style="border: thin solid rgb(0,0,0)"><font face="verdana, Arial, Helvetica"><strong><small><font color="#3366FF"><span id="punto_rocio">----ºC</span></font><br></small></strong></font></td>
+</tr>
+<tr>
+    <td bordercolor="#000000" style="border: thin solid rgb(0,0,0)"><font face="verdana, Arial, Helvetica"><strong><font color="Brown"><small>Viento<br></small></font></strong></font></td>
+    <td bordercolor="#000000" style="border: thin solid rgb(0,0,0)"><font face="verdana, Arial, Helvetica"><strong><font color="#3366FF"><small><span id="viento">----</span><br></small></font></strong></font></td>
+</tr>
+<tr>
+    <td bordercolor="#000000" style="border: thin solid rgb(0,0,0)"><font face="verdana, Arial, Helvetica"><small><strong><font color="Brown">Barómetro</font></strong><br></small></font></td>
+    <td bordercolor="#000000" style="border: thin solid rgb(0,0,0)"><font face="verdana, Arial, Helvetica"><strong><small><font color="#3366FF"><span id="presion">---- hPa</span></font><br></small></strong></font></td>
+</tr>
+<tr>
+    <td bordercolor="#000000" style="border: thin solid rgb(0,0,0)"><font face="verdana, Arial, Helvetica"><small><strong><font color="Brown">Lluvia hoy</font></strong><br></small></font></td>
+    <td bordercolor="#000000" style="border: thin solid rgb(0,0,0)"><font face="verdana, Arial, Helvetica"><strong><small><font color="#3366FF"><span id="lluvia_hoy">0.0 mm</span></font><br></small></strong></font></td>
+</tr>
+<tr>
+    <td bordercolor="#000000" style="border: thin solid rgb(0,0,0)"><font face="verdana, Arial, Helvetica"><small><strong><font color="Brown">Intensidad</font></strong><br></small></font></td>
+    <td bordercolor="#000000" style="border: thin solid rgb(0,0,0)"><font face="verdana, Arial, Helvetica"><strong><small><font color="#3366FF"><span id="lluvia_intensidad">0.0 mm/hr</span></font><br></small></strong></font></td>
+</tr>
+<tr>
+    <td bordercolor="#000000" style="border: thin solid rgb(0,0,0)"><font face="verdana, Arial, Helvetica"><small><strong><font color="Brown">Tormenta total</font></strong><br></small></font></td>
+    <td bordercolor="#000000" style="border: thin solid rgb(0,0,0)"><font face="verdana, Arial, Helvetica"><strong><small><font color="#3366FF"><span id="lluvia_tormenta">0.0 mm</span></font><br></small></strong></font></td>
+</tr> 
+<tr>
+    <td bordercolor="#000000" style="border: thin solid rgb(0,0,0)"><font face="verdana, Arial, Helvetica"><small><strong><font color="Brown">Lluvia mensual</font></strong><br></small></font></td>
+    <td bordercolor="#000000" style="border: thin solid rgb(0,0,0)"><font face="verdana, Arial, Helvetica"><strong><small><font color="#3366FF"><span id="lluvia_mes">0.0 mm</span></font><br></small></strong></font></td>
+</tr>
+<tr>
+    <td bordercolor="#000000" style="border: thin solid rgb(0,0,0)"><font face="verdana, Arial, Helvetica"><small><strong><font color="Brown">Lluvia anual</font></strong><br></small></font></td>
+    <td bordercolor="#000000" style="border: thin solid rgb(0,0,0)"><font face="verdana, Arial, Helvetica"><strong><small><font color="#3366FF"><span id="lluvia_ano">0.0 mm</span></font><br></small></strong></font></td>
+</tr>
+<tr>
+    <td bordercolor="#000000" style="border: thin solid rgb(0,0,0)"><font face="verdana, Arial, Helvetica"><strong><font color="Brown"><small>Sensación térmica<br></small></font></strong></font></td>
+    <td bordercolor="#000000" style="border: thin solid rgb(0,0,0)"><font face="verdana, Arial, Helvetica"><strong><font color="#3366FF"><small><span id="sensacion_termica">----ºC</span><br></small></font></strong></font></td> 
+</tr>
+<tr>
+    <td bordercolor="#000000" style="border: thin solid rgb(0,0,0)"><font face="verdana, Arial, Helvetica"><strong><font color="Brown"><small>Índice THW<br></small></font></strong></font></td>
+    <td bordercolor="#000000" style="border: thin solid rgb(0,0,0)"><font face="verdana, Arial, Helvetica"><strong><font color="#3366FF"><small><span id="indice_thw">----ºC</span><br></small></font></strong></font></td> 
+</tr> 
+<tr>
+    <td bordercolor="#000000" style="border: thin solid rgb(0,0,0)"><font face="verdana, Arial, Helvetica"><strong><font color="Brown"><small>Índice de calor<br></small></font></strong></font></td>
+    <td bordercolor="#000000" style="border: thin solid rgb(0,0,0)"><font face="verdana, Arial, Helvetica"><strong><font color="#3366FF"><small><span id="indice_calor">----ºC</span><br></small></font></strong></font></td> 
+</tr>
+<tr>
+    <td bordercolor="#000000" style="border: thin solid rgb(0,0,0)"><font face="verdana, Arial, Helvetica"><strong><font color="Brown"><small>Índice UV<br></small></font></strong></font></td>
+    <td bordercolor="#000000" style="border: thin solid rgb(0,0,0)"><font face="verdana, Arial, Helvetica"><strong><font color="#3366FF"><small><span id="indice_uv">----</span><br></small></font></strong></font></td>
+</tr>
+<tr>
+    <td bordercolor="#000000" style="border: thin solid rgb(0,0,0)"><font face="verdana, Arial, Helvetica"><strong><font color="Brown"><small>Radiación solar<br></small></font></strong></font></td>
+    <td bordercolor="#000000" style="border: thin solid rgb(0,0,0)"><font face="verdana, Arial, Helvetica"><strong><font color="#3366FF"><small><span id="radiacion_solar">---- W/m2</span><br></small></font></strong></font></td>
+</tr>
+
+<tr>
+    <td bordercolor="#000000" bgcolor="#000000" colspan="2" style="border: thin solid rgb(0,0,0)"><font face="verdana, Arial, Helvetica"><strong><font color="#A8B8C8"><big>Máximas y mínimas de hoy</big></font></strong></font></td>
+</tr>
+<tr>
+    <td bordercolor="#000000" style="border: thin solid rgb(0,0,0)"><font face="verdana, Arial, Helvetica"><strong><small><font color="#228b22"><p>Temperatura máxima</p><p>Temperatura mínima</p></font></small></strong></font></td>
+    <td align="left" bordercolor="#000000" style="border: thin solid rgb(0,0,0)"><font face="verdana, Arial, Helvetica"><strong><font color="#ff4500"><small><p id="temp_max">----ºC</p><p id="temp_min">----ºC</p></small></font></strong></font></td>
+</tr>
+<tr>
+    <td bordercolor="#000000" style="border: thin solid rgb(0,0,0)"><font face="verdana, Arial, Helvetica"><strong><font color="#228b22"><small><p>Humedad máxima</p><p>Humedad mínima</p></small></font></strong></font></td>
+    <td align="left" bordercolor="#000000" style="border: thin solid rgb(0,0,0)"><font face="verdana, Arial, Helvetica"><strong><font color="#ff4500"><small><p id="humedad_max">----%</p><p id="humedad_min">----%</p></small></font></strong></font></td>
+</tr>
+<tr>
+    <td bordercolor="#000000" style="border: thin solid rgb(0,0,0)"><font face="verdana, Arial, Helvetica"><strong><font color="#228b22"><small><p>Punto de rocío máximo</p><p>Punto de rocío mínimo</p></small></font></strong></font></td>
+    <td align="left" bordercolor="#000000" style="border: thin solid rgb(0,0,0)"><font face="verdana, Arial, Helvetica"><strong><font color="#ff4500"><small><p id="punto_rocio_max">----ºC</p><p id="punto_rocio_min">----ºC</p></small></font></strong></font></td>
+</tr>
+<tr>
+    <td bordercolor="#000000" style="border: thin solid rgb(0,0,0)"><font face="verdana, Arial, Helvetica"><font color="#228b22"><strong><small><p>Barómetro máximo</p><p>Barómetro mínimo</p></small></strong></font></font></td>
+    <td align="left" bordercolor="#000000" style="border: thin solid rgb(0,0,0)"><font face="verdana, Arial, Helvetica"><strong><font color="#ff4500"><small><p id="presion_max">---- hPa</p><p id="presion_min">---- hPa</p></small></font></strong></font></td>
+</tr>
+<tr>
+    <td bordercolor="#000000" style="border: thin solid rgb(0,0,0)"><font face="verdana, Arial, Helvetica"><strong><font color="#228b22"><small><p>Máxima intensidad de la lluvia</p></small></font></strong></font></td>
+    <td align="left" bordercolor="#000000" style="border: thin solid rgb(0,0,0)"><font face="verdana, Arial, Helvetica"><strong><font color="#ff4500"><small><p id="lluvia_intensidad_max">0.0 mm/hr</p></small></font></strong></font></td>
+</tr>
+<tr>
+    <td bordercolor="#000000" style="border: thin solid rgb(0,0,0)"><font face="verdana, Arial, Helvetica"><strong><font color="#228b22"><small><p>Sensación térmica mínima</p></small></font></strong></font></td>
+    <td align="left" bordercolor="#000000" style="border: thin solid rgb(0,0,0)"><font face="verdana, Arial, Helvetica"><strong><font color="#ff4500"><small><p id="sensacion_min">----ºC</p></small></font></strong></font></td>
+</tr>
+<tr>
+    <td bordercolor="#000000" style="border: thin solid rgb(0,0,0)"><font face="verdana, Arial, Helvetica"><strong><font color="#228b22"><small><p>Máximo índice de calor</p></small></font></strong></font></td>
+    <td align="left" bordercolor="#000000" style="border: thin solid rgb(0,0,0)"><font face="verdana, Arial, Helvetica"><strong><font color="#ff4500"><small><p id="indice_calor_max">----ºC</p></small></font></strong></font></td>
+</tr>
+<tr>
+    <td bordercolor="#000000" style="border: thin solid rgb(0,0,0)" valign="middle"><font face="verdana, Arial, Helvetica"><font color="#228b22"><strong><small><p>Máximo Índice UV</p></small></strong></font></font></td>
+    <td align="left" bordercolor="#000000" style="border: thin solid rgb(0,0,0)"><font face="verdana, Arial, Helvetica"><strong><font color="#ff4500"><small><p id="uv_max">---- index</p></small></font></strong></font></td>
+</tr>
+<tr>
+    <td bordercolor="#000000" style="border: thin solid rgb(0,0,0)" valign="middle"><font face="verdana, Arial, Helvetica"><font color="#228b22"><strong><small><p>Máxima radiación solar</p></small></strong></font></font></td>
+    <td align="left" bordercolor="#000000" style="border: thin solid rgb(0,0,0)"><font face="verdana, Arial, Helvetica"><strong><font color="#ff4500"><small><p id="radiacion_max">---- W/m2</p></small></font></strong></font></td>
+</tr>
+</table>
+
+</BODY>
+</HTML>
