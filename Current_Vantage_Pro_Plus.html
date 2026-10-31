@@ -6,13 +6,13 @@
 <meta http-equiv="refresh" content="150">
 <script>
 // =======================================================================
-// MOTOR JAVASCRIPT CORREGIDO PARA TUS PROXIES
+// MOTOR JAVASCRIPT ULTRA-PRECISO PARA TU JSON DE WEATHERLINK LIVE
 // =======================================================================
 async function actualizarMeteorologia() {
     const urlActual = "https://meteotetuan.w5.lt/weather_proxy.php";
     const urlHistorico = "https://meteotetuan.w5.lt/historicotetuan/weather_historic_proxy.php";
 
-    // Funciones auxiliares de conversión
+    // Funciones de conversión (JSON nativo viene en formato imperial)
     const fToC = (f) => f !== null && f !== undefined ? ((f - 32) * 5 / 9).toFixed(1) : '----';
     const inhgToHpa = (inhg) => inhg !== null && inhg !== undefined ? (inhg * 33.8639).toFixed(1) : '----';
     const mphToKmh = (mph) => mph !== null && mph !== undefined ? (mph * 1.60934).toFixed(1) : '0.0';
@@ -34,27 +34,27 @@ async function actualizarMeteorologia() {
 
         if (api.sensors && Array.isArray(api.sensors)) {
             api.sensors.forEach(sensor => {
-                // CORRECCIÓN: Accedemos al primer elemento del array 'data' del JSON
-                const data = (sensor.data && sensor.data[0]) ? sensor.data[0] : null;
-                if (!data) return;
+                // ACCESO EXACTO: Al ser un array de un elemento, extraemos el índice [0]
+                if (!sensor.data || !Array.isArray(sensor.data) || sensor.data.length === 0) return;
+                const data = sensor.data[0]; 
 
                 if (sensor.sensor_type === 46) { // ISS Externa
-                    document.getElementById('temp_externa').innerText = fToC(data.temp) + "ºC";
-                    document.getElementById('humedad_externa').innerText = (data.hum ?? '----') + "%";
-                    document.getElementById('punto_rocio').innerText = fToC(data.dew_point) + "ºC";
-                    document.getElementById('viento').innerText = degToCardinal(data.wind_dir_last) + " a " + mphToKmh(data.wind_speed_last) + " km/hr";
-                    document.getElementById('lluvia_hoy').innerText = (data.rainfall_daily_mm ?? 0).toFixed(1) + " mm";
-                    document.getElementById('lluvia_intensidad').innerText = (data.rain_rate_last_mm ?? 0).toFixed(1) + " mm/hr";
-                    document.getElementById('lluvia_mes').innerText = (data.rainfall_monthly_mm ?? 0).toFixed(1) + " mm";
-                    document.getElementById('lluvia_ano').innerText = (data.rainfall_year_mm ?? 0).toFixed(1) + " mm";
-                    document.getElementById('sensacion_termica').innerText = fToC(data.wind_chill) + "ºC";
-                    document.getElementById('indice_thw').innerText = fToC(data.thw_index) + "ºC";
-                    document.getElementById('indice_calor').innerText = fToC(data.heat_index) + "ºC";
-                    document.getElementById('indice_uv').innerText = data.uv_index ?? '0.0';
-                    document.getElementById('radiacion_solar').innerText = (data.solar_rad ?? '0') + " W/m2";
+                    if(document.getElementById('temp_externa')) document.getElementById('temp_externa').innerText = fToC(data.temp) + "ºC";
+                    if(document.getElementById('humedad_externa')) document.getElementById('humedad_externa').innerText = (data.hum ?? '----') + "%";
+                    if(document.getElementById('punto_rocio')) document.getElementById('punto_rocio').innerText = fToC(data.dew_point) + "ºC";
+                    if(document.getElementById('viento')) document.getElementById('viento').innerText = degToCardinal(data.wind_dir_last) + " a " + mphToKmh(data.wind_speed_last) + " km/hr";
+                    if(document.getElementById('lluvia_hoy')) document.getElementById('lluvia_hoy').innerText = (data.rainfall_daily_mm ?? 0).toFixed(1) + " mm";
+                    if(document.getElementById('lluvia_intensidad')) document.getElementById('lluvia_intensidad').innerText = (data.rain_rate_last_mm ?? 0).toFixed(1) + " mm/hr";
+                    if(document.getElementById('lluvia_mes')) document.getElementById('lluvia_mes').innerText = (data.rainfall_monthly_mm ?? 0).toFixed(1) + " mm";
+                    if(document.getElementById('lluvia_ano')) document.getElementById('lluvia_ano').innerText = (data.rainfall_year_mm ?? 0).toFixed(1) + " mm";
+                    if(document.getElementById('sensacion_termica')) document.getElementById('sensacion_termica').innerText = fToC(data.wind_chill) + "ºC";
+                    if(document.getElementById('indice_thw')) document.getElementById('indice_thw').innerText = fToC(data.thw_index) + "ºC";
+                    if(document.getElementById('indice_calor')) document.getElementById('indice_calor').innerText = fToC(data.heat_index) + "ºC";
+                    if(document.getElementById('indice_uv')) document.getElementById('indice_uv').innerText = data.uv_index ?? '0.0';
+                    if(document.getElementById('radiacion_solar')) document.getElementById('radiacion_solar').innerText = (data.solar_rad ?? '0') + " W/m2";
                 }
                 if (sensor.sensor_type === 242) { // Barómetro
-                    document.getElementById('presion').innerText = inhgToHpa(data.bar_sea_level) + " hPa";
+                    if(document.getElementById('presion')) document.getElementById('presion').innerText = inhgToHpa(data.bar_sea_level) + " hPa";
                 }
             });
         }
@@ -64,18 +64,18 @@ async function actualizarMeteorologia() {
         const hist = await resHist.json();
         
         if (hist) {
-            document.getElementById('temp_max').innerText = (hist.temp_max ?? '----') + "ºC";
-            document.getElementById('temp_min').innerText = (hist.temp_min ?? '----') + "ºC";
-            document.getElementById('humedad_max').innerText = (hist.hum_max ?? '----') + "%";
-            document.getElementById('humedad_min').innerText = (hist.hum_min ?? '----') + "%";
-            document.getElementById('punto_rocio_max').innerText = (hist.rocio_max ?? '----') + "ºC";
-            document.getElementById('punto_rocio_min').innerText = (hist.rocio_min ?? '----') + "ºC";
-            document.getElementById('presion_max').innerText = (hist.presion_max ?? '----') + " hPa";
-            document.getElementById('presion_min').innerText = (hist.presion_min ?? '----') + " hPa";
-            document.getElementById('sensacion_min').innerText = (hist.sensacion_min ?? '----') + "ºC";
-            document.getElementById('indice_calor_max').innerText = (hist.indice_calor_max ?? '----') + "ºC";
-            document.getElementById('uv_max').innerText = (hist.uv_max ?? '----') + " index";
-            document.getElementById('radiacion_max').innerText = (hist.radiacion_max ?? '----') + " W/m2";
+            if(document.getElementById('temp_max')) document.getElementById('temp_max').innerText = (hist.temp_max ?? '----') + "ºC";
+            if(document.getElementById('temp_min')) document.getElementById('temp_min').innerText = (hist.temp_min ?? '----') + "ºC";
+            if(document.getElementById('humedad_max')) document.getElementById('humedad_max').innerText = (hist.hum_max ?? '----') + "%";
+            if(document.getElementById('humedad_min')) document.getElementById('humedad_min').innerText = (hist.hum_min ?? '----') + "%";
+            if(document.getElementById('punto_rocio_max')) document.getElementById('punto_rocio_max').innerText = (hist.rocio_max ?? '----') + "ºC";
+            if(document.getElementById('punto_rocio_min')) document.getElementById('punto_rocio_min').innerText = (hist.rocio_min ?? '----') + "ºC";
+            if(document.getElementById('presion_max')) document.getElementById('presion_max').innerText = (hist.presion_max ?? '----') + " hPa";
+            if(document.getElementById('presion_min')) document.getElementById('presion_min').innerText = (hist.presion_min ?? '----') + " hPa";
+            if(document.getElementById('sensacion_min')) document.getElementById('sensacion_min').innerText = (hist.sensacion_min ?? '----') + "ºC";
+            if(document.getElementById('indice_calor_max')) document.getElementById('indice_calor_max').innerText = (hist.indice_calor_max ?? '----') + "ºC";
+            if(document.getElementById('uv_max')) document.getElementById('uv_max').innerText = (hist.uv_max ?? '----') + " index";
+            if(document.getElementById('radiacion_max')) document.getElementById('radiacion_max').innerText = (hist.radiacion_max ?? '----') + " W/m2";
         }
 
     } catch (error) {
@@ -85,6 +85,7 @@ async function actualizarMeteorologia() {
 
 window.onload = actualizarMeteorologia;
 </script>
+    
     
 </HEAD>
 <BODY bgcolor="PaleGoldenrod">
