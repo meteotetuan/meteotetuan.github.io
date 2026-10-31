@@ -6,7 +6,7 @@
 <meta http-equiv="refresh" content="150">
 <script>
 // =======================================================================
-// MOTOR JAVASCRIPT PARA LEER LAS DOS FUENTES JSON DESDE GITHUB PAGES
+// MOTOR JAVASCRIPT CORREGIDO PARA TUS PROXIES
 // =======================================================================
 async function actualizarMeteorologia() {
     const urlActual = "https://meteotetuan.w5.lt/weather_proxy.php";
@@ -34,7 +34,8 @@ async function actualizarMeteorologia() {
 
         if (api.sensors && Array.isArray(api.sensors)) {
             api.sensors.forEach(sensor => {
-                const data = sensor.data ? sensor.data[0] : null;
+                // CORRECCIÓN: Accedemos al primer elemento del array 'data' del JSON
+                const data = (sensor.data && sensor.data[0]) ? sensor.data[0] : null;
                 if (!data) return;
 
                 if (sensor.sensor_type === 46) { // ISS Externa
@@ -82,9 +83,9 @@ async function actualizarMeteorologia() {
     }
 }
 
-// Ejecutar al cargar la página
 window.onload = actualizarMeteorologia;
 </script>
+    
 </HEAD>
 <BODY bgcolor="PaleGoldenrod">
 
