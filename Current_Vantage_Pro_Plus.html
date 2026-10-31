@@ -196,9 +196,10 @@
         if (sensors && Array.isArray(sensors)) {
           for (var i = 0; i < sensors.length; i++) {
             var sensor = sensors[i];
-            // Validación estricta del array de datos
             if (sensor.data && Array.isArray(sensor.data) && sensor.data.length > 0) {
-              var bloqueLecturas = sensor.data[0]; // Acceso explícito al índice 0
+              
+              // REPARACIÓN CRÍTICA PARA MÓVILES: Extraemos explícitamente el índice [0] del array
+              var bloqueLecturas = sensor.data[0]; 
 
               if (sensor.sensor_type === 46) {
                 issData = bloqueLecturas;
@@ -232,8 +233,7 @@
 
         if (baroData) {
           document.getElementById("barometer").innerHTML = inHgTohPa(baroData.bar_sea_level);
-        }
-
+        }    
         var timestamp = (baroData && baroData.ts) ? baroData.ts : (issData ? issData.ts : null);
         if (timestamp) {
           var fecha = new Date(timestamp * 1000);
