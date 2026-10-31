@@ -234,7 +234,7 @@
         if (baroData) {
           document.getElementById("barometer").innerHTML = inHgTohPa(baroData.bar_sea_level);
         }    
-        var timestamp = (baroData && baroData.ts) ? baroData.ts : (issData ? issData.ts : null);
+     var timestamp = (baroData && baroData.ts) ? baroData.ts : (issData ? issData.ts : null);
         if (timestamp) {
           var fecha = new Date(timestamp * 1000);
           var dia = ("0" + fecha.getDate()).slice(-2);
@@ -278,4 +278,3 @@
 </script>
 </BODY>
 </HTML>
-    
