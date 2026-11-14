@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MeteoTetuán - Dashboard Meteorológico</title>
+    <style>
+        :root {
+            --bg-color: #0f172a;
+            --card-bg: #1e293b;
+            --text-main: #f8fafc;
+            --text-muted: #94a3b8;
+            --accent: #38bdf8;
+            --border-radius: 12px;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            padding: 20px;
+            min-height: 100vh;
+        }
+
+        .dashboard-container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        header {
+            margin-bottom: 24px;
+            text-align: center;
+            border-bottom: 1px solid #334155;
+            padding-bottom: 12px;
+        }
+
+        header h1 {
+            font-size: 2rem;
+            color: var(--accent);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        header p {
+            color: var(--text-muted);
+            font-size: 0.9rem;
+            margin-top: 4px;
+        }
+
+        .grid-layout {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+        }
+
+        .card {
+            background-color: var(--card-bg);
+            border-radius: var(--border-radius);
+            padding: 16px;
+            border: 1px solid #334155;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            display: flex;
+            flex-direction: column;
+        }
+
+        .card-title {
+            font-size: 1rem;
+            font-weight: 600;
+            color: var(--text-muted);
+            margin-bottom: 12px;
+            border-left: 3px solid var(--accent);
+            padding-left: 8px;
+            text-transform: uppercase;
+        }
+
+        .image-flex-group {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 12px;
+            flex-wrap: wrap;
+            flex-grow: 1;
+        }
+
+        .instrument-img {
+            max-width: 100%;
+            height: auto;
+            border-radius: 6px;
+            object-fit: contain;
+        }
+
+        /* Dimensiones controladas para mantener el diseño ordenado y compacto */
+        .vertical-gauge {
+            max-height: 180px;
+        }
+
+        .circular-gauge {
+            max-height: 140px;
+        }
+
+        .chart-gauge {
+            max-height: 180px;
+            width: 100%;
+        }
+
+        /* Responsive adjustments */
+        @media (max-width: 768px) {
+            body { padding: 10px; }
+            .grid-layout { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="dashboard-container">
+    <header>
+        <h1>MeteoTetuán</h1>
+        <p>Panel Meteorológico en Tiempo Real</p>
+    </header>
+
+    <div class="grid-layout">
+        
+        <!-- CARD 1: CONDICIONES ACTUALES -->
+        <div class="card">
+            <div class="card-title">Condiciones Principales</div>
+            <div class="image-flex-group">
+                <img src="https://meteotetuan.w5.lt/tempout.jpg" alt="Temperatura Exterior" class="instrument-img vertical-gauge">
+                <img src="https://meteotetuan.w5.lt/humout.jpg" alt="Humedad Exterior" class="instrument-img vertical-gauge">
+            </div>
+        </div>
+
+        <!-- CARD 2: EL VIENTO -->
+        <div class="card">
+            <div class="card-title">Viento Actual</div>
+            <div class="image-flex-group">
+                <img src="https://meteotetuan.w5.lt/windspeed.jpg" alt="Velocidad del Viento" class="instrument-img circular-gauge">
+                <img src="https://meteotetuan.w5.lt/winddirection.jpg" alt="Dirección del Viento" class="instrument-img circular-gauge">
+            </div>
+        </div>
+
+        <!-- CARD 3: RADIACIÓN Y LLUVIA -->
+        <div class="card">
+            <div class="card-title">Precipitación e Índice UV</div>
+            <div class="image-flex-group">
+                <img src="https://meteotetuan.w5.lt/uv.jpg" alt="Índice UV" class="instrument-img vertical-gauge">
+                <img src="https://meteotetuan.w5.lt/rain1h.jpg" alt="Lluvia por Hora" class="instrument-img vertical-gauge">
+                <img src="https://meteotetuan.w5.lt/rain24h.jpg" alt="Lluvia Últimas 24h" class="instrument-img vertical-gauge">
+            </div>
+        </div>
+
+        <!-- CARD 4: EVOLUCIÓN HISTÓRICA - TEMPERATURA -->
+        <div class="card">
+            <div class="card-title">Evolución Temperatura</div>
+            <div class="image-flex-group">
+                <img src="https://meteotetuan.w5.lt/temperature1.jpg" alt="Histórico Temperatura" class="instrument-img chart-gauge">
+            </div>
+        </div>
+
+        <!-- CARD 5: EVOLUCIÓN HISTÓRICA - PRESIÓN -->
+        <div class="card">
+            <div class="card-title">Evolución Presión</div>
+            <div class="image-flex-group">
+                <img src="https://meteotetuan.w5.lt/pressure1.jpg" alt="Histórico Presión" class="instrument-img chart-gauge">
+            </div>
+        </div>
+
+        <!-- CARD 6: EVOLUCIÓN HISTÓRICA - VIENTO -->
+        <div class="card">
+            <div class="card-title">Evolución Viento</div>
+            <div class="image-flex-group">
+                <img src="https://meteotetuan.w5.lt/winddirection1.jpg" alt="Histórico Dirección del Viento" class="instrument-img chart-gauge">
+                <img src="https://meteotetuan.w5.lt/windspeed1.jpg" alt="Histórico Velocidad del Viento" class="instrument-img chart-gauge" style="margin-top: 8px;">
+            </div>
+        </div>
+
+        <!-- CARD 7: EVOLUCIÓN HISTÓRICA - PRECIPITACIÓN -->
+        <div class="card">
+            <div class="card-title">Evolución Lluvia</div>
+            <div class="image-flex-group">
+                <img src="https://meteotetuan.w5.lt/precipitation1.jpg" alt="Histórico Precipitación" class="instrument-img chart-gauge">
+                <img src="https://meteotetuan.w5.lt/precipitationc1.jpg" alt="Histórico Precipitación Acumulada" class="instrument-img chart-gauge" style="margin-top: 8px;">
+            </div>
+        </div>
+
+    </div>
+</div>
+
+</body>
+</html>
