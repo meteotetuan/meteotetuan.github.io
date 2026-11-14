@@ -3,6 +3,51 @@
 <head>
   <meta charset="UTF-8">
   <title>Datos de Viento - MeteoTetuán</title>
+  <style>
+    body {
+      background: linear-gradient(135deg, #eef2f7 0%, #dfe7f1 100%);
+      color: #1e293b;
+      padding: 20px 10px;
+    }
+    h2 {
+      font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: #0f172a;
+      background: #ffffff;
+      display: inline-block;
+      padding: 12px 28px;
+      border-radius: 50px;
+      box-shadow: 0 4px 12px rgba(15, 23, 42, 0.08);
+      border-left: 5px solid #0284c7;
+      margin-bottom: 24px;
+      letter-spacing: -0.3px;
+    }
+    div {
+      background: #ffffff;
+      border-radius: 16px;
+      box-shadow: 0 12px 30px rgba(15, 23, 42, 0.12);
+      border: 1px solid #cbd5e1 !important;
+    }
+    .btn-volver {
+      font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+      display: inline-block;
+      margin-top: 26px;
+      padding: 12px 28px;
+      background: #0284c7;
+      color: #ffffff;
+      text-decoration: none;
+      font-weight: 600;
+      font-size: 1rem;
+      border-radius: 50px;
+      box-shadow: 0 4px 12px rgba(2, 132, 199, 0.25);
+      transition: background 0.2s ease, transform 0.2s ease;
+    }
+    .btn-volver:hover {
+      background: #0369a1;
+      transform: translateY(-2px);
+    }
+  </style>
 </head>
 <body style="font-family: sans-serif; margin: 20px;">
 <center>
@@ -15,6 +60,9 @@
       style="position: absolute; top: -950px; left: 0; width: 1040px; height: 1800px; border: none;">
     </iframe>
   </div>
+
+  <br>
+  <a href="https://meteotetuan.github.io" class="btn-volver">&larr; Volver a MeteoTetuán</a>
 </center>
 </body>
 </html>
